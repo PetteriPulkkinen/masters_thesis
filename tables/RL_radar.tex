@@ -1,0 +1,111 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+
+\begin{table}[]
+\tiny
+\centering
+\begin{tabular}{||c|c|c|c|c|c|c||}
+\hline
+Issue &
+  Ref. &
+  Algorithm &
+  Agent &
+  States &
+  Actions &
+  Rewards \\ \hline\hline
+ &
+  \cite{Selvi2018} &
+  Q-learning &
+   &
+   &
+   &
+   \\ \cline{2-7} 
+\multirow{-2}{*}{Coexistence} &
+  \cite{Kozy2019} &
+  DQL &
+   &
+   &
+   &
+   \\ \hline
+Task scheduling &
+  \cite{Shaghaghi2018} &
+  MCTS &
+   &
+   &
+   &
+   \\ \hline
+ &
+  \cite{Xu2010} &
+   &
+   &
+   &
+   &
+   \\ \cline{2-7} 
+\multirow{-2}{*}{Target Tracking} &
+  \cite{Scala2006} &
+  RMAB &
+   &
+   &
+   &
+   \\ \hline
+Multipurpose &
+  \cite{Kreucher2005} &
+  Q-learning &
+   &
+   &
+   &
+   \\ \hline
+ &
+  \cite{Kang2018} &
+  DQN &
+   &
+   &
+   &
+   \\ \cline{2-7} 
+\multirow{-2}{*}{Anti-jamming} &
+   &
+   &
+   &
+   &
+   &
+   \\ \hline
+ &
+  \cite{Wang2019} &
+   &
+   &
+   &
+   &
+   \\ \cline{2-7} 
+\multirow{-2}{*}{Jamming} &
+  \cite{Qiang2017} &
+   &
+   &
+   &
+   &
+   \\ \hline
+ &
+  \cite{Wang2018} &
+  SARSA &
+  \begin{tabular}[c]{@{}l@{}}Colocated \\ MIMO Radar\end{tabular} &
+  \begin{tabular}[c]{@{}l@{}}Number of angle-rangle\\  cellshave GLRT statistic\\  over threshold value\end{tabular} &
+  \begin{tabular}[c]{@{}l@{}}Number of targets\\ assumed in waveform\\ optimization\end{tabular} &
+  \begin{tabular}[c]{@{}l@{}}Sum over probability \\ of detection in \\ angle-range cells\end{tabular} \\ \cline{2-7} 
+ &
+  \cite{Yang2018} &
+   &
+   &
+   &
+   &
+   \\ \cline{2-7} 
+\multirow{-3}{*}{\begin{tabular}[c]{@{}l@{}}Parameter \\ optimization\end{tabular}} &
+  \cite{Wabeke2010} &
+   &
+   &
+   &
+   &
+   \\ \hline
+\end{tabular}
+\caption{Summary of different RL approaches exploited in radar applications.}
+\end{table}
