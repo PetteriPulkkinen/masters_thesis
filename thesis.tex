@@ -1162,7 +1162,7 @@ The following questions will affect to the choice of the algorithm
     \item Is the required learning time critical for the problem at hand? \label{enum:question_learning_speed}
     \item What are the computational resources available during the training? \label{enum:question_resources}
 \end{enumerate}
-\textcolor{red}{This part will be continued in the near future...}
+\textcolor{red}{This introductory part will be continued in the near future...}
 
 \subsubsection{Actions} \label{sec:actions}
 
@@ -1221,191 +1221,141 @@ To address the aforementioned problem, it could be beneficial to define the delt
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/reward.pdf}
-        \caption{ $\tr{\priorecovth} = 2$}
+        \caption{QoS term activates before minimum load is achieved.}
     \end{subfigure}
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/reward2.pdf}
-        \caption{ $\tr{\priorecovth} = 80$}
+        \caption{QoS term activates after minimum load is achieved.}
     \end{subfigure}
-    \caption{An example of a reward function with different uncertainty requirements.
-    The inverse of tracking load $1/L$, the utility function $u$, and reward is visualized in the same figure. }
+    \caption{An example of a expected rewards at two different scenarios, where the Quality of Service (QoS) penalty is activated with different revisit intervals. \textcolor{red}{This is still temporary figure and will be updated in the near future.}
+    }
     \label{fig:my_label}
 \end{figure}
-
-\begin{outline}[itemize]
-    \1 The tracking load is dependent on the number of dwells needed to achieve the detection
-        \2 How the radar handles the integration time and dwells
-            \3 E.g. constant integration time + as many dwells as needed to achieve detection (with upper limit)
-            \3 Set SNR objective which defines the integration time + one dwell at a time
-        \2 integration time and number of dwells will affect the tracking load
-    \1 Target priority affect to the cost of losing a track, mixing a track and to the requirements
-        \2 How to trade off between the requirements and track losses/mixes
-            \3 Define losses are handled with non-myopic objective -> if track is lost then the future rewards are zero which is the minimum reward -> affects to agents "fear" of choosing too risky actions
-            \3 Mixes can be defined similarly as QoS requirements -> the needed accuracy to keep probability of track mixing below certain threshold  is just addition QoS requirement
-        \2 The policy of the target is to minimize load if QoS requirements are fulfilled. If QoS are not fulfilled the it will quickly become more important than minimizing the load
-    \1 Tracking load is bad metric for reinforcement learning agent to actually optimize the load since with low revisit interval the rewards are really low and higher values the variability is much smaller -> for RL agent is seems that the difference is small
-        \2 Therefore we use the reward in the form that will be shown 
-\end{outline}
 
 The reward function is used to give feedback for the agent on its actions.
 In optimization, MDP and POMDP problems the objective is created using the system models.
-However, in RL problems the rewards are dependent on the action, state and previous state. 
+However, in RL problems the rewards are based on events whose appearance is dependent on the action, the state and the previous state. 
 An arbitrary example would be that, an optimization approach maximizes probability of detection but RL approach maximizes number of detections in a long run.
 Obviously, rewards related to the probability of detection could be used in the RL approach but then the agent's ability to learn act optimally by its own is not fully utilized.
-It is problem specific which 
-
-The reward function should be defined such that the objective of the radar is achieved by maximizing the equation \eqref{eq:discounted_sum} as it was described in Chapter \ref{sec:RL}.
-The fundamental difference between reinforcement learning and optimization techniques is that the rewards can be delayed \cite{Sutton2018}.
-For example, if the objective is to not have lost tracks, then penalty should be given if track is lost and otherwise no reward is given.
+Moreover in cases where myopic policy is optimal, system model and rewards are fully known, conventional optimization algorithms are more efficient in finding the optimal action.
 
 The radar is operating as a part of a larger system where the radar provides a snapshot of target position and radial velocity.
-Since the system is partially observable, the belief state is used.
+Since the observations does not contain the complete state information, the belief state is used.
 The belief state is described by probability distributions that define the known information about the state variables.
-In Section \ref{sec:Tracking}, the state variables was described as Gaussian random variables such that mean and covariance are used.
+In Section \ref{sec:Tracking}, the state variables of a target was modeled as Gaussian random variables which can be described by mean and covariance.
 Other systems, utilizing the belief state given by the radar, can set Quality of Service (QoS) requirements on the certainty of the random variables.
 Typically, the quality of the predictive error covariance matrix needs to be maintained above certain threshold as it was discussed in Section \ref{sec:error_covariance_methods}.
 
-It is reasonable to assume that the QoS requirements for the predictive covariance matrix are set for the scenarios where no bias is introduced to the random variables by any misbehaviour.
-Such bias can be present when the target is maneuvering and the tracking model is not fully matching to the motion.
-Therefore, it is radar's responsibility to ensure that the estimates given by the radar are trustworthy.
-In some cases, the requirements can be loose such that the radar needs to take into account of the probability of losing or mixing tracks.
+In some cases, the requirements set by other systems can be loose such that the radar needs to take into account the probability of losing or mixing tracks.
 The costs for track losses and mixes can be defined depending on the attributes such as class and distance.
-Cost for track loss is easy to introduce into reward function as described before.
+In the assumed radar system, the track is considered lost after $\nmax$ subsequent missed detections have occurred.
+Therefore, the event of losing track is observable and can be included into reward function.
 However, it can not be observed if any of the tracks are mixed.
 Therefore, the probability of mixing tracks along with the mixing cost should utilized in the reward function.
 
-The immediate reward function could be defined in form of 
-\begin{equation}\label{eq:reward_function}
-    r(\cdot) \sim \frac{u(\cdot)}{L(\cdot)} = \frac{t_r}{t_d n} u(\cdot)
-\end{equation}
-where the meaning for utility function $u(\cdot)$ could be interpreted as probability of task success in the other system which defines the requirements.
-One possible utility is defined as follows,
-\begin{equation}
-    u(\priorecov, \priorecovth)  =
-    \left\{\begin{array}{ll}
-        1, & \tr{\priorecov} < \tr{\priorecovth}  \\
-        \frac{\tr{\priorecovth}}{\tr{\priorecov}}, & \text{otherwise}
-    \end{array}\right.
-\end{equation}
-where $\priorecovth$ is a threshold for maximum uncertainty.
-Note that $u(\cdot)$ and $n^{-1}$ are decreasing in function of $t_r$ such that Equation \eqref{eq:reward_function} is a concave function.
-It is assumed that if $n$ exceeds certain limit, then the track is dropped.
-The parameter $\lambda$ in Equation \eqref{eq:discounted_sum} is used to adjust the cost of losing track.
-In other words, the maximum value for the discounted sum is $\frac{1}{1-\lambda}\frac{\tmax}{t_d}$.
-The non-myopic objective enables the RL approach to select actions which have non-maximum immediate rewards, but the long-term rewards are maximized.
-The immediate reward function \eqref{eq:reward_function} is similar to reward function proposed in \cite{Charlish2015}.
-However, $n$ is considered to be function of $t_r$ as in \cite{vanKeuk1993}.
-
-\subsubsection{Reward (new)}
-
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/rl_formulation/reward_0.pdf}
-        \caption{ The reward calculates  .}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/rl_formulation/reward_5.0.pdf}
-        \caption{ TBD.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/rl_formulation/reward_10.pdf}
-        \caption{ TBD.}
-    \end{subfigure}
-    \caption{An example of expected rewards in function of revisit interval when quality of service requirement for the predicted state estimates is kept constant in all figures.}
-    \label{fig:my_label}
-\end{figure}
-
-\newcommand{\X}{\vec{X}}
-\newcommand{\Y}{\vec{Y}}
-\begin{align}
-    u_\Y(\X_{t_0}, t_r)
-    &= \frac{\int_{t_0}^{t_0+t_r} \tr{\Y} dt}{\int_{t_0}^{t_0+t_r}  g_\Y(\X_t) dt} \\
-    &\approx \frac{\tr{\Y} t_r}{\sum_{n=1}^{N} g_\Y(\X_{t+n\Delta_t}) \Delta_t} \label{eq:penalty_approximation}
-\end{align}
-where $N=\frac{t_r}{\Delta_t}$, $\Delta_t$ is arbitrary processing sampling rate  and the function $g_\Y(\X_t)$ is defined as follows
-\begin{equation}
-    g_\Y(\X) =
+\newcommand{\uqos}{u_\text{QoS}}
+\newcommand{\closs}{c_\text{loss}}
+The overall objective for the agent is to 
+\begin{enumerate}
+    \item minimize time budget needed to maintain the track, \label{enum:reward_tbm}
+    \item keep the predicted estimates in a tolerable uncertainty level, \label{enum:reward_QoS}
+    \item prevent track losses based on a cost of a track loss, and \label{enum:reward_losses}
+    \item keep probability of mixing tracks below certain value. \label{enum:reward_mixes}
+\end{enumerate}
+From now on, the objectives \ref{enum:reward_QoS} and \ref{enum:reward_mixes} are combined such that only a single QoS objective is needed.
+Therefore, the reward function is defined as follows
+\begin{equation} \label{eq:reward}
+    r(b, a) =
     \left\{
     \begin{array}{ll}
-        \tr{\X}, & \text{if } \tr{\X} < \tr{\Y} \\
+        \frac{t_r}{\tmax n} \uqos(b, a), & \text{in case of detection,} \\
+        -\closs, & \text{otherwise.}
+    \end{array}\right. 
+\end{equation}
+where $\tmax$ is used to normalize the rewards below $1$, $n \in \{1, 2, ..., \nmax\}$ is the number of dwells needed to achieve detection, $\closs$ is a penalty for a lost track, and $\uqos$ is a QoS penalty function.
+The QoS penalty function is $1$ when the QoS objective is not violated and otherwise it gradually decreases towards zero.
+Here $\uqos(b, a)$ is defined as follows
+\begin{align}
+    \uqos(b, a)
+    &= \frac{\int_{t_0}^{t_0+t_r} \tr{\priorecovth} dt}{\int_{t_0}^{t_0+t_r}  g(\bm{\Sigma}_t) dt} \\
+    &\approx \frac{\tr{\priorecovth} t_r}{\sum_{n=1}^{N} g(\bm{\Sigma}_{t+n\Delta_t}) \Delta_t} \label{eq:penalty_approximation}
+\end{align}
+where $N=\frac{t_r}{\Delta_t}$, $\Delta_t$ is an arbitrary processing sampling rate, $\priorecovth$ is a error covariance matrix given by the QoS requirement, and the function $g(\bm{\Sigma}_t)$ is defined as follows
+\begin{equation}
+    g(\bm{\Sigma}_t) =
+    \left\{
+    \begin{array}{ll}
+        \tr{\bm{\Sigma}_t}, & \text{if } \tr{\bm{\Sigma}_t} < \tr{\priorecovth} \\
         1, & \text{otherwise.}
     \end{array}
     \right.
 \end{equation}
 The equation \eqref{eq:penalty_approximation} approximates the integral such that it is possible to calculate efficiently.
 
-\begin{equation}\label{eq:utility}
-    L_\eta(t_r) = \frac{n(t_r) t_d}{t_r^\eta}
-\end{equation}
-where parameter $\eta \in [0, 1]$ controls the importance between load and dwell length.
-Especially for non-myopic objectives, $\eta$ is important since it can be used to control the algorithm to minimize immediate load (the load between subsequent actions) or the overall time spent tracking the target.
-When $\eta=1$, minimizing immediate load is more important. 
-Vice-versa, with $\eta=0$ the agent desires to minimize the overall time allocation for the tracking task.
+The reward function \eqref{eq:reward} defined similarly as in \cite{Charlish2015}.
+However, $n$ is considered to be function of $t_r$ as in \cite{vanKeuk1993}, the possibility of a track loss is included, and $\uqos$ is defined differently.
+The non-myopic objective \eqref{eq:discounted_sum} enables the RL approach to select actions which have non-maximum immediate rewards, but the long-term rewards are maximized.
 
-\begin{equation}
-    R(\ecov, t_r) = \frac{\tmax^\eta}{\tmax - t_d} \left( \tmax^{1-\lambda} - L_\eta(t_r) \right) u_{\priorecovth} (\ecov, t_r)
-\end{equation}
-where $R(\cdot) \in [0, 1]$.
-
-$t_r \in [ \tmin, \tmax ]$, where $\tmin = \nmax \tau_d$ and $\tmax$ is defined by the operator as described in Section \ref{sec:actions}.
-$\nmax$ is the maximum allowed subsequent missed detections after the track is considered lost.
-
-\begin{equation}
-    r(n_m, t_r) = (1 - \frac{n_m}{\nmax}) \frac{t_r}{\tmax} u_{\priorecovth} (\ecov, t_r),
-\end{equation}
-which is normalized to values $r(\cdot) \in [0, 1]$.
+\textcolor{red}{The reward function will be analyzed with more detail in the near future. Especially, the track loss cost needs to be explained better e.g. what happens in non-myopic case and relation to optimizing probability of track loss. Also, the reward can be formulated multiple different ways, this is the most reasonable I found out.}
 
 \subsubsection{States and observations}
 
-\begin{itemize}
-    \item What is actually the state? There is the environment that consists of target states that the tracker tries to convert that state as a belief state. In this case, the state of the tracker is its capability to track the targets.
-    \item Higher level description about what is the state and what is the observation of the state.
-    \item State as current revisit interval and last reward
-    \item Mahalanobis distance to measure distance from expected reward distribution
-    \item Low pass filtering or LSTM to tackle partially observability
-    \item How to include the precision requirement to the state? Some information theoretic measure to measure distance between current distribution with $\priorecov$ and distribution with $\priorecovth$. How about using just the distance from required trace?
-\end{itemize}
-
-In Chapter $\ref{sec:MDP}$ it was briefly discussed what is the state in the Markov decision process.
+In Chapter $\ref{sec:MDP}$ it was briefly discussed what is the state in a Markov decision process.
 The state describes the memoryless operation point of the system that is needed to know before taking an action.
 In case of revisit interval selection, it is not trivial to define what is the actual state of the system.
 One way to approach this problem is to identify an environment state and an agent state.
 The environment state describes all the information that is needed to determine how the environment responds to actions of the agent.
 On the other hand, the agent state contains the information that is relevant for the agent to choose an action.
-In case where target states can be described as hybrid systems, the environment state combines kinematic states for all targets and the states of the discrete stochastic processes.
+Moreover, the achievable quality of the actions can be dependent on the amount of information is available.
+In case where target states are described as hybrid systems, the environment state combines kinematic states for all targets and the states of the discrete stochastic processes.
 The environment state is extracted by using a tracking filter such as IMM estimator.
 The agent can affect to the sampling time instances but the actual target trajectories are assumed to be decoupled of the agent actions.
 
 The agent can not observe the environment state directly, which is the reason for using the radar in the first place.
 The agent state is related to the tracking filter and to the requirements set for the tracker.
-The operator has defined the requirements for the estimates as described in Section \ref{sec:rewards}.
-The reward function was dependent on the tracking load and QoS requirement.
-The tracking load is dependent on how predictable the target maneuver is which is partially observable since it is dependent on the innovation sequence.
-The partially observability tackled by utilizing the belief state presentation as it has been done for all other variables already.
-The QoS requirement is fully observable from the tracking outputs.
-Therefore, the state could be divided to quantities that describe 
-\begin{enumerate*}
-    \item quality of the filter outputs compared to the requirements, and
-    \item the predictability of the target trajectory.  
-\end{enumerate*}
-For instance, if estimated predictive error covariance matrix meets the requirements 
-Moreover, the QoS requirements are directly related to the prediction error covariance matrix.
-The state describes the distance from the QoS requirement and the available information on how the distance could evolve. 
-Another factor in the reward function was the tracking load.
-The tracking load is related on how accurate the predictions are and on the used revisit interval.
-The accuracy of the predictions can be measured with the error covariance matrices, and by investigating the innovation sequence.
+In other words, the state is all the available information that is relevant for maximizing the reward function \eqref{eq:reward}.
+The reward function was dependent on the tracking load, tracking losses, and QoS requirements.
+The tracking load is dependent on how predictable the target state is.
+If the tracking filter is optimal with correct model parameters, predictability of the target state is fully determined by the covariance matrix.
+Therefore for a multiple model filter, $\modecovpost$, $\modexpost$ and $\mu_k^i$ for each more $i \in \{1, ..., M\}$ would be all the information needed to present the state.
 
+In another case, where the filter is not optimal or the models are not accurate, innovation sequence is the only source to observe the real performance of the tracking filter.
+The real performance of the tracking filter is reflected in the reward function as increasing tracking load and higher probability of tracking loss.
+Therefore, innovation sequence should be utilized somehow to allow agent to prevent the increased tracking loss or the increased probability of losing track.
+In particular, the expectation
+\begin{equation} \label{eq:residual_expectation}
+    \E{\xest - \z} = \xest - \E{\z} = \xest - \x
+\end{equation}
+could be interpreted as a state of the filter which is the residual between estimated state and the true state.
+Unfortunately, the state is not fully observable and the tracking filter is already trying to minimize \eqref{eq:residual_expectation} in terms of MSE.
+However, the innovation sequence can be used to detect if the tracking filter is approximately functioning as intended.
+Especially, the innovation covariance is can be calculated by Equation \eqref{eq:kf_innov_cov}.
+The same equation can be used to calculate the desired innovation covariance
+\begin{equation}
+    \innocov = \omodel \priorecovth \omodel + \ocov
+\end{equation}
+where $\priorecov$ is replaced by the error covariance from the QoS requirement $\priorecovth$.
+The innovation covariance matrix can be decomposed by a eigenvalue decomposition into rotation component $\vec{U}$ and scaling component $\bm{\Omega}$.   
+Thus, the measurement can be normalized to have unit covariance as follows 
+\begin{equation}\label{eq:innov_norm}
+    \tilde{\vec{y}}_n = \bm{\Omega}^{-\frac{1}{2}} \vec{U}\prefitinnov.
+\end{equation}
+In addition, the distance in the normalized space called Mahalanobis distance can be calculated as follows
+\begin{equation}\label{eq:mahalanobis}
+    D(\prefitinnov) = || \tilde{\vec{y}}_n ||_2 = \sqrt{\prefitinnov \innocov^{-1} \transpose{\prefitinnov}}
+\end{equation}
+Equations \eqref{eq:innov_norm} or \eqref{eq:mahalanobis} could be used as an observation.
+In addition, as it was done in \cite{Gardner1988}, low-pass filtering may increase the performance. 
+
+\textcolor{red}{This section is at the moment in progress. E.g. 
 \begin{itemize}
-    \item QoS $\frac{\tr{\priorecov}}{\tr{\priorecovth}}$
-    \item Current track sharpness $V_0 = \sigma_p/B$
-    \item $\tr{\priorecovth}$ or $B$ is changed -> reward shape is modified -> works only with constant values -> normalization term is not needed
-    \item Is there way to present the state which works always 
+    \item the correlations in the innovation sequence
+    \item LSTM filters if they appear to be relevant at this point
+    \item how the state presentation "looks like" for the agent
+    \item is there any ways to simplify the state presentation (with all information presented here, the state presentation gets quite high dimension) e.g. using only the innovation sequence as they do in the residual based methods
 \end{itemize}
+}
 
 \newpage
 \section{Simulations}
