@@ -18,10 +18,14 @@
 \usepackage{subcaption}
 \usepackage{gensymb}
 \usepackage{outlines}
+\usepackage{longtable}
 
 
 
 \addbibresource{references.bib}
+
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\Vec}[1]{\boldsymbol{#1}}
 
 \newcommand{\tr}[1]{\texttt{Tr}\left\{ #1 \right\}}
 \newcommand{\Pest}{P_{t+1|t}^{(k)}}
@@ -31,12 +35,13 @@
 \newcommand{\As}{\mathcal{A}}
 \newcommand{\Rs}{\mathcal{R}}
 \newcommand{\Ps}{\mathcal{P}}
-\newcommand{\Os}{\mathcal{O}}
-\newcommand{\Ops}{\Omega}
+\newcommand{\Os}{\Omega}
+\newcommand{\Op}{O}
 \newcommand{\argmax}{\text{argmax}}
 \newcommand{\egreedy}{$\epsilon$-greedy~}
-\newcommand{\E}[1]{\mathrm{E}\left[ #1 \right]}
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
 \newcommand{\inv}[1]{#1^{-1}}
+\newcommand{\sqinv}[1]{#1^{-\frac{1}{2}}}
 \renewcommand{\Pr}[1]{\text{Pr}\left\{ #1 \right\}}
 
 \newcommand{\xprior}{\hat{\vec{x}}_{k|k-1}}
@@ -48,19 +53,15 @@
 \newcommand{\lastecov}{\boldsymbol{\Sigma}_{k-1|k-1}}
 \newcommand{\ecov}{\boldsymbol{\Sigma}_k}
 
-\newcommand{\prefitinnov}{\Tilde{\bm{y}}_k}
-\newcommand{\postfitinnov}{\Tilde{\bm{y}}_{k|k}}
+\newcommand{\prefitinnov}{\vec{y}_k}
+\newcommand{\postfitinnov}{\Tilde{\vec{y}}_{k|k}}
 
-\renewcommand{\vec}[1]{\mathbf{#1}}
-\renewcommand{\Vec}[1]{\boldsymbol{#1}}
+\newcommand{\x}{\vec{x}_k}
+\newcommand{\xnext}{\vec{x}_{k+1}}
+\newcommand{\xhat}{\hat{\vec{x}}_k}
 
-
-\newcommand{\x}{\bm{x}_k}
-\newcommand{\xnext}{\bm{x}_{k+1}}
-\newcommand{\xest}{\hat{\vec{x}}_k}
-
-\newcommand{\z}{\bm{z}_k}
-\newcommand{\znext}{\bm{z}_{k+1}}
+\newcommand{\z}{\vec{z}_k}
+\newcommand{\znext}{\vec{z}_{k+1}}
 
 \newcommand{\stmodel}{\vec{F}_k}
 \newcommand{\cimodel}{\vec{B}_k}
@@ -96,10 +97,13 @@
 
 \newcommand{\stprobs}{\vec{P}}
 
+\newcommand{\modeprob}{\mu_k^i}
 \newcommand{\lastmxprobs}{\mu^{j|i}_{k-1|k-1}}
 \newcommand{\mxnorm}{ \Bar{c}_i }
 \newcommand{\xmxinit}{\hat{\vec{x}}^{0i}_{k-1|k-1}}
+\newcommand{\xmxinitcurr}{\hat{\vec{x}}^{0i}_{k|k}}
 \newcommand{\ecovmxinit}{\bm{\Sigma}^{0i}_{k-1|k-1}}
+\newcommand{\ecovmxinitcurr}{\bm{\Sigma}^{0i}_{k|k}}
 \newcommand{\modexlast}{\hat{\vec{x}}^{j}_{k-1|k-1}}
 \newcommand{\modexprior}{\hat{\vec{x}}^{i}_{k|k-1}}
 \newcommand{\modecovlast}{\bm{\Sigma}^j_{k-1|k-1}}
@@ -108,11 +112,27 @@
 \newcommand{\modemxcovlast}{\Tilde{\bm{\Sigma}}^{ij}_{k-1|k-1}}
 \newcommand{\modexpost}{\hat{\vec{x}}^{i}_{k|k}}
 \newcommand{\modecovpost}{\bm{\Sigma}^i_{k|k}}
+\newcommand{\modeobsprob}{\Lambda^i_k}
 
 \newcommand{\priorecovth}{\bm{\Sigma}_{\text{th}}}
 
 \newcommand{\deltalim}{\Delta_\text{lim}}
+\newcommand{\Asdir}{\As_\text{D}}
+\newcommand{\Asdelta}{\As_\Delta}
 
+\def\prior{\textit{a priori}\ }
+\def\post{\textit{a posteriori}\ }
+\newcommand{\zhat}{\hat{\vec{z}}_k}
+
+\newcommand{\mimm}{\mathcal{M}}
+
+\newcommand{\nacts}{{N_\text{a}}}
+\newcommand{\nstates}{{N_\text{s}}}
+\newcommand{\nmodels}{{N_\text{m}}}
+
+\newcommand{\real}{\mathbb{R}}
+
+\newcommand{\dt}{\Delta t}
 
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -233,38 +253,117 @@ Otaniemi, 1.6.2020
 
 \subsection*{Symbols}
 
-\begin{tabular}{ll}
-$q$ & Quality-value \\
-$\pi$ & Policy \\
-$\pi^*$ & Optimal policy \\
-$k$ & Time at instant $k$\\
-$\ecov$ & Predicted error covariance matrix \\
-$\stmodel$ & State-transition model \\
-$\pnoise$ & Process noise \\
-$\omodel$ & Observation model \\
-$\onoise$ & Observation noise \\
-$\cinput$ & Control input \\
-$\cimodel$ & Control input model \\
-$\pcov$ & Process noise covariance matrix \\
-$\ocov$ & Observation noise covariance matrix \\
-$\stprobs$ & State-transition probabilities of a Markov chain
-\end{tabular}
+\begin{longtable}{ll}
+% -----------------------
+% General symbols
+% -----------------------
+$k$ & time step \\
+$t_k$ & time at time step $k$ \\
+&\\
+% -----------------------
+% RL/MDP/POMDP related symbols
+% -----------------------
+$\nstates$ & number of all possible states \\
+$\Ss$ & set of all possible states, i.e state space \\
+$s_i$ & state, indexed by $i \in \{1, ..., N\}$ \\
+$S_k$ & state at time step $k$ \\
+&\\
+$\nacts$ & number of all possible actions \\
+$\As$ & set of all possible actions, i.e action space \\
+$\As_s$ & set of possible actions given the state $s \in \Ss$ \\
+$a_i$ & action, indexed by $i \in \{1, ..., L\}$ \\
+$A_k$ & action at time step $k$ \\
+&\\
+$\Rs$ & set of all possible rewards \\
+$\Rs_{ss'}^a$ & set of possible rewards for action $a$ given state transition from $s$ to $s'$ \\
+$R_k$ & reward at time step $k$ \\
+&\\
+$\stprobs$ & state transition probability matrix \\
+$p_{ij}$ & transition probability from state $s_i$ to $s_j$ \\
+$\stprobs_a$ & state transition probability matrix given action $a \in \As$ \\
+$p_{ij}^a$ & transition probability from state $s_i$ to $s_j$ given action $a\in \As$\\
+&\\
+$\Os$ & set of all possible observations \\
+$\Os_s^a$ & set of possible observations given action $a \in \As_s$ and state $s \in \Ss $ \\
+$z$ & observation \\
+$Z_k$ & observation sequence until time step $k$ \\
+$\Op(z | s, a)$ & probability of observing $z \in \Os_s^a$ given state $s_i \in \Ss$ and action $a \in \As_s$ \\
+$b_k$ & belief state at time step $k$ \\
+$b_k(s)$ & probability of being on state $s \in \Ss$ at time step $k$ \\
+
+&\\
+$\pi$ & policy \\
+$\pi^*$ & optimal policy \\
+$\pi(a|s)$ & probability of taking action $a \in \As_s$ given state $\Ss$ \\
+$v_\pi(s)$ & value for state $s$ under policy $\pi$ \\
+$q_\pi(s, a)$ & value for action $a \in \As_s$ and state $s \in \Ss$ under policy $\pi$ \\
+$G_k$ & discounted sum of rewards \\
+$\lambda$ & discount factor \\
+$\epsilon$ & probability of random action in \egreedy policy \\
+&\\
+% -----------------------
+% KF related symbols
+% -----------------------
+$\stmodel$ & state-transition matrix at time step $k$\\
+$\pnoise$ & process noise at time step $k$\\
+$\omodel$ & observation matrix at time step $k$\\
+$\onoise$ & observation noise at time step $k$\\
+$\cinput$ & control input at time step $k$\\
+$\cimodel$ & control input matrix at time step $k$\\
+$\pcov$ & process noise covariance matrix at time step $k$\\
+$\ocov$ & observation noise covariance matrix at time step $k$\\
+&\\
+$\x$ & kinematic state of a target at time step $k$ \\
+$\z$ & radar observation at time step $k$ \\
+$\zhat$ & predicted radar observation at time step $k$ \\
+$\prefitinnov$ & innovation at time step $k$ \\
+$\xprior$ & \prior estimate of state $\x$\\
+$\xpost$ & \post estimate of state $\x$ \\
+$\priorecov$ & estimated error covariance matrix on estimate $\xprior$ \\
+$\postecov$ & estimated error covariance matrix on estimate $\xpost$ \\
+$\gain$ & Kalman gain at time step $k$ \\
+$\innocov$ & Innovation covariance matrix at time step $k$ \\
+&\\
+% -----------------------
+% IMM related symbols
+% -----------------------
+$\nmodels$ & number of maneuver models \\
+$\mimm$ & set of maneuver models \\
+$m_i$ & maneuver model, indexed by $i \in \{1, ..., M\}$ \\
+$M_k$ & maneuver model at time step $k$ \\
+$\modeprob$ & maneuver model probability for model $m_i \in \mimm$ at time step $k$ \\
+$\xmxinitcurr$ & mixed \post estimate of $\x$ for model $m_i \in \mimm$\\
+$\ecovmxinitcurr$ &  estimated error covariance matrix on estimate $\xmxinitcurr$\\
+&\\
+% -----------------------
+% revisit interval selection related symbols
+% -----------------------
+$t_r$ & revisit interval \\
+$\tau_d$ & dwell length \\
+&\\
+% -----------------------
+% RL for revisit interval related symbols
+% -----------------------
+$\Asdir$ & set of possible actions for direct revisit interval selections \\
+$\Asdelta$ & set of possible actions for delta revisit interval selections \\
+$\deltalim$ & maximum increase or decrease delta revisit interval action \\
+\end{longtable}
 
 \subsection*{Abbreviations}
 
 \begin{tabular}{ll}
 AESA & Adaptive Electronically Scanned Arrays \\
-TBM & Time budget management \\
-MDP         & Markov decision process \\
-POMDP      & Partially observable Markov decision process \\
-RL & Reinforcement learning \\
+FTS & Fast time scale \\
 HMM & Hidden Markov Model \\
 IMM & Interacting Multiple Model \\
-MSE & Mean square error \\
-STS & Slow time scale \\
-FTS & Fast time scale \\
 JMLS & Jump Markov linear system \\
-LSTM & Long short-term memory
+LSTM & Long short-term memory \\
+MDP & Markov decision process \\
+MSE & Mean square error \\
+POMDP      & Partially observable Markov decision process \\
+RL & Reinforcement learning \\
+STS & Slow time scale \\
+TBM & Time budget management \\
 \end{tabular}
 
 
@@ -291,7 +390,7 @@ An efficient TBM algorithm is needed to maximize the benefit of using adaptive p
 
 Assigning the radar time resources for multiple tasks in multifunction radars have been intensively studied by the research community.
 Different names have emerged for the problem such as resource management \cite{Wintenby2006, Charlish2015a} and scheduling \cite{Esfahani2012, Byrne2015, Byrne2016, Krishnamurthy1999, Krishnamurthy2001}.
-In general, resource management is intended to denote controlling any of the radar resources such as energy budget, time budget, phase shifting budget, and processing budget \cite{Ding2008}.
+In general, resource management is intended to denote controlling any of the radar resources such as energy, frequency, time, phase shifting and processing budget \cite{Ding2008}.
 Moreover, the scheduling can be interpreted as to be a low-level scheduling algorithm \cite{Wintenby2006}.
 In this thesis, the term "time budget management" is used, because it does not assign any expectations on how the actual objective is achieved.
 
@@ -312,12 +411,12 @@ a low-level scheduling algorithm for multichannel multifunction radars \cite{Sha
 selecting number of angle cells to be included into beam pattern in colocated MIMO radar \cite{Wang2018}, 
 and sequential operation mode selection to improve detection performance for moving radar platform \cite{Smits2008}.
 
-In this thesis, a reinforcement learning approach is proposed to address the TBM problem.
-Moreover, a reinforcement learning algorithm is applied to control the revisit interval of the tracking filter, 
-which defines the time when the tracking task is revisited.
-The goal is to release time resources from target tracking to other radar functions when the target movement is more predictable.
-A reinforcement learning approach may be able to learn directly from the experience such that the system model is not needed to optimize the employed reward function.
-For example, a RL algorithm could be applied to different tracking filters with minimal modification on the actual reinforcement learning formulation.  
+In this thesis, an RL approach is proposed to address the TBM problem.
+Moreover, an RL algorithm is applied to control a revisit interval of a tracking filter. 
+The revisit interval is the time between two subsequent track updates, and the higher the revisit interval is the more time is released for other radar tasks.
+An RL agent is trained to minimize the utilization of time budget for each track separately such that remaining time resources can be distributed between radar tasks according to the current needs.
+The reinforcement learning approach may be able to learn directly from the experience such that the system model is not needed to optimize the employed reward function.
+For example, an RL algorithm could be applied to different tracking filters with minimal modification on the actual reinforcement learning formulation.  
 Moreover, RL methods can learn to utilize observation data with a non-trivial connection to the revisit interval.
 It was shown in \cite{Charlish2015} that the partially observable Markov decision process (POMDP) framework can be utilized to introduce anticipation for controlling the revisit interval.
 The reinforcement learning approach can include the anticipation for taking long-term consequences in account when planning the 
@@ -339,26 +438,30 @@ Especially, the concepts include fully observable and partially observable Marko
     \includegraphics[width=0.8\textwidth]{figures/MarkovChain.pdf}
     \caption{
     An example of a Markov chain with six states. 
-    The non-zero state transition probability from state $s_i$ to $s_j$ is written as $p_{ij}$.
-    The state transition probability is zero if no arrow exists between the state pair. }
+    A non-zero state transition probability from state $s_i$ to $s_j$ is written as $p_{ij}$.
+    The state transition probability is zero if no arrow exists between a state pair. }
     \label{fig:mc}
 \end{figure}
 
 
-Consider a system which contain finite number of states that describe the operation point of the system.
+Consider a system that has a finite number of states which describe the operation point of the system.
+The set of all different states the system has is denoted as $\Ss$, which is also called state space.
 The system state can sequentially transition from state to another state based on a certain stochastic model.
 A Markov chain is a stochastic model which can model the sequential state transitions if the transitions are memoryless.
-The memoryless transition for state $S_k$ at time instant $k$ means that   
+A memoryless transition means that state at time step $k$, denoted as $S_k \in \Ss$, changes to another state $S_{k+1} \in \Ss$, then following equation will hold   
 \begin{equation} \label{eq:markov_property}
     \Pr{S_{k+1} | S_k, S_{k-1}, ..., S_1, S_0} = \Pr{S_{k+1} | S_k}.
 \end{equation}
-In other words, the state transition probabilities are dependent only on the current state.
-The property in equation \eqref{eq:markov_property} is known as Markov property.
+In other words, Equation \eqref{eq:markov_property} indicates that the state transition probabilities are only dependent on the current state.
+Thus, there is no need to remember the history of the past state transitions to determine the state transition probability.
+The property in Equation \eqref{eq:markov_property} is known as Markov property.
 
 Next, the notation for the Markov chains is clarified.
-A Markov chain has $N$ states which are represented as $s_i \in \{s_1, s_2, ..., s_N\}$.
-The state transition probability from state $s_i$ to state $s_j$ is defined as $\Pr{S_k=s_j | S_{t-1}=s_i}=p_{ij}$.
-Moreover, it is possible to summarize the Markov chain dynamics with a state transition matrix $\stprobs$ in which the row $i$ and the column $j$ corresponds to the probability $p_{ij}$.
+A Markov chain has $\nstates$ states which are represented as $s_i \in \{s_1, s_2, ..., s_{\nstates} \}$.
+If state is a random variable, it is denoted as $S_k$ where $k$ is the time step.
+For example, $S_k = s_i$ means that the state at time $k$ is realized as $s_i \in \Ss$. 
+The state transition probability from state $s_i$ to state $s_j$ is defined as $\Pr{S_{k+1}=s_j | S_{k}=s_i}=p_{ij}$.
+Moreover, it is possible to summarize the Markov chain dynamics with a state transition matrix $\stprobs$ in which the element on row $i$ and column $j$ corresponds to the probability $p_{ij}$.
 An example of a Markov chain with six states is shown in Figure \ref{fig:mc}.
 
 \subsection{Markov decision process} \label{sec:MDP}
@@ -370,7 +473,7 @@ An example of a Markov chain with six states is shown in Figure \ref{fig:mc}.
         \includegraphics[width=0.9\textwidth]{figures/MDP.pdf}
         \caption{
         In an MDP, the agent takes an action that interacts with the system.
-        After the action is taken, the agent receives a reward and observes the new system state.
+        After the action is taken, the agent receives a reward and a new state of the system.
         The reward can be dependent on the action and the state transition.
         The new system state is used to decide the next action.}
         \label{fig:mdp}
@@ -386,108 +489,147 @@ An example of a Markov chain with six states is shown in Figure \ref{fig:mc}.
         }
         \label{fig:pomdp}
     \end{subfigure}
-    \caption{Markov decision process (MDP) and partially observed Markov decision process (POMDP) visualized. }
+    \caption{Markov decision process (MDP) and partially observable Markov decision process (POMDP) visualized. }
     \label{fig:my_label}
 \end{figure}
 
-A sequential decision process is process where a decision-maker needs to sequentially make decisions that affect future decisions \cite{LaValle2006}.
-If the outcomes of the decisions are not deterministic, then the decision process is considered as a stochastic decision process.
-A Markov decision process (MDP) is a mathematical framework that is used to formalize the stochastic sequential decision problems \cite{Sutton2018}.
-The key element of an MDP is that the system is modeled as a Markov chain.
+A sequential decision process is a process where a decision-maker needs to sequentially make decisions that affect future decisions \cite{LaValle2006}.
+If the outcomes of the decisions are non-deterministic, then the decision process is considered as a stochastic sequential decision process.
+A Markov decision process (MDP) is a mathematical framework that is used to formalize stochastic sequential decision-making problems \cite{Sutton2018}.
 The decision-maker in an MDP is called an agent.
-The agent can choose different actions that interact with the system.
-Moreover, the interaction activates a state transition of the Markov chain, and the state transition probabilities $p_{ij}$ can be dependent on the action.
-After the state transition, the agent receives a reward.
-The reward is dependent on which action was taken and on the state transition.
-The MDP is typically described with a 4-tuple $\left( \Ss, \As, \Rs, \Ps \right)$ where $\Ss$ is the state space, $\As$ is the action space, $\Ss$ is the reward space, $\Ps$ the space that defines the transition probabilities.
+
+The key element of an MDP is that the system is modeled as a Markov chain.
+The agent observes the current state $s \in \Ss$ and chooses an action $a$ from a set of possible actions $\As$, which is also known as the action space.
+In some cases, the possible actions are dependent on the current state.
+Therefore, state-specific action space is denoted as $\As_s \subseteq \As$, which used to emphasize the connection between state $s$ and the available actions. 
+The action activates a state transition of the Markov chain, and the state transition probabilities $\stprobs$ can be dependent on the action.
+The action dependent state transition probability for $s$, $s' \in \Ss$ and $a \in \As$ is denoted by 
+\begin{equation}\label{eq:mdp_st_prob}
+    \mathrm{T}(s, s', a) = \Pr{S_{k+1}=s' | S_{k}=s , A_k=a}
+\end{equation}
+where $A_k$ is the action taken at time step $k$.  
+After the state transition, the agent receives a scalar reward.
+The reward can be stochastic and the reward distribution can be dependent on which action was taken and on the state transition.
+The set of all possible rewards is a subset of real numbers $\Rs \subseteq \real$, and the subset $\Rs_{ss'}^a \subseteq \Rs$ is the set of state transition and action dependent rewards.
 The dynamics of an MDP can be summarized with a single probability distribution
 \begin{equation}\label{eq:MDP_probs}
     p(s', r | s, a) = \Pr{ S_{k+1}=s', R_{k+1}=r | S_k=s, A_k=a }.
 \end{equation}
-which is the probability that system changes from state $s \in \Ss$ to state $s' \in \Ss$ and agent receives immediate reward $r \in \Rs$ when action $a \in \As$ is taken.
-In general, the notation $X_{k}=x$ means that $x$ is the realized value for the random variable $X$ at time instant $k$.  
+which is the probability that system changes from state $s \in \Ss$ to state $s' \in \Ss$ after the action $a \in \As_s$ was taken and agent receives immediate reward $r \in \Rs_{ss'}^a$ at time step $k+1$.
 
-The objective of an agent is to collect as large rewards as possible.
-A MDP problem can last for finite of infinite number of steps and the number of the steps is called horizon.  
-Since an infinite horizon MDPs are considered here, the agent desires to maximize the sum of discounted future rewards.
-The sum of future rewards discounted with a discount factor $\lambda$ is defined as
+An MDP can last for a finite or infinite number of steps, and the number of the steps is called horizon.
+The objective of the agent is to maximize the sum of rewards on the given horizon.
+In an infinite horizon MDPs, the agent desires to maximize the sum of discounted future rewards.
+The sum of future rewards discounted with a discount factor $0 \leq \lambda < 1$ is defined as
 \begin{equation}\label{eq:discounted_sum}
     G_k = \sum_{i=0}^{\infty} \lambda^i R_{k + i + 1}
 \end{equation}
 where $R_{t+k+1}$ is the reward received from taking action $A_{t+k}$. 
+From the perspective of RL, theory for infinite horizon MDPs is more important \cite{Sutton2018}, thus rest of the chapter will concentrate on infinite horizon MDPs.
 
 In MDP it is assumed that the system state is fully observable.
 Therefore, the agent needs to find a policy $\pi(a | s)$ which gives the probability for taking action $a \in \As$ given the state $s \in \Ss$.
 The optimal policy is defined as
 \begin{equation}\label{eq:mdp_optimal_policy}
-    \pi^* = \arg\max_\pi\Epolicy{G_k | S_k}.
+    \pi^* = \arg\max_\pi\Epolicy{G_k | S_0}.
 \end{equation}
-which is the policy that gains the greatest expected discounted sum of rewards.
+which is the policy that achieves the greatest expected discounted sum of rewards.
 By the definitions \eqref{eq:discounted_sum} and \eqref{eq:mdp_optimal_policy}, the optimal policy would need to consider all the future actions.
 Such policies are called non-myopic policies.
 In comparison, a policy where the agent maximizes the immediate reward is called a myopic policy. 
 Typically, the myopic policies are suboptimal for $\lambda>0$.
 
-Since an optimal policy maximizes discounted sum of expected future rewards, a reasonable way to evaluate policy $\pi$ is to use a value function which is defined as follows
+Since an optimal policy maximizes the discounted sum of expected future rewards, a reasonable way to evaluate policy $\pi$ is to use the value function which is defined as follows
 \begin{equation} \label{eq:value}
     v_\pi(s) = \Epolicy{G_k | S_k=s}.
 \end{equation}
-The value function gives the expectation of the discounted rewards given the initial state $s$ which quantifies the quality of the state given the policy $\pi$.
-Moreover, the optimal policy $\pi^*$ has always greater or equal values for any state $s \in \Ss$ compared to any other policy $\pi$.
-Similarly, another metric that can measure the quality of any action $a \in \As$ given the state $s \in \Ss$ is defined as
+The value function gives the expectation of the discounted rewards given the initial state $s \in \Ss$ and the policy $\pi$.
+Moreover, the optimal policy $\pi^*$ has always greater or equal value for any state $s \in \Ss$ compared to any other policy $\pi$.
+Similarly, another function that can measure the quality of any action $a \in \As$ given the state $s \in \Ss$ is defined as
 \begin{equation}\label{eq:action_value}
     q_\pi(s, a) = \Epolicy{G_k | S_k=s, A_k=a},
 \end{equation}
 and it is called an action-value function.
-It is quite straightforward to prove that the value function \eqref{eq:value} can be expressed in a recursive form 
+It can be noted that value the $v_\pi(s)$ and the action-value $ q_\pi(s, a)$ are connected to each other through the equation  
+\begin{equation}
+ v_\pi(s) =  \sum_{a\in \As_s} \pi(a | s) q_\pi(s, a),
+\end{equation}
+in which the action-values are weighted by the probabilities of choosing the action.
+
+Lastly, it is quite straightforward to prove that the value function \eqref{eq:value} can be expressed in a recursive form 
 \begin{align}
     v_\pi(s) 
     &= \Epolicy{ \sum_{i=0}^{\infty} \lambda^i R_{k + i + 1} | S_k=s} \\
     &= \Epolicy{R_{k + 1} + \lambda \sum_{i=0}^{\infty} \lambda^i R_{k + i + 2} | S_k=s} \\
-    &= \sum_{a \in A} \pi(a | s) \sum_{s' \in S} \sum_{r \in R} p(s', r | s, a) \left[ r + \lambda v_\pi(s') \right]\label{eq:bellman},
+    &= \sum_{a \in \As_s} \pi(a | s) \sum_{s' \in \Ss} \sum_{r \in \Rs_{ss'}^a} p(s', r | s, a) \left[ r + \lambda v_\pi(s') \right]\label{eq:bellman},
 \end{align}
 where \eqref{eq:bellman} is called Bellman equation.
-The Bellman equation is the key for solving MDPs because it enables using recursion such as dynamic programming to calculate the values \eqref{eq:value} or action-values \eqref{eq:action_value}.
+Similarly, the Bellman equation for action-values can be expressed as 
+\begin{equation}\label{eq:bellman_action}
+     q_\pi(s, a) = \sum_{s' \in \Ss} \sum_{r \in \Rs_{ss'}^a} p(s', r | s, a) \left[ r + \lambda v_\pi(s') \right]
+\end{equation}
+The Bellman equation is the key for solving MDPs because it enables using recursion to calculate the values \eqref{eq:value} or action-values \eqref{eq:action_value} for example in the case of dynamic programming.
 
 
 \subsection{Partially observable Markov decision process} \label{sec:POMDP}
 
 
-A partially observable Markov decision process (POMDP) is an extension to MDP which was introduced in Section \ref{sec:MDP}. 
-The difference between the POMDP and the MDP is that the Markov chain state is not fully observable \cite{Krishnamurthy2016}.
-Moreover, a Markov chain that is not fully observable is called a hidden Markov model (HMM).
-In real-world systems, the state of the Markov chain is usually partially observable because sensors can contain noise or the observation does not contain full information about the state.
-The POMDP framework extends the MDP 4-tuple with observation space $\Os$ and observation probability space $\Ops$ such that a POMDP problem is described with a 6-tuple $(\Ss, \As, \Rs, \Ps, \Os, \Ops)$.
-The observation space describes all the observations that the agent can observe.
-Moreover, the observation probability $o(z|s, a) \in \Ops$ defines the probability of obtaining the observation $z \in \Os$ given the state $s \in \Ss$ and the action $a \in \As$.
-Thus, the agent can affect the observation probabilities in addition to the state transition probabilities. 
+A partially observable Markov decision process (POMDP) is an extension to the MDP framework. 
+The difference between an MDP and a POMDP is that the state of a Markov chain is not fully observable \cite{Krishnamurthy2016}.
+A Markov chain that is not fully observable is called a hidden Markov model (HMM).
+In real-world systems, state of a Markov chain is usually partially observable because sensors can contain noise or the observation does not contain the full information about the state.
 
-Generally, a policy that is used to address a POMDP problem is dependent on the complete history of the past actions and observations. 
-The history is called the information history.
-The information history until time instant $k$ is written as $I_k=\{A_0, O_0, A_1, O_1, ..., A_k, O_k\}$, where $A_k \in \As$ and $O_k \in \Os$ are the action and the observation at time instant $k$, respectively.
-It is possible to combine the information $I_k$ to form a belief state distribution $b(s)$ which indicates the probability of a Markov chain being on a state $s$.
-Thus, the policy can be written as $\pi(a | b)$, which is the probability of choosing the action $a$ given the belief state $b$.
-The belief state can be updated with an Bayesian update rule, which is written as follows
-\begin{equation}\label{eq:belief_state_update}
-    b_{k+1}(s) = \frac{o(z | s, a) \sum_{s'\in S} \Pr{s | s', a} b_k(s')}{\sum_{s'\in S, s'' \in S} \Pr{s'' | s', a} \Pr{z | s'', a)b_k(s')}}.
+The POMDP framework extends the MDP framework by introducing observation space $\Os$ which is set of all possible observations.
+An observation $z \in \Os$ is connected to state $s' \in \Ss$ and action $a \in \As$ by the observation probability
+\begin{equation}\label{eq:pomdp_obs_prob}
+    \Op(z | s', a) = \Pr{Z_{k+1}=z | S_{k+1}=s', A_k=a},
 \end{equation}
+which indicates that the probability of observing $z$ at time step $k+1$ is conditional to the action $a$ taken at time step $k$ and state of the system $s'$ at time step $k+1$.
+Thus, instead of observing the full state $S_{k+1}$ after an action, the agent obtains an observation which is conditioned on the full state.
+From Equation \eqref{eq:mdp_st_prob} and Equation \eqref{eq:pomdp_obs_prob}, it can be seen that in POMDP problem, the action can affect both observation and state transition probabilities.
+
+Generally, a policy that is used to address a POMDP problem is dependent on the complete history of past actions and observations. 
+The history is called the information history.
+The information history until time step $k$ is written as $I_k=\{A_0, Z_1, A_1, Z_2, ..., A_{k-1}, Z_{k}\}$, where $A_k \in \As$ and $Z_k \in \Os$ are the action and the observation at time step $k$, respectively.
+It is possible to utilize the information history $I_k$ to calculate the probability
+\begin{equation}
+    b_k(s) = \Pr{S_k=s|I_k}
+\end{equation}
+which is the probability of a Markov chain being on a state $s$ given the information history.
+At each time step $k$, the probabilities can be calculated for each state $s \in \Ss$, which is denoted as the belief state $b$.
+After taking action $a \in \As$ and observing observation $z \in \Os$, the belief state can be updated by Bayesian update rule
+\begin{align}
+    b_{k+1}(s') 
+    &= \Pr{S_{k+1}=s' | Z_{k+1}=z, A_k=a, I_k} \\
+    &= \frac
+        {\Pr{Z_{k+1}=z | S_{k+1}=s' , A_k=a, I_k} \Pr{S_{k+1}=s'| A_k=a, I_k}}
+        {\Pr{Z_{k+1}=z | A_k=a, I_k}} \\
+    &= \frac
+        {\Op(z, s', a) \sum_{s \in \Ss} \mathrm{T}(s, s', a) b_k(s)}
+        {\sum_{s''  \in \Ss}  \Op(z | s'', a) \sum_{s \in \Ss} \mathrm{T}(s, s'', a) b_k(s) }  \label{eq:belief_state_update}.
+\end{align}
+
+The number of belief states is infinite since the probabilities $b_k(s)$ are continuous.
 An approach to solve a POMDP is to formulate the problem as a continuous state MDP where the belief state $b$ is used as a state variable instead of using the state variable $s$.
+Thus, the policy can be written as $\pi(a | b)$, which is the probability of choosing the action $a$ given the belief state $b$.
 
 \subsection{Reinforcement learning} \label{sec:RL}
 
-Reinforcement learning (RL) is a method for learning to act in stochastic sequential decision-making problems without a model that describes the system dynamics \cite{Sutton2018}. 
-An RL problem is formulated as an MDP where the transition probabilities and reward distributions are unknown. 
-Thus, defining the state space, the action space, and the rewards are an essential part of formulating a problem as a reinforcement learning problem.
-The agent learns a suitable policy from received feedback. 
-Basically, the feedback contains an observation that is related to the state of the system and a reward that helps the agent to evaluate consequences for its actions given the observation history. 
+Reinforcement learning (RL) is a method for learning to act in stochastic sequential decision-making problems without a model that describes the system dynamics \cite{Sutton2018}.
+The algorithms used to solve RL problems are based on the MDP framework where the transition probabilities and reward distributions are unknown.
+Thus, identifying the state space, the action space, and the rewards is an essential part of formulating the problem at hand as a reinforcement learning problem.
+The learning is based on trial and error approach which is controlled through a reward signal.
+The agent independently improves its performance by reasonably probing different actions at different states to learn their consequences to the future rewards.
 The policy of the RL agent can be measured with value and action-value functions similarly as shown in Section \ref{sec:MDP}.
 
 The rewards for the RL agent are defined such that the objective is achieved by maximising the equation \eqref{eq:discounted_sum} \cite{Sutton2018}.
 For example, if RL is used to teach a robot to play chess, then positive reward should be given if the robot wins and otherwise no reward is given.
-Then, the value function \eqref{eq:value} indicates the probability of winning given the current game state.
+Then, the value function \eqref{eq:value} indicates the probability of winning given the current state of the game.
+In some cases it is more reasonable to use negative rewards.
+For instance, if the objective is to minimize the number of steps needed to get out of a maze, then negative reward is given for each step. 
 
-The MDP and POMDP theory in Section \ref{sec:MDP} and Section \ref{sec:POMDP} considered state and action spaces with finite cardinality. 
-To apply RL techniques for continuous state and action spaces, function approximators have been employed to approximate the value or action-value functions \cite{Sutton2018}. 
+The MDP and POMDP theory in Section \ref{sec:MDP} and Section \ref{sec:POMDP} considered state and action spaces with finite cardinality.
+To apply RL techniques for continuous or large state and action spaces, function approximators have been employed to approximate the value or action-value functions \cite{Sutton2018}. 
 Especially, deep neural networks have been widely adopted to solve RL problems with continuous state and action spaces in different application domains \cite{Zhang2018, Luong2018}.
 However, the training required to train deep RL agent can get quite intensive \cite{Irpan2018}.
 For RL problems that involve neural networks, the models are usually trained with simulations and then fine-tuned in the real environment.
@@ -495,11 +637,11 @@ For RL problems that involve neural networks, the models are usually trained wit
 \subsubsection{Exploration and exploitation}
 
 Exploration and exploitation is an essential concept in RL which allows the RL agent to improve the policy by simple trial-and-error method.
-Initially, the agent starts with no knowledge about the system dynamics meaning that the initial policy is random.
+Initially, the agent starts with no knowledge about the system dynamics meaning that the initial policy may be random.
 Therefore, the agent needs to utilize a policy for probing different actions that have unknown consequences.
 The probing is used to gain more knowledge about the dynamics, and the increased knowledge can be utilized to improve the policy.
 The actions that are taken to gain more knowledge are called exploration actions.
-Otherwise, the agent chooses the action that is believed to be the best action which is called exploitation.
+Otherwise, the agent is exploiting, which means that the agent chooses the action that is currently believed to be the best action.
 The dilemma of finding the balance between exploration and exploitation is called exploitation-exploitation trade-off.
 
 Widely used policy for balancing the exploration-exploitation trade-off is called \egreedy policy \cite{Sutton2018}.
@@ -510,7 +652,7 @@ Therefore, the policy can be written as follows
     a =
     \left\{
         \begin{array}{ll}
-            \arg\max_{a' \in A} q_\pi(s, a') & \text{with probability $1-\epsilon$}\\
+            \arg\max_{a' \in \As} q_\pi(s, a') & \text{with probability $1-\epsilon$}\\
             \text{random action} & \text{with probability $\epsilon$}.
         \end{array}
     \right.
@@ -543,26 +685,37 @@ The Bellman equation is solved iteratively by initializing the Q-values with arb
 
 \subsection{Target tracking algorithms} \label{sec:Tracking}
 
-The target kinematic state can be described as a continuous-valued stochastic process that evolves based on the target dynamics. 
-Radar is used to observe the target state, but the observations contain noise and only partial information, such as position and radial velocity, of the state is obtained. 
-Therefore, a target tracking algorithm is used to estimate the target state from observation history. 
-Typically, a mathematical model is utilized to attenuate noise from the measurements and estimate the present and predict future states.
-The most known models combine a motion model and a measurement model, which are known as state-space models \cite{RongLi2003}. 
-The motion model describes how the kinematic state evolves through time.
-In discrete-time, the motion model is expressed in the form of
+A kinematic state of a target can be described as a continuous-valued stochastic process that evolves based on the target dynamics.
+The kinematic state is typically explained by using differentials from position to acceleration.
+A monopulse radar provides an observation that can be processed to obtain the radar position and radial velocity.
+Thus, the observations are noisy and do not provide the full kinematic state.
+A target tracking algorithm can be used to estimate the target state from the observation history.
+Typically, a tracking algorithm is based on a statistical model which is utilized to attenuate noise from the measurements and to estimate the present and predict future states.
+Many typical models combine a motion model and a measurement model, which are known as state-space models \cite{RongLi2003}.
+The motion model describes how the kinematic state $\x$ evolves through time.
+In discrete time, the motion model is expressed in the form of
 \begin{equation}\label{eq:spm_motion}
-\xnext  = f(\x, \cinput) + \pnoise,
+    \xnext  = f(\x, \cinput) + \pnoise,
 \end{equation}
-where $\pnoise$ is a noise that describes uncertainty in the model.
-The measurement model describes the relationship between the target state and the observations. 
-Similar to the motion model, the discrete-time measurement model is written as follows,
+where $f(\x, \cinput)$ is a deterministic function, which is dependent on the previous state and control input $\cinput$. 
+The variable $\pnoise$ is a noise that describes the stochastic behaviour of the model.
+The measurement model is used to describe the relationship between the target state and the observation $\z$. 
+Similar to the motion model, the discrete time measurement model is written as follows,
 \begin{equation}\label{eq:spm_obs}
-\z = h(\x) + \onoise,
+    \z = h(\x) + \onoise,
 \end{equation}
-where $\onoise$ is the measurement noise.
+where $h(\z)$ maps the state to the observation, and $\onoise$ is the measurement noise.
 
-The form of the motion model can be approximated from physics, but especially the control-input $u_k$ and the statistics of $v_k$ are unknown for the observer.
-Therefore, different kinds of motion models have been developed to mimic the true target motion with certain accuracy \cite{RongLi2003}. In the higher level, the models can be divided into non-maneuvering and maneuvering models. Non-maneuvering motion means that the target velocity and elevation remains approximately constant. Otherwise, the target motion is considered to be maneuvering.
+The form of the motion model is based on physics of the problem. 
+However, the control input $\cinput$ and the statistics of $\onoise$ are unknown for the observer.
+Therefore, different kinds of motion models have been developed to mimic the true target motion with desired accuracy \cite{RongLi2003}. 
+On a higher level, the models can be divided into non-maneuvering and maneuvering models. 
+Non-maneuvering motion means that the target velocity and elevation remain approximately constant. 
+Otherwise, the target motion is considered to be maneuvering.
+
+\subsubsection{Target models} \label{sec:target_models}
+
+TBD.
 
 \subsubsection{Kalman filtering}
 
@@ -570,25 +723,26 @@ Therefore, different kinds of motion models have been developed to mimic the tru
     \centering
     \includegraphics[width=\textwidth]{figures/KF.pdf}
     \caption{The Kalman filtering phases.
-    First, the predictions of the state $\xprior$ and the error covariance $\priorecov$ are calculated.
-    The predictions can be used to control the sensor, that affect observation probability covariance matrix $\ocov$ of the observation $\z$.
-    After $\z$ has been observed, the predictions can be corrected by utilizing the Kalman gain $\gain$.
+    First, \prior state estimate $\xprior$ and error covariance $\priorecov$ are calculated.
+    The \prior estimates can be used to control the sensor parameters, that affect observation covariance matrix $\ocov$.
+    After the measurement $\z$ has been observed, the \prior estimates can be corrected by utilizing the Kalman gain $\gain$ to get the \post estimates.
     }
     \label{fig:KF}
 \end{figure}
 
-Kalman filtering is an optimal state estimation approach in case when the system can be described as a linear state-space system with additive Gaussian noise \cite{Krishnamurthy2016}.
-The discrete-time linear state-space model is expressed using linear combinations as follows 
+Kalman filtering is an state estimation algorithm for linear state-space systems.
+The discrete time linear state-space model is expressed using linear combinations as follows 
 \begin{align}
     \xnext &= \stmodel \x + \cimodel \cinput + \pnoise \label{eq:lsp_state} \\
     \z &= \omodel \x + \onoise \label{eq:lsp_obs}
 \end{align}
 where $\stmodel$ is state transition matrix, $\cimodel$ is control-input matrix, $ \omodel $ is observation matrix. 
 The noise statistics are described with zero mean Gaussian distributions $\pnoise \sim \normal{0}{\pcov}$ and $\onoise \sim \normal{0}{\ocov}$, where $\pcov$ is the process noise covariance matrix and $\ocov$ is the measurement noise covariance matrix.
+Kalman filtering is optimal when the state-space model matches the real system, the noises are Gaussian and uncorrelated, and the noise covariances are known \cite{Krishnamurthy2016}.
 
 The Kalman filtering can be divided into two phases as shown in the Figure \ref{fig:KF}.
 In the first phase, the next state is predicted from the last estimate using the equation \eqref{eq:lsp_state}.
-In addition, the error covariance matrix $\ecov$, that estimates the accuracy on the estimates $\xest$, is updated based on the process noise and on the previous estimated posterior error covariance matrix.
+In addition, the prediction error covariance matrix $\priorecov$, which estimates the accuracy of the estimates $\xprior$, is updated based on the process noise and on the previous estimated posterior error covariance matrix.
 Therefore, the predict phase can be summarized with two equations as follows,
 \begin{subequations}
 \label{eq:kf_predict}
@@ -597,13 +751,13 @@ Therefore, the predict phase can be summarized with two equations as follows,
     \priorecov &= \stmodel \lastecov \stmodel^T + \pcov \label{eq:kf_prior_error_cov},
 \end{align}
 \end{subequations}
-where $\priorecov$ is the predicted prior error covariance matrix.
+where $\priorecov$ is the \prior error covariance matrix.
 
 In the second phase, a measurement is obtained and the estimates can be updated. 
-In other words, the predictions \eqref{eq:kf_pred_x} and \eqref{eq:kf_prior_error_cov} are corrected based on the obtained measurement and Kalman gain.
-The update phase starts by calculating a residual between the observation $z$ and the predicted observation.
-The residual is called pre-fit innovation and it is utilized to correct the prior estimate $\xprior$.
-A Kalman gain defines how much the pre-fit innovation is weighted to calculate the posterior estimate $\xpost$.
+In other words, the \prior estimates \eqref{eq:kf_pred_x} and \eqref{eq:kf_prior_error_cov} are corrected based on the obtained measurement $\z$ and the Kalman gain $\gain$.
+The update phase starts by calculating a residual between the observation $\z$ and the predicted observation $\zhat = \omodel \xprior$.
+The residual is called innovation and it is utilized to correct the \prior estimate $\xprior$.
+The Kalman gain defines how much the innovation is weighted to calculate the \post estimate $\xpost$.
 The Kalman gain is found by minimizing mean squre error (MSE) between $\x$ and $\xpost$.
 As a result, following update equations are obtained
 \begin{subequations}
@@ -614,11 +768,10 @@ As a result, following update equations are obtained
     \gain &= \priorecov \omodel^T \inv{\innocov} \label{eq:kf_gain}\\ 
     \xpost &= \xprior + \gain \prefitinnov \label{eq:kf_update_x}\\ 
     \postecov &= \left( \eye - \gain \omodel \right) \priorecov  \label{eq:kf_post_error_cov}\\
-    \postfitinnov &= \z - \omodel \xpost \label{eq:kf_postfit_innov}
 \end{align}
 \end{subequations}
-where $S_k$ is the covariance on the pre-fit innovation $\prefitinnov$. 
-Even if the notation in equations \eqref{eq:kf_predict} and \eqref{eq:kf_update} suggests to use prior or posterior estimates on the previous time step, multiple predictions can be made sequentially or multiple updates can be made at each time interval.
+where $\innocov$ is the covariance matrix of the innovation $\prefitinnov$. 
+Even if the notation in equations \eqref{eq:kf_predict} and \eqref{eq:kf_update} suggests to use \prior or \post estimates on the previous time step, multiple predictions can be made sequentially or multiple updates can be made at each time interval.
 
 
 
@@ -629,24 +782,22 @@ Even if the notation in equations \eqref{eq:kf_predict} and \eqref{eq:kf_update}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/IMM_figure.pdf}
     \caption{
-    The four steps in IMM estimation. 
-    The figure is reprinted from \cite{BarShalom2001}.}
+    The four steps in IMM estimation.}
     \label{fig:IMM}
 \end{figure}
 
 In a realistic scenario, the target motion could obey different modes, and the changes between the modes are controlled by an external agent, for example by a human.
-Such systems are called hybrid systems, which are characterized by a continuous-time stochastic process, such as \eqref{eq:spm_motion}, that describes the motion model for each mode and by a discrete-time stochastic process that describes the evolution of the modes \cite{Mazor1998}.
+Such systems are called hybrid systems, which are characterized by a continuous-time stochastic process, such as \eqref{eq:spm_motion}, that describes the motion model for each mode and by a discrete time stochastic process that describes the evolution of the modes \cite{Mazor1998}.
 To track the state of a hybrid system effectively, an approach utilizing multiple motion models has emerged \cite{BarShalom2001}.
-Moreover, the approach assumes that the target motion could be modeled approximately by a finite number of models.
+Moreover, the approach assumes that the target motion could be modeled approximately by a finite number of models associated with different target maneuvers.
 The underlying mode is identified by a mode matched filter which calculates the probability of each mode given the past observations.
 For an optimal approach, the number of mode matched filters would grow exponentially in the function of time, even if the modes are switched based on an HMM \cite{BarShalom2001}.
-An Interacting Multiple Model (IMM) estimator is a specific suboptimal hybrid filter that achieves great trade-off between the performance and the computational complexity \cite{Mazor1998}.
+An Interacting Multiple Model (IMM) estimator is a specific suboptimal hybrid filter that achieves a great trade-off between the performance and the computational complexity \cite{Mazor1998}.
 
-An IMM estimator assumes that the target motion at each time instant can be expressed by one of the models in the finite set $\mathcal{M} = \{ m_i \}_{i=1}^M$, where $M$ is the number of the models.
+An IMM estimator assumes that the target motion at each time step can be expressed by one of the models in the finite set $\mathcal{M} = \{ m_i \}_{i=1}^\nmodels$, where $\nmodels$ is the number of the models.
 The switches between the modes is described by an HMM, and the state transition probabilities of the HMM are assumed to be known.
 However, in practical scenarios, the modes and the transition probabilities are considered as design parameters \cite{Simeonova2002}.
-Given $Z_k$ which is the observation sequence through time $k$, the posterior probability for model $m_i$ to be in effect at time instant $k$ is written as $\Pr{m_i | Z_k} = \mu^i_{k}$.
-
+Given $Z_k$ which is the observation sequence through time $k$, the posterior probability for model $m_i$ to be in effect at time step $k$ is written as $\Pr{M_k=m_i | Z_k} = \modeprob$, where $M_k$ denotes to model in effect at time step $k$.
 
 The IMM estimator can be summarized with four steps that are shown in Figure \ref{fig:IMM}.
 The steps are mixing, filtering, mode probability update, and state and covariance combination. 
@@ -659,8 +810,12 @@ The steps are further implemented as follows.
 % ---------------------------------------------------------
 \item[Mixing.]
 
-The mixing starts by calculating probability $\Pr{m_j(k-1)|m_i(k), Z_{k-1}}$, which is the probability that mode $m_j$ was active at last time step if the current active mode is $m_i$ given the past observations.
-The probability is called mixing probability, and the equation for calculating it is written as,
+The mixing starts by calculating the probability of mode $m_j$ being active at previous time step if the current active mode is $m_i$ given the past observations.
+In other words, the probability, called mixing probability, is calculated from the following conditional probability
+\begin{equation}\label{eq:mixing_conditional_prob}
+    \lastmxprobs = \Pr{M_{k-1}=m_j|M_{k}=m_i, Z_{k-1}}.
+\end{equation}
+The Equation \eqref{eq:mixing_conditional_prob} can be simplified into form,
 \begin{equation}
     \lastmxprobs = \frac{1}{\mxnorm} p_{ji} \mu^j_{k-1} \label{eq:imm_mx_probs}
 \end{equation}
@@ -691,7 +846,7 @@ In addition, $\ecovmxinit$ is defined as follows
 % ---------------------------------------------------------
 \item[Filtering.]
 
-In the filtering phase, the likelihood of the observation given the model $m_i \in \mathcal{M}$ is calculated  $\Lambda^i_k = \Pr{\z | m_i(k), Z_{k-1}} $.
+In the filtering phase, the likelihood of the observation given the model $m_i \in \mathcal{M}$ is calculated  $\modeobsprob = \Pr{\z | M_k = m_i, Z_{k-1}} $.
 The conditioning is approximated by assuming that $\xmxinit$ and $\ecovmxinit$ can be utilized to condition the filters before propagating the filtering equations.
 Therefore, the likelihood is obtained from the following relation
 \begin{equation}
@@ -715,17 +870,17 @@ where
 is a normalization constant.
 
 % ---------------------------------------------------------
-% State and covariance combination
+% State and covariance fusion
 % ---------------------------------------------------------
-\item[State and covariance combination.]
+\item[State and covariance fusion.]
 Lastly, the posterior estimates $\xpost$ and $\postecov$ can be updated by combining mode probabilities and posterior estimates calculated by each filter.
 Thus, the estimates are calculated as follows
 \begin{subequations}
 \label{eq:imm_estimate}
-\begin{equation}
+\begin{equation}\label{eq:imm_fusion_x}
     \xpost = \sum_{i=1}^M \mu_k^i \modexpost
 \end{equation}
-\begin{equation}
+\begin{equation}\label{eq:imm_fusion_P}
     \postecov = \sum_{i=1}^M \mu_k^i 
     \left[ 
         \modecovpost + \left( \modexpost - \xpost \right) \transpose{\left( \modexpost - \xpost \right)}
@@ -772,7 +927,7 @@ As a consequence, Wintenby \etal proposed in \cite{Wintenby2006} a hierarchical 
 The approach divides the task-based TBM problem into a slow-time-scale and fast-time-scale scheduling problems.
 
 In the rule-based TBM, deadlines for the tasks are calculated based on certain rules, and a low-level scheduling algorithm arranges the tasks to the timeline.
-Typically, fixed or adaptive revisit intervals are used, and the remaining time budget can be used for other radar tasks  \cite{Keuk1975, Cohen1986, Gardner1988, Munu1992, vanKeuk1993, Watson1993, Daeipour1994, Shin1995, Benoudnine2006, ChengTing2007, Baek2010, Charlish2015, Mofrad2017, Masoumi-Ganjgah2017, Christiansen2018, Pilte2018}.
+Typically, fixed or adaptive revisit intervals are used, and the remaining time budget can be used for other radar tasks  \cite{Keuk1975, Cohen1986, Gardner1988, Munu1992, vanKeuk1993, Watson1993, Daeipour1994, Shin1995, Benoudnine2006, ChengTing2007, Baek2010, Charlish2015, Mofrad2017, MasoumiGanjgah2017, Christiansen2018, Pilte2018}.
 The adaptive revisit interval algorithms can be utilized to minimize the required time budget if the low-level scheduler can schedule the actual track updates close to the desired revisit interval.
 Therefore, the rule-based algorithms are heavily dependent on the scheduling algorithm and reasonable revisit intervals.
 
@@ -1031,7 +1186,7 @@ The revisit interval was obtained with a simplified rule
 \end{equation}
 where $\mucv$ and $\muca$ are the probabilities for constant velocity and constant acceleration models, respectively.
 
-Masoumi-Ganjgah \etal proposed in \cite{Masoumi-Ganjgah2017} an algorithm which is closely related to algorithm proposed in \cite{Benoudnine2006}.
+Masoumi-Ganjgah \etal proposed in \cite{MasoumiGanjgah2017} an algorithm which is closely related to algorithm proposed in \cite{Benoudnine2006}.
 An IMM estimator with three different maneuver models was used, and parameters $\tmax$ and $\tmin$ was defined for the models.
 The models was designed to have different maneuvering levels starting from low maneuvering model to high maneuvering model.
 Also, the revisit interval was adjusted differently than in \cite{Benoudnine2006}.
@@ -1055,19 +1210,19 @@ The approach approximates the non-myopic objective by calculating task deadlines
 \newpage
 \section{Reinforcement learning approach for revisit interval selection}
 
-The optimal POMDP approach for TBM budget management was discussed to be intractable with conventional algorithms.
+The optimal POMDP approach for TBM is intractable with conventional algorithms, as was discussed in Chapter \ref{sec:literature_review}.
 Reinforcement learning techniques could be used to find an approximate solution.
 However, the observations and the actions are non-trivial to present for the reinforcement learning agent.
-For example, in multitarget tracking the observation could be combination between belief states of each target, and the action could be to choose which tracks will be updated next.
-The number of actions and the dimension of the observation are dependent on the number of targets.
-Here the complexity of the observation and the action presentation problem can be avoided by utilizing some of the relaxations that were introduced in Chapter \ref{sec:literature_review}.
-Especially, a reinforcement learning agent is trained to select suitable revisit interval in order to maximize the long-term reward function.  
+For example, in multitarget tracking the observation could be a combination of belief states of each target, and the action could be to choose which tracks will be updated next.
+The number of actions and the dimension of the observation depend on the number of targets.
+In this case, the complexity of the observation and the action presentation problem can be avoided by utilizing some of the relaxations that were introduced in Chapter \ref{sec:literature_review}.
+One approach is to train a reinforcement learning agent to select suitable revisit interval for each tracking task separately in order to approximately maximize the long-term reward function of the optimal POMDP formulation.
 
 The existing research on adaptive revisit interval algorithms was reviewed in Section \ref{sec:tbm_ri}.
 It was identified that the existing algorithms control the revisit interval based on the innovation or the uncertainty on the estimates.
-The residual based methods are less dependent on the target model since the average residuals are kept near the standard deviation of noise using a recursive rule \eqref{eq:update_resid}.
-The covariance-matrix-based algorithms are less robust for model inaccuracies because the dynamic model is used to calculate the intervals.
-However, the latter approach is more transparent since the prediction error covariance estimates are kept below a certain threshold.
+The covariance-matrix-based algorithms are less robust for model inaccuracies than residual based methods because the dynamic model is used to calculate the intervals.
+The residual based methods are not dependent on the target model since the average residuals are maintained close to the standard deviation of noise using the recursive rule \eqref{eq:update_resid}.
+However, the former approach is more transparent since the prediction error covariance estimates are kept below a certain threshold.
 
 The performance of an adaptive revisit interval algorithm is usually quantified by the achieved accuracy in the state estimates.
 Especially, the position estimate is important for pointing the radar beam in the correct direction.
@@ -1084,21 +1239,21 @@ Here a RL approach is proposed for controlling the revisit interval of the track
 The RL agent is capable of learning directly from the experience such that 
 system model is not needed to optimize the employed reward function.
 Moreover, the approach should be modifiable to any tracking filter by defining suitable observation and reward space.
-The motivation for using RL is to learn close to optimal policy which can adapt to any tracking system, allows learning a policy for learning non-myopic objectives as in \cite{Charlish2015}, and enables using observation data with non-trivial connection to the revisit interval.
+The motivation for using RL is to learn near-optimal policy which can adapt to any tracking system, allows learning a policy for learning non-myopic objectives as in \cite{Charlish2015}, and enables using observation data with non-trivial connection to the revisit interval.
 The Section \ref{seq:system_description} starts by describing the employed radar system such that it is possible to identify the actions, observations and rewards for the RL formulation.
 Thereafter, the RL formulation is described in Section \ref{sec:RL_formulation} 
 
 
-\subsection{The system description} \label{seq:system_description}
+\subsection{System description} \label{seq:system_description}
 
 \textcolor{red}{Content of this section is still in progress. It needs to be decided how much information is essential to put here. In addition, should the system be \textbf{exactly} like SAABs system or can it be modified etc. (general solution vs custom solution). What is essential information considering this thesis?}
 
-The proposed RL approach is designed for an air surveillance radar that is capable to operate multiple missions concurrently.
+The proposed RL approach is designed for an air surveillance radar that is capable of carrying out multiple tasks concurrently.
 In other words, the radar is a multifunction radar with AESA capabilities.
 The radar is operating in challenging warfare scenarios such that it needs to be capable of detecting small targets in strong clutter and high-velocity targets.
 Moreover, resistance to electronic countermeasures should be considered. 
-Those requirements are concerned in each subsystem of the radar. 
-Furthermore, the requirements should not be dismissed when the revisit interval selection algorithm is proposed.
+These requirements are important in each subsystem of the radar. 
+All these requirements need to be taken into account when designing the revisit interval selection algorithm.
 
 The target tracking algorithm is assumed to be as given which takes into account the aforementioned requirements. 
 The considered tracker is a multiple hypothesis tracker (MHT) coupled with an IMM estimator. 
@@ -1107,13 +1262,13 @@ However, tracking multiple targets creates a problem on how to associate the obs
 The MHT solves the data association problem by associating all observations and tracks together combined with track likelihoods \cite{Blackman2004}. 
 A track hypothesis is removed until a certain stopping rule is met. 
 
-As the requirements are known, it is possible to consider how to formulate the revisit interval selection as an RL problem. The problem is initially approached by relaxing some of the requirements. However, it should be considered that the initial approach is expandable to a more general solution. 
+With the given requirements it is possible to formulate the revisit interval selection as an RL problem. The problem is initially approached by relaxing some of the requirements. However, it should be considered that the initial approach is expandable to a more general solution. 
 
 
 What are the operational requirements?
 
 \begin{itemize}
-    \item Multimission radar
+    \item Multi-mission radar
     \item General detection and tracking of air targets
     \item Capability of detection and tracking of small targets in strong clutter
     \item Capability of detecting and tracking of high velocity targets
@@ -1146,10 +1301,10 @@ The tracker is implemented as an IMM estimator based on Kalman filters due to it
     \item RCS, both for the hull and the rotors if applicable
 \end{itemize}
 
-\subsection{Formulating the revisit interval selection as RL problem}\label{sec:RL_formulation}
+\subsection{RL formulation}\label{sec:RL_formulation}
 
 The reinforcement learning formulation starts by identifying the actions, observations and rewards.
-It is essential to examine the observations if they fulfill the Markov property of Equation \eqref{eq:markov_property}.
+It is essential to examine if the observations fulfill the Markov property of \eqref{eq:markov_property}.
 If the Markov property is violated, next it should be determined if the problem is POMDP, and if the observation can be presented in a convenient belief state presentation.
 Moreover, the belief state presentation can be used to solve POMDP problem as a continuous state MDP as described in Section \ref{sec:POMDP}.
 In terms of utilizing strengths of RL approach, the downside of POMDP problems is that the presentation of the belief state typically requires a system model which increases the demand for human effort instead of letting the agent to learn by itself.
@@ -1176,12 +1331,13 @@ The workflow of the agent is described as follows,
     \item Return to step \ref{enum:action_predict} at time instant $t+t_r$.
 \end{enumerate}
 All the steps except step \ref{enum:action_rl_agent} are controlled by conventional algorithms such as tracking filters.
-The RL algorithm is only targeted to control the revisit interval parameter which a smaller part of the whole workflow.
+The RL algorithm is tasked with controlling the revisit interval parameter.
+
 There are two different ways for the agent to control the revisit interval.
 The revisit interval could be selected directly from a set of intervals.
-This approach will be referred as direct selections.
+This approach will be referred as direct selection.
 Another approach could either decrease or increase the revisit interval with certain delta values.
-This approach will be referred as delta selections.
+This approach will be referred as delta selection.
 Both of the approaches could have a continuous or a discrete action space.
 However, here only the discrete action spaces are considered.
 
@@ -1191,27 +1347,27 @@ The parameters $\tmax$ and $\tmin$ can be derived from the employed dynamic mode
 An example of an arbitrary action space is $\{0.5, 1.0, 1.5, 2.0, 2.5\}$, where $\tmax=2.5$, $\tmin=0.5$ and size of the action space is $5$.
 In general form, the action space is defined as follows
 \begin{equation}\label{eq:as_direct}
-    \As_\text{D} \coloneqq \{ \frac{n \tmax + (N-n-1) \tmin}{N-1} \}_{n=0}^{N-1},    
+    \Asdir \coloneqq \{ \frac{n \tmax + (\nacts-n-1) \tmin}{\nacts-1} \}_{n=0}^{\nacts-1},    
 \end{equation}
-where $N$ is the size of the action space.
-The parameter $N$ could be interpreted as a hyperparameter.
-Lower $N$ enables faster learning since there are less actions to be explored.
-However, larger $N$ may enable higher performance since larger variety of revisit intervals could be used.
+where $\nacts$ is the size of the action space.
+The parameter $\nacts$ could be interpreted as a hyperparameter.
+Lower $\nacts$ enables faster learning since there are less actions to be explored.
+However, larger $\nacts$ may enable higher performance since larger variety of revisit intervals could be used.
 
-The delta selections could be defined such that equal number of decreasing or increasing delta values are defined.
+The delta selection could be defined such that equal number of decreasing or increasing delta values are defined.
 Moreover, the deltas could be spaced uniformly as in \eqref{eq:as_direct}.
-The maximum increase or decrease delta value is defined as a parameter $\deltalim$, which should be chosen along with the parameter $N$ to achieve sufficiently large deltas with satisfactory resolution.
-An arbitrary action space for delta selections could be for example $\{ -1.0, -0.5, 0, 0.5, 1.0 \}$, where $\deltalim=1$ and $N=5$.
+The maximum increase or decrease delta value is defined as a parameter $\deltalim$, which should be chosen along with the parameter $\nacts$ to achieve sufficiently large deltas with satisfactory resolution.
+An action space for delta selection could be for example $\{ -1.0, -0.5, 0, 0.5, 1.0 \}$, where $\deltalim=1$ and $L=5$.
 The general form for the action space can be defined as follows
 \begin{equation}\label{eq:as_delta}
-    \As_\Delta \coloneqq \{ \frac{\deltalim \left( 2 n - N + 1 \right)}{N-1} \}_{n=0}^{N-1},
+    \Asdelta \coloneqq \{ \frac{\deltalim \left( 2 n - \nacts + 1 \right)}{\nacts-1} \}_{n=0}^{\nacts-1},
 \end{equation}
-where $N$ should be positive odd number.
-In opposite to the direct selections, defining $\tmax$ and $\tmin$ is not required, which enables the agent to learn suitable limits for revisit interval values.
+where $\nacts$ should be positive odd number.
+Contrary to the direct selection, defining $\tmax$ and $\tmin$ is not required, which enables the agent to learn suitable limits for revisit interval values.
 However, the parameter $\tmin$ can be dependent on the radar parameters. 
 For example, $\tmin$ should be larger or equal than the dwell time $\tau_d$.
-Compared to the direct selections, a reaction speed to varying revisit interval requirements can be slower.
-The reaction speed is dependent on how $\deltalim$ and $N$ are defined.
+Compared to the direct selection, a reaction speed to varying revisit interval requirements can be slower.
+The reaction speed is dependent on how $\deltalim$ and $\nacts$ are defined.
 To address the aforementioned problem, it could be beneficial to define the delta values using a non-linear scale instead of the linear scale.
 
 \subsubsection{Reward} \label{sec:rewards}
@@ -1241,9 +1397,9 @@ Obviously, rewards related to the probability of detection could be used in the 
 Moreover in cases where myopic policy is optimal, system model and rewards are fully known, conventional optimization algorithms are more efficient in finding the optimal action.
 
 The radar is operating as a part of a larger system where the radar provides a snapshot of target position and radial velocity.
-Since the observations does not contain the complete state information, the belief state is used.
+Since the observations do not contain the complete state information, the belief state is used.
 The belief state is described by probability distributions that define the known information about the state variables.
-In Section \ref{sec:Tracking}, the state variables of a target was modeled as Gaussian random variables which can be described by mean and covariance.
+In Section \ref{sec:Tracking}, the state variables of a target were modeled as Gaussian random variables which can be described by mean and covariance.
 Other systems, utilizing the belief state given by the radar, can set Quality of Service (QoS) requirements on the certainty of the random variables.
 Typically, the quality of the predictive error covariance matrix needs to be maintained above certain threshold as it was discussed in Section \ref{sec:error_covariance_methods}.
 
@@ -1281,7 +1437,7 @@ Here $\uqos(b, a)$ is defined as follows
     &= \frac{\int_{t_0}^{t_0+t_r} \tr{\priorecovth} dt}{\int_{t_0}^{t_0+t_r}  g(\bm{\Sigma}_t) dt} \\
     &\approx \frac{\tr{\priorecovth} t_r}{\sum_{n=1}^{N} g(\bm{\Sigma}_{t+n\Delta_t}) \Delta_t} \label{eq:penalty_approximation}
 \end{align}
-where $N=\frac{t_r}{\Delta_t}$, $\Delta_t$ is an arbitrary processing sampling rate, $\priorecovth$ is a error covariance matrix given by the QoS requirement, and the function $g(\bm{\Sigma}_t)$ is defined as follows
+where $N=\frac{t_r}{\Delta_t}$, $\Delta_t$ is an arbitrary processing sampling interval, $\priorecovth$ is a error covariance matrix given by the QoS requirement, and the function $g(\bm{\Sigma}_t)$ is defined as follows
 \begin{equation}
     g(\bm{\Sigma}_t) =
     \left\{
@@ -1291,7 +1447,7 @@ where $N=\frac{t_r}{\Delta_t}$, $\Delta_t$ is an arbitrary processing sampling r
     \end{array}
     \right.
 \end{equation}
-The equation \eqref{eq:penalty_approximation} approximates the integral such that it is possible to calculate efficiently.
+The equation \eqref{eq:penalty_approximation} approximates the integral making its efficient calculation possible.
 
 The reward function \eqref{eq:reward} defined similarly as in \cite{Charlish2015}.
 However, $n$ is considered to be function of $t_r$ as in \cite{vanKeuk1993}, the possibility of a track loss is included, and $\uqos$ is defined differently.
@@ -1302,7 +1458,7 @@ The non-myopic objective \eqref{eq:discounted_sum} enables the RL approach to se
 \subsubsection{States and observations}
 
 In Chapter $\ref{sec:MDP}$ it was briefly discussed what is the state in a Markov decision process.
-The state describes the memoryless operation point of the system that is needed to know before taking an action.
+The state describes the memoryless operation point of the system that has to be known before taking an action.
 In case of revisit interval selection, it is not trivial to define what is the actual state of the system.
 One way to approach this problem is to identify an environment state and an agent state.
 The environment state describes all the information that is needed to determine how the environment responds to actions of the agent.
@@ -1312,22 +1468,22 @@ In case where target states are described as hybrid systems, the environment sta
 The environment state is extracted by using a tracking filter such as IMM estimator.
 The agent can affect to the sampling time instances but the actual target trajectories are assumed to be decoupled of the agent actions.
 
-The agent can not observe the environment state directly, which is the reason for using the radar in the first place.
+The agent cannot observe the environment state directly, which is the reason for using the radar in the first place.
 The agent state is related to the tracking filter and to the requirements set for the tracker.
 In other words, the state is all the available information that is relevant for maximizing the reward function \eqref{eq:reward}.
 The reward function was dependent on the tracking load, tracking losses, and QoS requirements.
 The tracking load is dependent on how predictable the target state is.
 If the tracking filter is optimal with correct model parameters, predictability of the target state is fully determined by the covariance matrix.
-Therefore for a multiple model filter, $\modecovpost$, $\modexpost$ and $\mu_k^i$ for each more $i \in \{1, ..., M\}$ would be all the information needed to present the state.
+Therefore for a multiple model filter, $\modecovpost$, $\modexpost$ and $\mu_k^i$ would be all the information needed to present the state, $i \in \{1, ..., M\}$ is the index of the mode.
 
-In another case, where the filter is not optimal or the models are not accurate, innovation sequence is the only source to observe the real performance of the tracking filter.
+In the case that the filter is not optimal or the models are not accurate, innovation sequence is the only source to observe the real performance of the tracking filter.
 The real performance of the tracking filter is reflected in the reward function as increasing tracking load and higher probability of tracking loss.
 Therefore, innovation sequence should be utilized somehow to allow agent to prevent the increased tracking loss or the increased probability of losing track.
 In particular, the expectation
 \begin{equation} \label{eq:residual_expectation}
-    \E{\xest - \z} = \xest - \E{\z} = \xest - \x
+    \E{\xprior - \z} = \xprior - \E{\z} = \xprior - \x
 \end{equation}
-could be interpreted as a state of the filter which is the residual between estimated state and the true state.
+could be interpreted as a state of the filter which is the residual between \prior state estimate and the true state.
 Unfortunately, the state is not fully observable and the tracking filter is already trying to minimize \eqref{eq:residual_expectation} in terms of MSE.
 However, the innovation sequence can be used to detect if the tracking filter is approximately functioning as intended.
 Especially, the innovation covariance is can be calculated by Equation \eqref{eq:kf_innov_cov}.
@@ -1339,7 +1495,7 @@ where $\priorecov$ is replaced by the error covariance from the QoS requirement 
 The innovation covariance matrix can be decomposed by a eigenvalue decomposition into rotation component $\vec{U}$ and scaling component $\bm{\Omega}$.   
 Thus, the measurement can be normalized to have unit covariance as follows 
 \begin{equation}\label{eq:innov_norm}
-    \tilde{\vec{y}}_n = \bm{\Omega}^{-\frac{1}{2}} \vec{U}\prefitinnov.
+    \tilde{\vec{y}}_n = \bm{\Omega}^{-\frac{1}{2}} \inv{\vec{U}}\prefitinnov.
 \end{equation}
 In addition, the distance in the normalized space called Mahalanobis distance can be calculated as follows
 \begin{equation}\label{eq:mahalanobis}
@@ -1378,7 +1534,144 @@ The simulation loop is implemented as follows
 The loop is ran as long as the defined time horizon is reached in case when no track loss is experienced.
 For simplicity, the algorithms are ran in two dimensional space instead in three dimensional space.
 
-\subsection{Measurement model}
+\subsection{Target trajectories}
+
+The target trajectories were generated by using Sensor Fusion Toolbox by 2019a MathWorks.
+More information about the initial benchmark problem can be found from \cite{Blair1998}. 
+For the sake of simplicity, the trajectory dimension is downsized from three dimensional (3D) space to two dimensional (2D) space.
+The 2D benchmark trajectory is shown in the figure below.
+\begin{figure}
+    \centering
+    \includegraphics{figures/benchmark/trajectories.pdf}
+    \caption{Six different target trajectories. The trajectory starts from "x" and ends to "o".}
+    \label{fig:benchmark_trajectories}
+\end{figure}
+
+
+\subsection{IMM estimator configuration}
+
+\newcommand{\diag}[1]{\text{diag}\left\{ #1 \right\}}
+
+The IMM estimator is designed to work effectively in various different maneuvering scenarios.
+For the sake of simplicity, the target and measurement models are chosen to be applicable for linear Kalman filters.
+The IMM estimator has two Kalman filters configured with the following target models: 
+\begin{enumerate}
+    \item discrete white noise acceleration (DWNA) model, and
+    \item discrete Wiener process acceleration (DWPA) model \cite{BarShalom2001}.
+\end{enumerate}
+Both of the target models are based on the following equation 
+\begin{equation}
+    \vec{x}_{k+1} = \mathbf{F}_k \vec{x}_k + \vec{g} w_k
+\end{equation}
+where $\vec{g}$ is a vector and $w_k \in \normal{0}{\sigma_p^2}$ a random variable with zero mean and variance of $\sigma_p^2$.   
+The DWNA model is used to model the target movement when the target is moving with nearly constant velocity.
+Such a model is also known as constant velocity (CV) model.
+On the other hand, DWPA model can handle the situations where the accelerations may last for a longer period of time. 
+Typically, the model is denoted as a constant acceleration (CA) model.
+
+\subsubsection{State transition models}
+\label{sec:imm_st_models}
+
+In the following equations the notation for time step $k$ is omitted and superscripts $1$ and $2$ denote CV and CA models, respectively. In addition, notation $\dot{x}$ is used to denote the first order derivative $\frac{\partial x}{\partial t}$, and similarly $\ddot{x}=\frac{\partial^2 x}{\partial t^2}$ is the second order derivative.
+The state of the CV model in a two dimensional space is expressed as follows
+\begin{equation}\label{eq:x_mode1}
+    \hat{\mathbf{x}}_1 =
+        \transpose{
+        \begin{pmatrix}
+            x & \dot{x} & y & \dot{y}
+    \end{pmatrix}},
+\end{equation}
+where $x$ and $y$ are target coordinates along x and y axes. 
+The state transitions along each coordinate are decoupled.
+In one dimensional space the state transition matrix is defined as follows
+\begin{equation}\label{eq:f_mode1}
+    \vec{f}_1 =
+    \begin{pmatrix}
+        1 & \dt \\
+        0 & 1  \\
+    \end{pmatrix},
+\end{equation}
+where $\dt=t_{k+1} - t_k$ is the time step.
+The Gaussian noise affects the state transition as follows
+\begin{equation}\label{eq:g_noise_mode1}
+\vec{g}_1 =\transpose{\begin{pmatrix}
+        \frac{1}{2} \dt^2 & \dt
+    \end{pmatrix}}
+\end{equation}
+The process noise covariance matrix can be calculated using the Equation \eqref{eq:g_noise_mode1} as follows  
+\begin{equation}
+    \vec{q}_1 = \sigma_p^2 \vec{g}_1 \transpose{\vec{g}_1}
+    = \sigma_p^2
+    \begin{pmatrix}
+        \frac{1}{4} \dt^4 & \frac{1}{2} \dt^3 \\ 
+        \frac{1}{2} \dt^3 & \dt^2 \\ 
+    \end{pmatrix},
+\end{equation}
+where $\sigma_p^2$ is the variance of the Gaussian random variable $w_k$.
+In two dimensional space, the state transition matrix and process noise covariance matrix can be expressed as block diagonal matrices as follows 
+\begin{equation}\label{eq:F_mode1}
+\vec{F}_1 = \diag{\vec{f}_1, \vec{f}_1}
+\end{equation}
+and
+\begin{equation}
+    \vec{Q}_1 = \diag{\vec{q}_1, \vec{q}_1}.
+\end{equation}
+where $\diag{\cdot}$ creates a block diagonal matrix from the given matrices.
+
+The CA model is similar to the CV model, but the order of the kinematic state is increased.
+In other words, accelerations along each coordinates are included into the state as follows  
+\begin{equation}\label{eq:x_mode2}
+    \hat{\mathbf{x}}_2 =
+        \transpose{
+        \begin{pmatrix}
+            x & \dot{x} & \ddot{x} & y & \dot{y} & \ddot{y}
+        \end{pmatrix}}.
+\end{equation}
+The state transition and process noise covariance matrices are extended to the higher order model as follows    
+\begin{equation}\label{eq:f_mode2}
+    \vec{f}_2 = 
+    \begin{pmatrix}
+        1 & \dt & \frac{1}{2}\dt^2  \\ 
+        0 & 1 & \dt \\
+        0 & 0 & 1  \\
+    \end{pmatrix}
+\end{equation}
+
+\begin{equation}
+    \vec{g}_2 = \transpose{
+        \begin{pmatrix}
+            \frac{1}{2} \dt^2 & \dt & 1
+        \end{pmatrix}
+    }
+\end{equation}
+
+\begin{equation}
+    \vec{q}_2 = \sigma_p^2 \vec{g_2} \transpose{\vec{g_2}}  =  \sigma_p^2
+        \begin{pmatrix}
+            \frac{1}{4} \dt^4 & \frac{1}{2} \dt^3 & \frac{1}{2} \dt^2 \\ 
+            \frac{1}{2} \dt^3 & \dt^2 &  \dt \\
+            \frac{1}{2} \dt^2 & \dt & 1
+        \end{pmatrix}
+\end{equation}
+
+\begin{equation}\label{eq:F_mode2}
+\vec{F}_2 = \diag{\vec{f}_2, \vec{f}_2}
+\end{equation}
+\begin{equation}
+    \vec{Q}_2 = \diag{\vec{q}_2, \vec{q}_2}.
+\end{equation}
+
+There is still a problem that needs to be considered when using the two target models.
+The vector dimensions of the CV state \eqref{eq:x_mode1} and the CA state \eqref{eq:x_mode2} are different. 
+Moreover, the mode mixing equations \eqref{eq:imm_mx_init_x} and \eqref{eq:imm_mx_init_P} along with the state covariance fusion equations \eqref{eq:imm_fusion_x} and \eqref{eq:imm_fusion_P} require the dimensions to be equal.
+In \cite{Granstroem2015}, an enhanced approach for mixing states with different dimensions was addressed.
+However, here a simple approach is employed, which was also discussed in \cite{Granstroem2015}.
+The approach augments the state estimate and corresponding covariance estimate of the CV model with zeros.
+According to \cite{Granstroem2015}, it corresponds to situation where distribution of $\ddot{x}$ and $\ddot{y}$
+is approximated with Dirac delta function.
+ 
+
+\subsubsection{Measurement model}
 
 The simulated radar can measure the target position in polar coordinates such that radial $r$ and angular $\theta$ components are obtained.
 Furthermore, the measurements are unbiased and distorted by uncorrelated Gaussian noise.
@@ -1402,110 +1695,48 @@ where $\sigma_r^2$ is the noise variance of the radial component, $\sigma_\theta
         \end{array}
     \right].
 \end{equation}
-The approximation of \eqref{eq:sim_ocov} is sufficiently accurate with low $\sigma_\theta$ values.
-The noise variances $\sigma_\theta^2$ and $\sigma_r^2$ in polar coordinates are defined as
+The approximated noise covariance matrix in Equation \eqref{eq:sim_ocov} is sufficiently accurate with low $\sigma_\theta$ values.
+The noise variances $\sigma_\theta^2$ and $\sigma_r^2$ in polar coordinates are defined as follows
 \begin{equation}
-    \sigma_r^2 = c_r \SNR^{-\frac{1}{2}}
+    \sigma_r =  r_\text{res}\left(a_r SNR^{-\frac{1}{2}} + b_r \right)  \label{eq:sigma_r}\\
 \end{equation}
 and
 \begin{equation}
-    \sigma_\theta^2 = c_\theta \SNR^{-\frac{1}{2}}
+    \sigma_\theta =  \theta_\text{res}\left(a_\theta SNR^{-\frac{1}{2}} + b_\theta \right)\label{eq:sigma_theta}
 \end{equation}
-with appropriate constants $c_r$ and $c_\theta$.
-Moreover, the SNR is assumed to be dependent on the angle predictions such that
+where $r_\text{res}$ is range resolution and $\theta_\text{res}$ is azimuth resolution, and SNR is the signal-to-noise ratio. 
+The parameters $a_r$, $a_\theta$, $b_r$ and $b_\theta$ are radar specific constants.
+The observation matrix for the CA model and augmented CV model, which was described in Section \ref{sec:imm_st_models}, is defined as follows
 \begin{equation}
-    \SNR = \SN \cdot \exp{ - 2 \frac{\left(\theta - \hat{\theta} \right)^2}{B^2} },
+    \vec{H}_1 =
+    \begin{pmatrix}
+        1 & \vec{0}_\text{1, 5} \\
+        \vec{0}_\text{1, 5} & 1
+    \end{pmatrix}
 \end{equation}
-where $\hat{\theta}$ is the estimated target angle.
-The center beam SNR $\SN$ is approximated to be constant because the radar can adaptively change the transmit power.
-Lastly, the observation model is defined as follows
+where $\vec{0}_\text{1, 5}$ is $1 \times 5$ vector filled with zeros.
+
+Central beam signal-to-noise ratio $SN_0$ is assumed constant in the simulations. 
+However, the beam offset is accounted by using the following equation
+\begin{equation} \label{eq:snr}
+    SNR = SN_0~\exp{ - \ln{2}
+        \frac
+            {(\hat{\theta} - \theta)^2}
+            {B^2}}    
+\end{equation}
+where $\hat{\theta}$ is the predicted target angle, $\theta$ is the actual target angle, and $B$ is half of the $3\text{dB}$ beamwidth. 
+
+The probability of detection is accounted in the simulations such that all dwells might not lead into detection.
+A Singer I scattering model is used for which the probability of detection is
 \begin{equation}
-    \omodel = 
-    \left[
-        \begin{array}{cccccc}
-            1 & 0 & 0 & 0 & 0 & 0 \\
-            0 & 0 & 0 & 1 & 0 & 0
-        \end{array}
-    \right]
+    P_\text{d} = P_\text{fa}^{\frac{1}{1+SNR}}.
 \end{equation}
-since only the position components are measured.
-
-\subsection{Target model}
-
-Signer model is a state-space model in one dimensional space, where acceleration is modeled as Ornstein-Uhlenbeck process \cite{Pilte2018}.
-The model can be extended for higher dimensions by using one model for each dimension.
-The discrete time state transition matrix is defined as
-\begin{equation}
-\stmodel = 
-    \left[
-        \begin{array}{ccc}
-            1 & T & \frac{\alpha T - 1 + \exp{-\alpha T}}{\alpha^2} \\
-            0 & 1 & \frac{1 - \exp{- \alpha T}}{\alpha} \\
-            0 & 0 & \exp{- \alpha T}
-        \end{array}
-    \right]
-\end{equation}
-where $\alpha$ is the correlation parameter of the acceleration noise.
-Similarly, the process noise covariance matrix is written as
-\begin{equation}
-    \pcov = 2 \alpha \Sigma^2 
-    \left[
-    \begin{array}{ccc}
-        \frac{T^5}{20} & \frac{T_4}{8}  & \frac{T^3}{6} \\
-        \frac{T^4}{8}  & \frac{T^3}{3} & \frac{T^2}{2} \\
-        \frac{T^3}{6}  & \frac{T^2}{2} & T
-    \end{array}
-    \right]
-\end{equation}
-where $\Sigma$ is the acceleration noise standard deviation.
-
-
-
-
+The track is considered lost if number of subsequent dwells with no detection is equal or greater than $n_{\max}$.
+However, the probability of false alarm is not considered in the simulation otherwise than to calculate the probability of detection.
 
 
 \subsection{Results}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/simulations/scenario.pdf}
-    \caption{Target trajectory and predicted target positions through the simulation.}
-    \label{fig:sim_scenario}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/simulations/position_error.pdf}
-        \caption{Position error between target trajectory and position predictions.}
-        \label{fig:sim_pos_error}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/simulations/update_policy.pdf}
-        \caption{Update intervals used in the simulation.}
-        \label{fig:sim_update_policy}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{figures/simulations/load.pdf}
-            \caption{Tracking load.}
-            \label{fig:sim_load}
-     \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/simulations/snr.pdf}
-        \caption{Measurement SNR.}
-        \label{fig:sim_snr}
-    \end{subfigure}
-     
-    \caption{Simulation metrics for constant update rate policy.}
-    \label{fig:three graphs}
-\end{figure}
 
 \newpage
 \section{Conclusions}
