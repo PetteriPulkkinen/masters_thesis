@@ -1526,6 +1526,80 @@ used square root adaptation for alpha beta gamma filters},
   keywords = {target tracking;tracking filters;sensor fusion;covariance matrices;military radar;Kalman filters;reviews;multiple hypothesis tracking;multiple target tracking systems;data association problem;alternative implementations;multiple filter models;interacting multiple model method;surveillance systems;global nearest neighbor;Kalman filter;Gaussian mixture;missile defense systems;Target tracking;Radar tracking;Surveillance;Sensor systems;Nearest neighbor searches;Filters;Research and development;Radar clutter;Radar measurements;Infrared sensors},
 }
 
+@Article{Zhu2017,
+  author        = {Pengfei Zhu and Xin Li and Pascal Poupart},
+  title         = {On Improving Deep Reinforcement Learning for POMDPs},
+  journal       = {CoRR},
+  year          = {2017},
+  volume        = {abs/1704.07978},
+  archiveprefix = {arXiv},
+  bibsource     = {dblp computer science bibliography, https://dblp.org},
+  biburl        = {https://dblp.org/rec/journals/corr/ZhuLP17.bib},
+  comment       = {- actions encoded with fully connected NN, observations propagated though convolutional layers
+- actions and observations integrated using a LSTM network -> latent state presentation
+- Conventional DQN used with the latent state presenation
+
+},
+  eprint        = {1704.07978},
+  groups        = {RL for POMDPs},
+  timestamp     = {Mon, 13 Aug 2018 16:46:06 +0200},
+  url           = {http://arxiv.org/abs/1704.07978},
+}
+
+@Article{Hausknecht2015,
+  author        = {Matthew J. Hausknecht and Peter Stone},
+  title         = {Deep Recurrent Q-Learning for Partially Observable MDPs},
+  journal       = {CoRR},
+  year          = {2015},
+  volume        = {abs/1507.06527},
+  archiveprefix = {arXiv},
+  bibsource     = {dblp computer science bibliography, https://dblp.org},
+  biburl        = {https://dblp.org/rec/journals/corr/HausknechtS15.bib},
+  comment       = {- Novel paper to introduce recurrent neural networks to overcome POMDP problems},
+  eprint        = {1507.06527},
+  groups        = {RL for POMDPs},
+  timestamp     = {Mon, 13 Aug 2018 16:48:38 +0200},
+  url           = {http://arxiv.org/abs/1507.06527},
+}
+
+@Article{Mnih2013,
+  author        = {Volodymyr Mnih and Koray Kavukcuoglu and David Silver and Alex Graves and Ioannis Antonoglou and Daan Wierstra and Martin A. Riedmiller},
+  title         = {Playing Atari with Deep Reinforcement Learning},
+  journal       = {CoRR},
+  year          = {2013},
+  volume        = {abs/1312.5602},
+  archiveprefix = {arXiv},
+  bibsource     = {dblp computer science bibliography, https://dblp.org},
+  biburl        = {https://dblp.org/rec/journals/corr/MnihKSGAWR13.bib},
+  comment       = {- The first paper to use raw sensory data such as pixels to train deep reinforcement learning agent
+- Trained RL agent to play atari games with similar architecture
+- Observations preseneted with four past frames (approximates the state)},
+  eprint        = {1312.5602},
+  groups        = {Iconic RL papers},
+  timestamp     = {Mon, 13 Aug 2018 16:47:42 +0200},
+  url           = {http://arxiv.org/abs/1312.5602},
+}
+
+@Misc{OpenAI2019,
+  author        = {OpenAI and : and Christopher Berner and Greg Brockman and Brooke Chan and Vicki Cheung and Przemysław Dębiak and Christy Dennison and David Farhi and Quirin Fischer and Shariq Hashme and Chris Hesse and Rafal Józefowicz and Scott Gray and Catherine Olsson and Jakub Pachocki and Michael Petrov and Henrique Pondé de Oliveira Pinto and Jonathan Raiman and Tim Salimans and Jeremy Schlatter and Jonas Schneider and Szymon Sidor and Ilya Sutskever and Jie Tang and Filip Wolski and Susan Zhang},
+  title         = {Dota 2 with Large Scale Deep Reinforcement Learning},
+  year          = {2019},
+  archiveprefix = {arXiv},
+  comment       = {- RL agent trained for 10 months in a challenging problem (video game)
+- The agent beat the world champions
+- Large action space (~8000-~80000)
+- Large state space (~16000)
+- Unpossible actions are ignored depending on the situation (some mechanism to filter the actions)},
+  eprint        = {1912.06680},
+  groups        = {Iconic RL papers},
+  primaryclass  = {cs.LG},
+  url           = {https://arxiv.org/pdf/1912.06680v1.pdf},
+}
+{Pulkkinen2020,
+  author    = {Pulkkinen, Petteri. and Aittomäki, Tuomas . and Koivunen, Visa.},
+  title     = {Reinforcement learning based transmitter-receiver selection for distributed {MIMO} radars},
+  booktitle = {IEEE International RADAR Conference},
+  year      = {2020},
 @Misc{MathWorks2019,
   author = {MathWorks},
   title  = {Benchmark trajectories for multi-object tracking},
@@ -1553,6 +1627,8 @@ used square root adaptation for alpha beta gamma filters},
 @Comment{jabref-meta: grouping:
 0 AllEntriesGroup:;
 1 StaticGroup:RL background\;0\;1\;\;\;\;;
+2 StaticGroup:RL for POMDPs\;0\;1\;\;\;\;;
+2 StaticGroup:Iconic RL papers\;0\;1\;\;\;\;;
 1 StaticGroup:MAB\;0\;1\;\;\;\;;
 1 StaticGroup:RL in Radar\;0\;1\;\;\;\;;
 2 StaticGroup:Jamming\;0\;0\;0xffffffff\;\;\;;

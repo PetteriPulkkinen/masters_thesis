@@ -1210,96 +1210,54 @@ The approach approximates the non-myopic objective by calculating task deadlines
 \newpage
 \section{Reinforcement learning approach for revisit interval selection}
 
-The optimal POMDP approach for TBM is intractable with conventional algorithms, as was discussed in Chapter \ref{sec:literature_review}.
-Reinforcement learning techniques could be used to find an approximate solution.
-However, the observations and the actions are non-trivial to present for the reinforcement learning agent.
+The optimal POMDP approach for TBM is intractable when using conventional algorithms, as it was discussed in Chapter \ref{sec:literature_review}. 
+In addition, applying RL techniques to approximately find an optimal solution without using any relaxations can be challenging because of two reasons
+\begin{enumerate}
+    \item number of targets can change in time, and
+    \item the TBM problem is POMDP
+\end{enumerate}
+The first difficulty affects to the dimensions of the state and action spaces. 
 For example, in multitarget tracking the observation could be a combination of belief states of each target, and the action could be to choose which tracks will be updated next.
-The number of actions and the dimension of the observation depend on the number of targets.
-In this case, the complexity of the observation and the action presentation problem can be avoided by utilizing some of the relaxations that were introduced in Chapter \ref{sec:literature_review}.
-One approach is to train a reinforcement learning agent to select suitable revisit interval for each tracking task separately in order to approximately maximize the long-term reward function of the optimal POMDP formulation.
+In that case, the number of actions would depend on the number of targets, and if an observation is presented as a matrix, the dimension of the matrix would depend on the number of targets.
+Obviously, discretizing the observation space would not help either, since the number of discrete observations would grow exponentially as the number of targets increase.
 
-The existing research on adaptive revisit interval algorithms was reviewed in Section \ref{sec:tbm_ri}.
-It was identified that the existing algorithms control the revisit interval based on the innovation or the uncertainty on the estimates.
-The covariance-matrix-based algorithms are less robust for model inaccuracies than residual based methods because the dynamic model is used to calculate the intervals.
-The residual based methods are not dependent on the target model since the average residuals are maintained close to the standard deviation of noise using the recursive rule \eqref{eq:update_resid}.
-However, the former approach is more transparent since the prediction error covariance estimates are kept below a certain threshold.
+The second difficulty is related to more general problem with sensing systems,
+the variables derived from the radar measurements always include certain degree of uncertainty.
+However, there are at least couple of different ways to tackle the POMDP problems using reinforcement learning.
+For example, an MDP state can be approximated from sequence of past observations with finite length, or an external model-based approach can be used to extract the belief state.
+The former approach can be implemented by stacking observations to form a single state as in \cite{Mnih2013}, or by using recurrent neural networks as in \cite{Hausknecht2015}.
+The downside is that typically such approaches require large amount of training.
+In the latter approach, the RL policy is dependent on the model, thus modelling errors can decrease performance of the policy.
+However, in radar applications the latter method is still attractive since typically required models already exist and training can faster compared to the former approach.
 
-The performance of an adaptive revisit interval algorithm is usually quantified by the achieved accuracy in the state estimates.
-Especially, the position estimate is important for pointing the radar beam in the correct direction.
-However, the purpose of applying adaptive revisit interval algorithms is to minimize the time allocated to tracking tasks.
-The time allocation can be quantified with the track load which is the relation between the dwell time and the revisit interval \cite{vanKeuk1993}.
+To avoid the difficulty with the variable number of targets, an optimal TBM problem is relaxed to easier problem using the same techniques that were discussed in Section \ref{sec:literature_review}.
+The two-time scale approach is utilized to divide the TBM problem into FTS and STS scheduling problems.
+Moreover, the proposed RL approach can be integrated into existing STS scheduling algorithms by enabling RL algorithm to control the revisit intervals of the tracking tasks.
+The revisit intervals are controlled such that minimum time is spent on the target tracking tasks, which enables the STS scheduler to allocate the remaining time budget for another radar tasks.
+This approach enables using the same RL policy for each track separately, thus making the actions and observations easier to present.
 
-A commonly used tracking filter is an IMM estimator that can be used to track targets with various maneuvers as described in Section \ref{sec:IMM}.
-The baseline IMM estimator consists of multiple Kalman filters which are configured for different maneuvers.
-All the Kalman filters are concurrently used to track the targets.
-The likelihood of an observation coming from a given Kalman filter state-space model can be extracted for each filter.
-The probabilities can be used to calculate estimates for the process noise covariance matrix and the kinematic state.
+In the proposed RL formulation, a single target tracking (STT) scenario is assumed. 
+Therefore, implementations of the STS and FTS schedulers are not addressed.
+However, the RL approach is extendable to multi-target tracking scenarios when two-time scale architecture is used and by considering the probability of mixing tracks in the observation presentation. 
+In STT scenario, it is possible to experiment if the learning-based approach can help to tackle problems caused by modelling inconveniences that affect conventional non-learning-based algorithms.
+As a reminder, the existing adaptive revisit interval algorithms was reviewed in Section \ref{sec:tbm_ri}.
 
-Here a RL approach is proposed for controlling the revisit interval of the tracking task.
-The RL agent is capable of learning directly from the experience such that 
-system model is not needed to optimize the employed reward function.
-Moreover, the approach should be modifiable to any tracking filter by defining suitable observation and reward space.
-The motivation for using RL is to learn near-optimal policy which can adapt to any tracking system, allows learning a policy for learning non-myopic objectives as in \cite{Charlish2015}, and enables using observation data with non-trivial connection to the revisit interval.
-The Section \ref{seq:system_description} starts by describing the employed radar system such that it is possible to identify the actions, observations and rewards for the RL formulation.
-Thereafter, the RL formulation is described in Section \ref{sec:RL_formulation} 
+The performance of a revisit interval control algorithm in STT scenario is investigated by evaluating probability of losing track and tracking load.
+It should be emphasized that the probability of losing track and tracking loads are closely linked together.
+For example, tracking load can be reduced by enabling higher probability of losing track or vice-versa.
+Monte Carlo simulations are required to evaluate these quantities in realistic tracking scenarios, because the target models used in the filters are not optimal.
+One way to ensure fair comparison between algorithms is to specify upper limit for the probability of losing track in the Monte Carlo simulations and rank the algorithms based on the tracking load.
+It requires tuning the algorithms with different parameters to find the most suitable set for the given evaluation criteria.
 
-
-\subsection{System description} \label{seq:system_description}
-
-\textcolor{red}{Content of this section is still in progress. It needs to be decided how much information is essential to put here. In addition, should the system be \textbf{exactly} like SAABs system or can it be modified etc. (general solution vs custom solution). What is essential information considering this thesis?}
-
-The proposed RL approach is designed for an air surveillance radar that is capable of carrying out multiple tasks concurrently.
-In other words, the radar is a multifunction radar with AESA capabilities.
-The radar is operating in challenging warfare scenarios such that it needs to be capable of detecting small targets in strong clutter and high-velocity targets.
-Moreover, resistance to electronic countermeasures should be considered. 
-These requirements are important in each subsystem of the radar. 
-All these requirements need to be taken into account when designing the revisit interval selection algorithm.
-
-The target tracking algorithm is assumed to be as given which takes into account the aforementioned requirements. 
-The considered tracker is a multiple hypothesis tracker (MHT) coupled with an IMM estimator. 
-The IMM estimator can adapt to different target maneuvers. 
-However, tracking multiple targets creates a problem on how to associate the observations and the tracks to each other. 
-The MHT solves the data association problem by associating all observations and tracks together combined with track likelihoods \cite{Blackman2004}. 
-A track hypothesis is removed until a certain stopping rule is met. 
-
-With the given requirements it is possible to formulate the revisit interval selection as an RL problem. The problem is initially approached by relaxing some of the requirements. However, it should be considered that the initial approach is expandable to a more general solution. 
+In the next sections, a RL approach is proposed for the revisit interval control problem for two different tracking systems.
+The Section \ref{seq:system_description} describes the considered radar systems
+such that it is possible to identify the actions, observations and rewards in the Section \ref{sec:RL_formulation}.
+In Section \ref{seq:ri_sim} the proposed reinforcement learning approach is evaluated in the benchmark problem. 
 
 
-What are the operational requirements?
-
-\begin{itemize}
-    \item Multi-mission radar
-    \item General detection and tracking of air targets
-    \item Capability of detection and tracking of small targets in strong clutter
-    \item Capability of detecting and tracking of high velocity targets
-    \item Capability of target detection during various forms of ECM, such as noise, DRFM and cover pulse
-\end{itemize}
-
-What are the actions that the agent can take?
-
-\begin{itemize}
-    \item Search( specified search volume, allowed time duration for the assigned task, required max. revisit time )
-    \item Update Track (specified tracks, allowed time duration for the assigned task, required max revisit time per target)
-\end{itemize}
+\subsection{Assumed radar system} \label{seq:system_description}
 
 
-
-\subsubsection{Tracker}
-
-The particular tracking filter choice defines the available observations for the RL agent.
-For example, the IMM estimator can provide model likelihoods, covariance estimates and innovation sequence that describe the current behaviour of the tracking system.
-The tracker is implemented as an IMM estimator based on Kalman filters due to its simplicity and the popularity in real-world tracking systems.
-
-\begin{itemize}
-    \item Estimated values for positions and speed of different targets (3D), together with the covariances for these variables
-    \item The history of each track (wrt. positions and speed as functions of time)
-    \item A smoothed history of each track
-    \item The class of each target, as estimated by the tracker, together with the likelihood for every target type
-    \item Momentary acceleration (e.g. sideway acceleration for a turning aircraft)
-    \item Association hypotheses and outliers (i.e. for what track each detection belongs to and whether it's considered an outlier by the tracker)
-    \item Likelihoods for different behaviour modes of the targets, i.e. whether it's currently moving with constant velocity, performing a smooth turn, undergoing acceleration or making a heavy maneuver
-    \item RCS, both for the hull and the rotors if applicable
-\end{itemize}
 
 \subsection{RL formulation}\label{sec:RL_formulation}
 
@@ -1308,6 +1266,8 @@ It is essential to examine if the observations fulfill the Markov property of \e
 If the Markov property is violated, next it should be determined if the problem is POMDP, and if the observation can be presented in a convenient belief state presentation.
 Moreover, the belief state presentation can be used to solve POMDP problem as a continuous state MDP as described in Section \ref{sec:POMDP}.
 In terms of utilizing strengths of RL approach, the downside of POMDP problems is that the presentation of the belief state typically requires a system model which increases the demand for human effort instead of letting the agent to learn by itself.
+
+
 
 The next step is to determine suitable reinforcement learning algorithm to solve the problem.
 The following questions will affect to the choice of the algorithm
@@ -1513,8 +1473,7 @@ In addition, as it was done in \cite{Gardner1988}, low-pass filtering may increa
 \end{itemize}
 }
 
-\newpage
-\section{Simulations}
+\subsection{Simulations}\label{seq:ri_sim}
 
 
 In these simulations the reinforcement learning approach is trained in a simulated environment.
