@@ -244,19 +244,14 @@
   keywords  = {cognitive radio;mobile radio;mobile cognitive radios;index policies;stochastic nonstationary restless multiarmed bandit formulation;cognitive radio;multiband flexible spectrum use;learning-based sensing policies;nonstationary radio environment;learning spectrum;Sensors;Indexes;Cognitive radio;Time-frequency analysis;Fading channels;Interference;Probability;Flexible spectrum use;cognitive radio;opportunistic spectrum access;multi-armed bandit;dynamic propagation environment},
 }
 
-@Article{Agrawal2011,
-  author        = {Shipra Agrawal and Navin Goyal},
-  title         = {Analysis of Thompson Sampling for the multi-armed bandit problem},
-  journal       = {CoRR},
-  year          = {2011},
-  volume        = {abs/1111.1797},
-  archiveprefix = {arXiv},
-  bibsource     = {dblp computer science bibliography, https://dblp.org},
-  biburl        = {https://dblp.org/rec/bib/journals/corr/abs-1111-1797},
-
-  groups        = {MAB},
-  timestamp     = {Mon, 13 Aug 2018 16:48:14 +0200},
-  url           = {http://arxiv.org/abs/1111.1797},
+@InProceedings{Agrawal2012,
+  author    = {Shipra Agrawal and Navin Goyal},
+  title     = {Analysis of {Thompson} Sampling for the Multi-armed Bandit Problem},
+  booktitle = {Proceedings of the 25th Annual Conference on Learning Theory},
+  year      = {2012},
+  pages     = {39.1-39.26},
+  abstract  = {The multi-armed bandit problem is a popular model for studying exploration/exploitation trade-off in sequential decision problems. Many algorithms are now available for this well-studied problem. One of the earliest algorithms, given by W. R. Thompson, dates back to 1933. This algorithm, referred to as Thompson Sampling, is a natural Bayesian algorithm. The basic idea is to choose an arm to play according to its probability of being the best arm. Thompson Sampling algorithm has experimentally been shown to be close to optimal. In addition, it is efficient to implement and exhibits several desirable properties such as small regret for delayed feedback. However, theoretical understanding of this algorithm was quite limited. In this paper, for the first time, we show that Thompson Sampling algorithm achieves logarithmic expected regret for the stochastic multi-armed bandit problem. More precisely, for the stochastic two-armed bandit problem, the expected regret in time T is O(\frac\ln T∆ + \frac1∆^3). And, for the stochastic N-armed bandit problem, the expected regret in time T is O(\left[\left(\sum_i=2^N \frac1\Delta_i^2\right)^2\right] \ln T). Our bounds are optimal but for the dependence on \Delta_i and the constant factors in big-Oh.},
+  groups    = {MAB},
 }
 
 @Article{Garivier2011,
@@ -296,28 +291,37 @@
 }
 
 @Article{Sun2014,
-  author  = {Sun, Bin and Chen, Haowen and Yang, Degui and Li, Xiang},
-  journal = {International Journal of Distributed Sensor Networks},
-  title   = {Antenna Selection and Placement Analysis of MIMO Radar Networks for Target Localization},
-  year    = {2014},
-  month   = may,
-  pages   = {1-10},
-  volume  = {2014},
-  doi     = {10.1155/2014/769404},
-  groups  = {Radar optimization},
+  author   = {Sun, Bin and Chen, Haowen and Yang, Degui and Li, Xiang},
+  title    = {Antenna Selection and Placement Analysis of MIMO Radar Networks for Target Localization},
+  journal  = {International Journal of Distributed Sensor Networks},
+  year     = {2014},
+  volume   = {2014},
+  pages    = {1-10},
+  month    = may,
+  comment  = {- Continues Godrich's works work with better FIM which takes path-loss and target RCS in account
+- It was found out that TX-RX pairs with highest SNR are taken
+- FID was used as a metric -> can tell how close the performance is to setting where all TX-RX pairs are selected
+- Different strategies shown: minimal subset selection, K-subset selection},
+  doi      = {10.1155/2014/769404},
+  groups   = {Radar optimization, MIMO TX-RX selection},
+  keywords = {rank5},
 }
 
 @InProceedings{Godrich2011,
   author    = {H. {Godrich} and A. {Petropulu} and H. V. {Poor}},
-  booktitle = {2011 19th European Signal Processing Conference},
   title     = {Antenna subset selection in distributed multiple-radar architectures: A knapsack problem formulation},
+  booktitle = {2011 19th European Signal Processing Conference},
   year      = {2011},
-  month     = aug,
   pages     = {1693-1697},
+  month     = aug,
   abstract  = {In this paper, a performance driven resource allocation scheme for target localization in multiple radar systems is proposed and evaluated. An optimal subset of active antennas of predetermined size, K, is selected such that the localization mean-square error (MSE) is minimized. The problem is formulated in a combinatorial optimization framework as a knapsack problem (KP). The Cramer-Rao bound (CRB) is used as a performance metric. Cost parameters, representing operational cost or any other utilization constraints, are associated with each of the antennas. These are incorporated into the KP formulation, integrating decision making factors in the selection process. Antenna subset selection is implemented through an approximation algorithm, by successively selecting antennas so as to maximize the temporal Fisher information matrix (FIM) for a given subset size. The proposed approximation algorithm offers considerable reduction in computational complexity when compared with exhaustive search, supporting distributive processing and low performance loss.},
-  groups    = {Radar optimization},
+  comment   = {- Select K antennas from M+N antennas
+- Minimize localization MSE 
+- Formulated as Knapsack problem
+- Approximate algorithm used to maximize temporal FIM},
+  groups    = {Radar optimization, MIMO TX-RX selection},
   issn      = {2076-1465},
-  keywords  = {combinatorial mathematics;computational complexity;decision making;knapsack problems;mean square error methods;optimisation;radar antennas;resource allocation;antenna subset selection;distributed multiple-radar architecture;knapsack problem formulation;resource allocation scheme;target localization;mean-square error minimization;MSE minimization;combinatorial optimization framework;Cramer-Rao bound;CRB;KP formulation;decision making;approximation algorithm;temporal Fisher information matrix;FIM;computational complexity;exhaustive search;distributive processing;Radar cross-sections;Receiving antennas;Manganese;Approximation algorithms;Radar antennas;MIMO radar;Multistatic radar;Cramer-Rao bound;resource allocation;target localization},
+  keywords  = {combinatorial mathematics;computational complexity;decision making;knapsack problems;mean square error methods;optimisation;radar antennas;resource allocation;antenna subset selection;distributed multiple-radar architecture;knapsack problem formulation;resource allocation scheme;target localization;mean-square error minimization;MSE minimization;combinatorial optimization framework;Cramer-Rao bound;CRB;KP formulation;decision making;approximation algorithm;temporal Fisher information matrix;FIM;computational complexity;exhaustive search;distributive processing;Radar cross-sections;Receiving antennas;Manganese;Approximation algorithms;Radar antennas;MIMO radar;Multistatic radar;Cramer-Rao bound;resource allocation;target localization, rank5},
   url       = {https://ieeexplore.ieee.org/document/7074273},
 }
 
@@ -1528,8 +1532,8 @@ used square root adaptation for alpha beta gamma filters},
 
 @Article{Zhu2017,
   author        = {Pengfei Zhu and Xin Li and Pascal Poupart},
-  title         = {On Improving Deep Reinforcement Learning for POMDPs},
   journal       = {CoRR},
+  title         = {On Improving Deep Reinforcement Learning for POMDPs},
   year          = {2017},
   volume        = {abs/1704.07978},
   archiveprefix = {arXiv},
@@ -1537,9 +1541,7 @@ used square root adaptation for alpha beta gamma filters},
   biburl        = {https://dblp.org/rec/journals/corr/ZhuLP17.bib},
   comment       = {- actions encoded with fully connected NN, observations propagated though convolutional layers
 - actions and observations integrated using a LSTM network -> latent state presentation
-- Conventional DQN used with the latent state presenation
-
-},
+- Conventional DQN used with the latent state presenation},
   eprint        = {1704.07978},
   groups        = {RL for POMDPs},
   timestamp     = {Mon, 13 Aug 2018 16:46:06 +0200},
@@ -1622,6 +1624,178 @@ used square root adaptation for alpha beta gamma filters},
   groups  = {Benchmark problem solutions},
 }
 
+@InProceedings{Pulkkinen2020,
+  author    = {Pulkkinen, Petteri. and Aittomäki, Tuomas. and Koivunen, Visa},
+  title     = {Reinforcement {L}earning {B}ased {T}ransmitter-{R}eceiver {S}election for {D}istributed {MIMO} {R}adars},
+  booktitle = {2020 IEEE International Radar Conference (RADAR)},
+  year      = {2020},
+  month     = apr,
+}
+
+@InProceedings{Kuai2019,
+  author    = {Z. {Kuai} and T. {Wang} and S. {Wang}},
+  title     = {Transmit Antenna Selection in Massive {MIMO} Systems: An Online Learning Framework},
+  booktitle = {IEEE/CIC International Conference on Communications in China (ICCC)},
+  year      = {2019},
+  pages     = {496-501},
+  month     = aug,
+  abstract  = {Antenna selection (AS) is a signal processing technique that activates a selected subset of available antennas in multi-antenna systems, based on which a performance-hardware tradeoff can be achieved by reducing the number of costly radio-frequency (RF) chains. The biggest challenge of AS is the combinatorial complexity that arises from the classic K-out-of-N problem, which makes it more challenging for massive MIMO systems equipped with large-scale antenna arrays. In addition, for massive MIMO systems with limited RF chains, the amount of radio resources dedicated to channel state information (CSI) measurement will increase tremendously, which may highly degrade the overall performance of AS. In this paper, we consider the transmit AS problem in time division duplexing (TDD) massive MIMO systems, where K out of N transmit antennas are selected to maximize the total throughput of M single-antenna users in the downlink. We propose an online learning scheme and introduce Thompson sampling techniques to update the set of active antennas with partial CSI. The idea behind is to find an efficient tradeoff between the exploitation of high-performance antennas and the exploration of antennas with uncertain CSI with low complexity. Our proposed scheme is validated by using COST 2100 channel model, and simulation results show that it greatly outperforms the conventional power-based and convex relaxation based schemes, in terms of the total downlink throughput.},
+  doi       = {10.1109/ICCChina.2019.8855807},
+  groups    = {Antenna selection},
+  issn      = {2377-8644},
+  keywords  = {antenna arrays;learning (artificial intelligence);MIMO communication;telecommunication computing;time division multiplexing;transmitting antennas;transmit antenna selection;signal processing technique;multiantenna systems;large-scale antenna arrays;RF chains;online learning scheme;active antennas;high-performance antennas;radio-frequency chains;time division duplexing;single-antenna users;massive MIMO systems;combinatorial complexity;channel state information measurement;Thompson sampling;COST 2100 channel model;Radio frequency;Transmitting antennas;Downlink;Uplink;Base stations;Antenna selection;massive MIMO;online learning;Thompson sampling},
+}
+
+@Article{Zhao2008,
+  author   = {Q. {Zhao} and B. {Krishnamachari} and K. {Liu}},
+  title    = {On myopic sensing for multi-channel opportunistic access: structure, optimality, and performance},
+  journal  = {IEEE Transactions on Wireless Communications},
+  year     = {2008},
+  volume   = {7},
+  number   = {12},
+  pages    = {5431-5440},
+  month    = dec,
+  issn     = {1558-2248},
+  abstract = {We consider a multi-channel opportunistic communication system where the states of these channels evolve as independent and statistically identical Markov chains (the Gilbert- Elliot channel model). A user chooses one channel to sense and access in each slot and collects a reward determined by the state of the chosen channel. The problem is to design a sensing policy for channel selection to maximize the average reward, which can be formulated as a multi-arm restless bandit process. In this paper, we study the structure, optimality, and performance of the myopic sensing policy. We show that the myopic sensing policy has a simple robust structure that reduces channel selection to a round-robin procedure and obviates the need for knowing the channel transition probabilities. The optimality of this simple policy is established for the two-channel case and conjectured for the general case based on numerical results. The performance of the myopic sensing policy is analyzed, which, based on the optimality of myopic sensing, characterizes the maximum throughput of a multi-channel opportunistic communication system and its scaling behavior with respect to the number of channels. These results apply to cognitive radio networks, opportunistic transmission in fading environments, downlink scheduling in centralized networks, and resource-constrained jamming and anti-jamming.},
+  doi      = {10.1109/T-WC.2008.071349},
+  groups   = {MAB},
+  keywords = {cognitive radio;fading channels;jamming;Markov processes;scheduling;myopic sensing;multichannel opportunistic access;Markov chains;Gilbert-Elliot channel model;channel selection;cognitive radio networks;fading environments;downlink scheduling;resource-constrained jamming;resource-constrained antijamming;Cognitive radio;Jamming;Fading;Downlink;Throughput;Robustness;Performance analysis;Interference;Laboratories;Opportunistic access, cognitive radio, multi-channel MAC, multi-arm restless bandit process, myopic policy.},
+}
+
+@Book{Curry2011,
+  author    = {G. Richard Curry},
+  editor    = {Dubley R. Kay},
+  publisher = {SciTech Publishing, Inc.},
+  title     = {{Radar Essentials - A Concise Handbook for Radar Design and Performance Analysis}},
+  year      = {2011},
+  isbn      = {978-1-61353-007-8},
+  groups    = {Radar basics},
+}
+
+@Article{Even-Dar2003,
+  author  = {Eyal Even-Dar and Yiashay Mansour},
+  title   = {{Learning Rates for Q-learning}},
+  journal = {Journal of Machine Learning Research},
+  year    = {2003},
+  volume  = {5},
+  number  = {1-25},
+}
+
+@Article{Song2017,
+  author   = {Song, Xiyu and Zheng, Nae and Bai, Ting},
+  title    = {Resource Allocation Schemes for Multiple Targets Tracking in Distributed MIMO Radar Systems},
+  journal  = {International Journal of Antennas and Propagation},
+  year     = {2017},
+  volume   = {2017},
+  pages    = {1-12},
+  month    = {07},
+  comment  = {- Does not add anything intersting},
+  doi      = {10.1155/2017/7241281},
+  groups   = {MIMO TX-RX selection},
+  keywords = {rank2},
+}
+
+@InProceedings{Ma2014,
+  author    = {B. {Ma} and H. {Chen} and B. {Sun} and H. {Xiao}},
+  title     = {A joint scheme of antenna selection and power allocation for localization in MIMO radar sensor networks},
+  booktitle = {2014 12th International Conference on Signal Processing (ICSP)},
+  year      = {2014},
+  pages     = {2226-2229},
+  comment   = {- Does not add anything different to the Godrichs paper
+},
+  groups    = {MIMO TX-RX selection},
+  keywords  = {rank2},
+}
+
+@Article{He2010,
+  author   = {Q. {He} and R. S. {Blum} and H. {Godrich} and A. M. {Haimovich}},
+  title    = {Target Velocity Estimation and Antenna Placement for MIMO Radar With Widely Separated Antennas},
+  journal  = {IEEE Journal of Selected Topics in Signal Processing},
+  year     = {2010},
+  volume   = {4},
+  number   = {1},
+  pages    = {79-100},
+  month    = {Feb},
+  issn     = {1941-0484},
+  abstract = {This paper studies the velocity estimation performance for multiple-input multiple-output (MIMO) radar with widely spaced antennas. We derive the Cramer-Rao bound (CRB) for velocity estimation and study the optimized system/configuration design based on CRB. General results are presented for an extended target with reflectivity varying with look angle. Then detailed analysis is provided for a simplified case, assuming an isotropic scatterer. For given transmitted signals, optimal antenna placement is analyzed in the sense of minimizing the CRB of the velocity estimation error. We show that when all antennas are located at approximately the same distance from the target, symmetrical placement is optimal and the relative position of transmitters and receivers can be arbitrary under the orthogonal received signal assumption. In this case, it is also shown that for MIMO radar with optimal placement, velocity estimation accuracy can be improved by increasing either the signal time duration or the product of the number of transmit and receive antennas.},
+  comment  = {- CRB for velocity estimation
+- Results for extended target with reflectivity varying with look angle
+- No selection},
+  doi      = {10.1109/JSTSP.2009.2038974},
+  groups   = {MIMO TX-RX selection},
+  keywords = {antenna arrays;MIMO radar;target velocity estimation;antenna placement;MIMO radar;widely separated antennas;multiple-input multiple-output radar;Cramer-Rao bound;system-configuration design;velocity estimation error;orthogonal received signal assumption;transmit antennas;receive antennas;Radar antennas;MIMO;Transmitting antennas;Receiving antennas;Spaceborne radar;Design optimization;Reflectivity;Radar scattering;Signal analysis;Estimation error;Antenna placement;Cramer–Rao bound (CRB);multiple-input multiple-output (MIMO) radar;maximum-likelihood (ML) estimate;velocity estimation, rank1},
+}
+
+@InProceedings{Godrich2011a,
+  author    = {H. {Godrich} and A. {Petropulu} and H. V. {Poor}},
+  title     = {A combinatorial optimization framework for subset selection in distributed multiple-radar architectures},
+  booktitle = {2011 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  year      = {2011},
+  pages     = {2796-2799},
+  comment   = {- CRB as performance metric
+- KP formulation
+- heuristic algorithm: 
+- Choose number of tx and rx to achieve certain operational goal
+- Includes better explanation of variables
+- target RCS estimated from previous iterations
+- Target RCS deterministic but unknown constant},
+  groups    = {MIMO TX-RX selection},
+  keywords  = {rank5},
+}
+
+@InProceedings{Nosrati2017,
+  author    = {H. {Nosrati} and E. {Aboutanios} and D. B. {Smith}},
+  title     = {Receiver-transmitter pair selection in MIMO phased array radar},
+  booktitle = {2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  year      = {2017},
+  pages     = {3206-3210},
+  comment   = {For co-located radars},
+  groups    = {MIMO TX-RX selection},
+  keywords  = {rank1},
+}
+
+@Book{Moo2016,
+  title     = {{Adaptive Radar Resource Management}},
+  publisher = {Academic Press Inc.},
+  year      = {2016},
+  author    = {Peter Moo and Zhen Ding},
+  isbn      = {9780128029022},
+}
+
+@Book{Zarchan2000,
+  title     = {{Fundamentals of Kalman Filtering—A Practical Approach}},
+  publisher = {American Institute of Aeronautics and Astronautics, Inc.},
+  year      = {2000},
+  author    = {Paul Zarchan and Howard Musoff},
+  editor    = {Frank K. Lu},
+}
+
+@Article{Katehakis1987,
+  author    = {Michael N. Katehakis and Arthur F. Veinott},
+  title     = {The Multi-Armed Bandit Problem: Decomposition and Computation},
+  journal   = {Mathematics of Operations Research},
+  year      = {1987},
+  volume    = {12},
+  number    = {2},
+  pages     = {262--268},
+  issn      = {0364765X, 15265471},
+  groups    = {MAB},
+  publisher = {INFORMS},
+  url       = {http://www.jstor.org/stable/3689689},
+}
+
+@Article{Auer2002,
+  author  = {Auer, Peter and Cesa-Bianchi, Nicolò and Fischer, Paul},
+  title   = {Finite-time Analysis of the Multiarmed Bandit Problem},
+  journal = {Machine Learning},
+  year    = {2002},
+  volume  = {47},
+  pages   = {235-256},
+  month   = {05},
+  doi     = {10.1023/A:1013689704352},
+  groups  = {MAB},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
 
 @Comment{jabref-meta: grouping:
@@ -1661,4 +1835,5 @@ used square root adaptation for alpha beta gamma filters},
 2 StaticGroup:Dwell optimization\;0\;1\;\;\;\;;
 2 StaticGroup:POMDPs\;0\;1\;\;\;\;;
 2 StaticGroup:Benchmark problem solutions\;0\;1\;0x8a8a8aff\;\;\;;
+1 StaticGroup:MIMO TX-RX selection\;0\;1\;\;\;\;;
 }
