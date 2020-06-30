@@ -1043,30 +1043,30 @@ Simple greedy policy analyzed to be optimal},
 
 @Article{Wintenby2006,
   author   = {J. {Wintenby} and V. {Krishnamurthy}},
-  journal  = {IEEE Transactions on Aerospace and Electronic Systems},
   title    = {Hierarchical resource management in adaptive airborne surveillance radars},
+  journal  = {IEEE Transactions on Aerospace and Electronic Systems},
   year     = {2006},
-  issn     = {2371-9877},
-  month    = apr,
+  volume   = {42},
   number   = {2},
   pages    = {401-420},
-  volume   = {42},
+  month    = apr,
+  issn     = {2371-9877},
   abstract = {In this paper we present hierarchical resource management algorithms for adaptive airborne surveillance radars. By abstracting the physical layer sensor performance into a quality of service measure, the resource management problem is formulated as a constrained Markov decision process. A two-level (two-timescale) resource management algorithm is presented based on Lagrangian relaxation. A numerical example is given with scenarios involving different target densities.},
   doi      = {10.1109/TAES.2006.1642560},
-  groups   = {MFR resource management, Hierarchical},
+  groups   = {MFR resource management, POMDP},
   keywords = {search radar;adaptive radar;airborne radar;resource allocation;Markov processes;hierarchical resource management;adaptive airborne surveillance radars;sensor performance;service measure;constrained Markov decision process;Lagrangian relaxation;Resource management;Surveillance;Airborne radar;Radar tracking;Radar antennas;Target tracking;Stochastic processes;Processor scheduling;Algorithm design and analysis;Cost function},
 }
 
 @InProceedings{Esfahani2012a,
   author    = {P. H. {Esfahani} and M. {Kamarei}},
-  booktitle = {2012 IEEE Radar Conference},
   title     = {{Non-myopic optimization-based algorithm for scheduling in ESA radars}},
+  booktitle = {2012 IEEE Radar Conference},
   year      = {2012},
-  month     = may,
   pages     = {0928-0933},
+  month     = may,
   abstract  = {This paper proposes a novel non-myopic technique for multitarget track scheduling in electronically scanned array radars. The real-time scheduling problem is addressed based on two-level decomposition. For each track task, the minimum expected load state is defined by its target maneuver model. The optimal set of targets which should be updated at the upcoming scheduling interval is calculated by solving a stochastic optimization problem, i.e., based on the minimum expected load states and the system workload. A numerical example is presented with different target densities and maneuvers scenarios. The simulation results show that the proposed approach can significantly decrease track drop rate and increase track accuracy in comparison with the myopic approach.},
   doi       = {10.1109/RADAR.2012.6212270},
-  groups    = {MFR resource management, Hierarchical},
+  groups    = {POMDP},
   issn      = {1097-5659},
   keywords  = {optimisation;radar antennas;scheduling;nonmyopic optimization-based algorithm;ESA radars;multitarget track scheduling;electronically-scanned array radars;real-time scheduling problem;two-level decomposition;track task;minimum-expected load state;target maneuver model;upcoming scheduling interval;stochastic optimization problem;target densities;maneuver scenarios;track drop rate;track accuracy;Radar tracking;Target tracking;Silicon;Scheduling;Optimization;Prediction algorithms},
 }
@@ -1116,17 +1116,17 @@ The old papaers from 70s and 80s did the Van Keuk criterion
 
 @Article{Charlish2015a,
   author   = {A. {Charlish} and K. {Woodbridge} and H. {Griffiths}},
-  journal  = {IEEE Transactions on Aerospace and Electronic Systems},
   title    = {Phased array radar resource management using continuous double auction},
+  journal  = {IEEE Transactions on Aerospace and Electronic Systems},
   year     = {2015},
-  issn     = {2371-9877},
-  month    = jul,
+  volume   = {51},
   number   = {3},
   pages    = {2212-2224},
-  volume   = {51},
+  month    = jul,
+  issn     = {2371-9877},
   abstract = {This paper addresses the problem of allocating resource and selecting operational parameters for multiple tasks for an electronically steered phased array radar system. The continuous double auction parameter selection (CDAPS) algorithm is presented, which controls the operational parameters such that a resource constraint is satisfied. The algorithm optimises the complete multiple task parameter selection problem, in contrast to the common approach of optimising the parameter selection for each single task separately. It is shown that CDAPS produces a near-optimal solution for the single resource discrete parameter selection problem. Simulated scenarios verify that this near-optimum solution significantly improves upon conventional rule based methods. The additional desirable characteristics of the CDAPS algorithm: computational efficiency, scalability, and rapid reaction, are also highlighted.},
   doi      = {10.1109/TAES.2015.130558},
-  groups   = {Q-RAM, MFR resource management},
+  groups   = {Q-RAM, MFR resource management, POMDP},
   keywords = {beam steering;channel allocation;parameter estimation;phased array radar;conventional rule based method;single resource discrete parameter selection problem;complete multiple task parameter selection problem optimisation;CDAPS algorithm;continuous double auction parameter selection;electronically steered phased array radar system;resource allocation;phased array radar resource management;Resource management;Radar tracking;Target tracking;Radar measurements;Time measurement;Loading},
 }
 
@@ -1817,7 +1817,7 @@ used square root adaptation for alpha beta gamma filters},
   booktitle = {Proceedings Real-Time Systems Symposium},
   year      = {1997},
   pages     = {298-307},
-  groups    = {MFR resource management},
+  groups    = {MFR resource management, Q-RAM},
 }
 
 @Article{Irci2010,
@@ -1846,7 +1846,35 @@ used square root adaptation for alpha beta gamma filters},
   booktitle = {Proceedings 19th IEEE Real-Time Systems Symposium (Cat. No.98CB36279)},
   year      = {1998},
   pages     = {296-306},
-  groups    = {MFR resource management},
+  groups    = {MFR resource management, POMDP, Q-RAM},
+}
+
+@Book{Mailloux2017,
+  title     = {Phased Array Antenna Handbook},
+  publisher = {Artech House, Inc.},
+  year      = {2017},
+  author    = {Mailloux, Robert J.},
+  address   = {USA},
+  edition   = {3rd},
+  isbn      = {1630810290},
+  groups    = {Radar basics},
+}
+
+@Book{Brookner1998,
+  title     = {{Tracking and Kalman Filtering Made Easy}},
+  publisher = {A Wiley-Interscience Publication},
+  year      = {1998},
+  author    = {Eli Brookner},
+  isbn      = {0-471-22419-7},
+  groups    = {Radar basics},
+}
+
+@Book{Sherman2011,
+  title     = {{Monopulse Principles and Techniques}},
+  publisher = {Artech House},
+  year      = {2011},
+  author    = {Samuel M. Sherman and David K. Barton},
+  groups    = {Radar basics},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
@@ -1882,7 +1910,7 @@ used square root adaptation for alpha beta gamma filters},
 3 StaticGroup:VanKeuk Criterion\;0\;1\;\;\;\;;
 2 StaticGroup:MAB scheduling\;0\;1\;\;\;\;;
 2 StaticGroup:Q-RAM\;0\;1\;\;\;\;;
-2 StaticGroup:Hierarchical\;0\;1\;\;\;\;;
+2 StaticGroup:POMDP\;0\;1\;\;\;\;;
 2 StaticGroup:Information based\;0\;1\;\;\;\;;
 2 StaticGroup:Thesis\;0\;1\;\;\;\;;
 2 StaticGroup:Dwell optimization\;0\;1\;\;\;\;;
