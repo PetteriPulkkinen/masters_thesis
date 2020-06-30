@@ -198,6 +198,8 @@
 \newcommand{\eindex}{X_{nm}}
 \newcommand{\vindex}{\boldsymbol{X}}
 
+\newcommand{\ri}{t_r}
+
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
@@ -402,7 +404,7 @@ $\ecovmxinitcurr$ & estimated error covariance matrix on estimate $\xmxinitcurr$
 % -----------------------
 % revisit interval selection related symbols
 % -----------------------
-$t_r$ & revisit interval \\
+$\ri$ & revisit interval \\
 $\tau_d$ & dwell length \\
 &\\
 % -----------------------
@@ -484,11 +486,11 @@ Finally, Chapter \ref{sec:conclusions} draws conclusions about the suitability o
 \section{Radar systems}\label{sec:background}
 
 Radar resource management (RRM) stands for controlling any of the degrees of freedom (DoF) parameters of the radar or allocating radar resources, such as power, bandwidth and time, for a specific radar task.
-This chapter provides an overview of RRM and underlying theory and methods.
+This chapter provides an overview of radar systems and underlying theory and methods to give background for the considered RRM problems.
 Section \ref{sec:radar_opertaion_principle} briefly introduces the operation principle of a radar.
 Different radar types are briefly described in Section \ref{sec:radar_types}. 
 The RRM problems to be solved typically depend on the specific radar type. 
-Finally, Section \ref{sec:Tracking} covers basic concepts of target tracking with a radar, because the target tracking is one of the key radar tasks which involves many RRM problems.
+Finally, Section \ref{sec:Tracking} covers basic concepts of target tracking because the target tracking is one of the key radar tasks which involves many RRM problems.
 
 \subsection{Operation principles of radars} \label{sec:radar_opertaion_principle}
 
@@ -774,7 +776,7 @@ The state transition and process noise covariance matrices are extended to the h
 \end{equation}
 which are based on the same principles that was shown for the CV model.
 
-\subsubsection{Radar measurement model}
+\subsubsection{Radar measurement model} \label{sec:measurement_model}
 
 In this section, a measurement model introduced for monostatic radars.
 This model is suitable for linear trackers when using target models discussed is Section \ref{sec:target_models}.
@@ -1423,8 +1425,8 @@ An efficient RRM is required to maximize the radar resource utilization for opti
 
 Operational parameters of a radar are optimized or selected for a given look to maximize utility functions. 
 Modern radars can adaptively select almost any radar operational parameter such as transmit power, frequency, bandwidth, revisit interval, dwell time and PRF as well as to choose among different waveforms.
-In addition, radar networks such as distributed MIMO radars can select different TX and RX configurations. 
-Radar networks create additional difficulty in RRM because each radar can be configured and scheduled individually to improve the overall performance.
+In addition, radar networks such as distributed MIMO radars can select different TX and RX configurations \cite{Godrich2011a, Godrich2011, Sun2014}.
+Radar networks create additional difficulty in RRM because each radar can be configured and scheduled individually to improve the overall performance \cite{Sun2014}.
 
 Time Budget Management (TBM) is a subproblem of RRM in which radar time resources are allocated for radar looks and the looks are scheduled into the timeline. 
 The time duration of the look is called dwell time, and the time duration between the looks for a given task is called revisit interval (RI). 
@@ -1588,7 +1590,7 @@ The innovation is the residual between the measurement $z_k$ and the predicted m
 \end{equation}
 The RI was increased or decreased by using a simple recursive rule 
 \begin{equation}\label{eq:update_resid}
-    t_r(k) = \frac{t_r(k-1)}{\sqrt{e_n(k)}}.
+    \ri(k) = \frac{\ri(k-1)}{\sqrt{e_n(k)}}.
 \end{equation}
 The signal $e_n(k)$ was calculated form $e_k$ as follows
 \begin{equation}\label{eq:norm_residual}
@@ -1611,7 +1613,7 @@ For constant velocity targets, the $\alpha\beta$ filter was more appropriate bec
 A residual-based algorithm for the IMM estimator was proposed in \cite{ChengTing2007}.
 The following equation is obtained for calculating the RI
 \begin{equation}
-    t_r(k) = \frac{4}{2^p}, \text{ } 4^p c < |e_s(k)| < 4^{p+1}c
+    \ri(k) = \frac{4}{2^p}, \text{ } 4^p c < |e_s(k)| < 4^{p+1}c
 \end{equation}
 in which $e_s(n)$ is the normalized and smoothed residual.
 Furthermore, equation for $p$ can be written as
@@ -1625,7 +1627,7 @@ Baek \etal in \cite{Baek2010} proposed a residual-based algorithm in which the r
 A Kalman filter is used to track the target.
 For the tracking filter, recursive equation to calculate revisit interval from previous revisit interval was obtained
 \begin{equation}\label{eq:update_baek}
-    t_r(k) = t_r(k - 1) \sqrt{\frac{e_0}{|e(k)|}},
+    \ri(k) = \ri(k - 1) \sqrt{\frac{e_0}{|e(k)|}},
 \end{equation}
 where $e_0$ is the desired expected residual, which was derived from measurement error covariance matrix and desired threshold $e_\text{th}$ and target priority.
 A higher target priority implies that shorter RI is used to reduce the probability of target moving out from the threshold area defined by $e_\text{th}$.
@@ -1645,42 +1647,42 @@ Van Keuk proposed error covariance matrix based criterion that can be utilized t
 In addition, an equation is given to calculate the RI efficiently for a target with known or estimated Signer motion model \cite{RongLi2003} parameters.
 Initially, the target tracking problem was considered in one-dimensional space such that the Van Keuk's criterion can be written as follows
 \begin{equation}\label{eq:criterion}
-    \sigma_p(t + t_r | t) \leq V_0 \sigma_m
+    \sigma_p(t + \ri | t) \leq V_0 \sigma_m
 \end{equation}
-where $\sigma_p(t + t_r | t)$ is the predicted position error standard deviation for time instance $t+t_r$ predicted from time instance $t$, $\sigma_m$ is the measurement error standard deviation, and the parameter $V_0$ is called track sharpness.
-In higher dimensions, $\sigma_p(t + t_r | t)$ is a square root of the maximum eigenvalue of the predicted position error matrix, and $\sigma_m$ is the measurement error standard deviation in the corresponding direction.
+where $\sigma_p(t + \ri | t)$ is the predicted position error standard deviation for time instance $t+\ri$ predicted from time instance $t$, $\sigma_m$ is the measurement error standard deviation, and the parameter $V_0$ is called track sharpness.
+In higher dimensions, $\sigma_p(t + \ri | t)$ is a square root of the maximum eigenvalue of the predicted position error matrix, and $\sigma_m$ is the measurement error standard deviation in the corresponding direction.
 The RI is obtained as a solution for the following optimization problem
 \begin{equation}\label{eq:van_keuk_optimization}
 \begin{array}{ll}
-     & \max_{t_r} t_r \\[7pt]
-    \text{s.t. } &\sigma_p(t + t_r | t) \leq V_0 \sigma_m. 
+     & \max_{\ri} \ri \\[7pt]
+    \text{s.t. } &\sigma_p(t + \ri | t) \leq V_0 \sigma_m. 
 \end{array}
 \end{equation}
 The approach assumed the Singer motion model with acceleration standard deviation parameter $\Sigma$ and correlation parameter $\Theta$.
-Using the assumed models and steady-state Kalman filter equations, a heuristic rule to calculate $t_r$ is obtained
+Using the assumed models and steady-state Kalman filter equations, a heuristic rule to calculate $\ri$ is obtained
 \begin{equation}\label{eq:keuk_time}
-    t_r \approx 0.4 \left[ \frac{\sigma_m \sqrt{\Theta}}{\Sigma} \right]^{0.4} \frac{V_0^{2.4}}{1+\frac{1}{2}V_0^2}
+    \ri \approx 0.4 \left[ \frac{\sigma_m \sqrt{\Theta}}{\Sigma} \right]^{0.4} \frac{V_0^{2.4}}{1+\frac{1}{2}V_0^2}
 \end{equation}
 which approximately solves the optimization problem in equation \eqref{eq:van_keuk_optimization}.
 
 The equation \eqref{eq:keuk_time} was proposed for calculating the RI efficiently but the optimal value for the track sharpness parameter $V_0$ was not considered.
 However, the work was extended in \cite{vanKeuk1993} to find suitable value for $V_0$ by considering the tracking load
 \begin{equation}\label{eq:load}
-    L = \frac{\E{n | t_r} \tau}{t_r}
+    L = \frac{\E{n | \ri} \tau}{\ri}
 \end{equation}
 where $n$ is the number of dwells needed to obtain a successful detection, and $\tau$ is the dwell time.
 It was assumed that only angular uncertainty needs to be considered when \eqref{eq:load} is minimized, 
 because low uncertainty in the angle enables pointing the beam in the correct direction.
 Therefore, the criterion \eqref{eq:criterion} was reformulated by replacing the parameter $\sigma_m$ with the half-power beamwidth $B$ of the transmitted beam such that
 \begin{equation} \label{eq:criterion2}
-    G(t + t_r | t) \leq V_0 B
+    G(t + \ri | t) \leq V_0 B
 \end{equation}
 where $G$ calculates the error standard deviation along the major axis of ellipsoid in the sine space \cite{vanKeuk1993}.
 The sine space consists of $u$, $v$ and $r$ coordinates where $u=\cos el \sin az$ and $v=\sin el$ for elevation angle $el$ and azimuth angle $az$ \cite{Mailloux2017}.
 The sine space is commonly used coordinate system with phased-array antennas.
 A refined version of the RI rule was obtained based on the half-power beam width
 \begin{equation}\label{eq:van_keuk_revisited}
-    t_r \approx 0.4 \left[ \frac{\sigma_m r \sqrt{\Theta}}{\Sigma} \right]^{0.4} \frac{U^{2.4}}{1+\frac{1}{2}U^2}
+    \ri \approx 0.4 \left[ \frac{\sigma_m r \sqrt{\Theta}}{\Sigma} \right]^{0.4} \frac{U^{2.4}}{1+\frac{1}{2}U^2}
 \end{equation}
 where $r$ is the distance from the radar to the target, and the parameter $U$ is defined as
 \begin{equation}
@@ -1689,11 +1691,11 @@ where $r$ is the distance from the radar to the target, and the parameter $U$ is
 The optimization problem for $V_0$ is formulated as 
 \begin{equation}
 \begin{array}{ll}
-     & \min_{V_0} \frac{\E{n | t_r} \tau}{t_r} \\ [7pt]
-    \text{s.t.} & G(t + t_r | t) = V_0 B
+     & \min_{V_0} \frac{\E{n | \ri} \tau}{\ri} \\ [7pt]
+    \text{s.t.} & G(t + \ri | t) = V_0 B
 \end{array}
 \end{equation}
-where $\E{n | t_r}$ and $t_r$ are substituted with their closed form expressions \cite{vanKeuk1993}.
+where $\E{n | \ri}$ and $\ri$ are substituted with their closed form expressions \cite{vanKeuk1993}.
 In \cite{vanKeuk1993}, it is stated that fixed $V_0=0.3$ solves the optimization problem approximately with typical target parameters.
 
 The research in \cite{Keuk1975, vanKeuk1993} was based on finding the formula to calculate the RI for the Singer motion model with known maneuver parameters.
@@ -1705,10 +1707,10 @@ Optimal algorithm to maintain desired state prediction error with IMM estimators
 A threshold for the uncertainty is selected to be proportional to the measurement error covariance matrix.
 Furthermore, the threshold matrix and predicted covariance are set equal
 \begin{equation}\label{eq:cov_th}
-    \tr{ \vec{\Sigma}_{t+t_r|t} } = \tr{ \vec{\Sigma}_{\text{th}} },
+    \tr{ \vec{\Sigma}_{t+\ri|t} } = \tr{ \vec{\Sigma}_{\text{th}} },
 \end{equation}
-where $\vec{\Sigma}_{t+t_r|t}$ is the predicted error covariance, and $\vec{\Sigma}_{\text{th}}$ is the threshold covariance matrix.
-From equation \eqref{eq:cov_th}, a polynomial function is obtained which is a function of the RI $t_r$.
+where $\vec{\Sigma}_{t+\ri|t}$ is the predicted error covariance, and $\vec{\Sigma}_{\text{th}}$ is the threshold covariance matrix.
+From equation \eqref{eq:cov_th}, a polynomial function is obtained which is a function of the RI $\ri$.
 The non-linear optimization problem was solved using Newton's method.
 
 Practical algorithm to solve optimization problem in equation \ref{eq:van_keuk_optimization} for IMM filters was proposed in \cite{Daeipour1994} Finite set of RIs were defined and heuristic algorithm to select the revisit interval was proposed to avoid computationally intensive optimization problem.
@@ -1725,7 +1727,7 @@ The IMM filter is comprised of two models, a constant velocity model, and a cons
 The steady-state RIs are defined for the constant velocity model $t_\text{cv}$ and for the constant acceleration model $t_\text{ca}$.
 Then, the RI is obtained with using a simple equation
 \begin{equation}\label{eq:fimm}
-    t_r = \muca t_\text{ca} + \mucv t_\text{cv},
+    \ri = \muca t_\text{ca} + \mucv t_\text{cv},
 \end{equation}
 where $\mucv$ and $\muca$ are the probabilities for constant velocity and constant acceleration models, respectively.
 
@@ -1745,11 +1747,11 @@ The anticipation is utilized to prevent large prediction errors when the target 
 This can be achieved by acquiring high prediction accuracy by using short RI before the target moves to the occluded area where measurement accuracy is significantly reduced.
 A POMDP framework is utilized for which the immediate reward was defined as
 \begin{equation}
-    r(b_t, t_r) = \frac{u\left(\vec{P}_{t+t_r|t} \right) T}{\tau_c},
+    r(b_t, \ri) = \frac{u\left(\vec{P}_{t+\ri|t} \right) T}{\tau_c},
 \end{equation}
 where $b_t$ is the belief state, and $\tau_c$ is the measurement duration.
 Moreover, the long-term rewards are calculated by using \eqref{eq:discounted_sum}.
-The utility function $u\left(\vec{P}_{t+t_r|t} \right)=1$ if desired tracking accuracy is achieved.
+The utility function $u\left(\vec{P}_{t+\ri|t} \right)=1$ if desired tracking accuracy is achieved.
 If achieved tracking accuracy is below the threshold, the utility function will gradually decrease towards zero.
 
 
@@ -2088,125 +2090,122 @@ It was shown that reinforcement learning can be effectively used to continuously
 \newpage
 \section{Reinforcement Learning approach for Revisit Interval Selection}\label{sec:rl_ri}
 
-The optimal POMDP approach for TBM is intractable when using conventional algorithms as discussed in Chapter \ref{sec:tbm}. 
+In this Chapter, Reinforcement Learning (RL) methods are used to approach the Time Budget Management (TBM) problem described in Chapter \ref{sec:existing_RRM}.
+An optimal Stochastic Dynamic Programming (SDP) technique for the TBM problem is unfeasible. 
 Moreover, applying RL techniques to approximately find an optimal solution without using any relaxations can be challenging because of two reasons
 \begin{enumerate}
     \item number of targets can change in time, and
-    \item the TBM problem is POMDP
+    \item the TBM problem is Partially Observable Markov Decision Process (POMDP)
 \end{enumerate}
-The first difficulty affects to the dimensions of the state and action spaces. 
-For example, in multitarget tracking the observation could be a combination of belief states of each target, and the action could be to choose which tracks will be updated next.
+The first difficulty affects the dimensions of the state and action spaces. 
+For example, in multitarget tracking, the observation could be a combination of belief states of each target, and the action could be to choose which tracks will be updated next.
 In that case, the number of actions would depend on the number of targets, and if an observation is presented as a matrix, the dimension of the matrix would depend on the number of targets.
-Obviously, discretizing the observation space would not help either, since the number of discrete observations would grow exponentially as the number of targets increase.
+Obviously, discretizing the observation space would not help either, since the number of discrete observations would grow exponentially as the number of targets increased.
 
-The second difficulty is related to more general problem with sensing systems,
-the variables derived from the radar measurements always include certain degree of uncertainty.
-However, there are at least couple of different ways to tackle the POMDP problems using reinforcement learning.
-For example, an MDP state can be approximated from sequence of past observations with finite length, or an external model-based approach can be used to extract the belief state.
+The second difficulty is related to a more general problem with sensing systems,
+the variables derived from the radar measurements always include a certain degree of uncertainty.
+However, there are at least a couple of different ways to tackle the POMDP problems using reinforcement learning.
+For example, a Markov Decision Process (MDP) state can be approximated from the sequence of past observations with finite length, or an external model-based approach can be used to extract the belief state.
 The former approach can be implemented by stacking observations to form a single state as in \cite{Mnih2013}, or by using recurrent neural networks as in \cite{Hausknecht2015}.
-The downside is that typically such approaches require large amount of training.
-In the latter approach, the RL policy is dependent on the model, thus modelling errors can decrease performance of the policy.
-However, in radar applications the latter method is still attractive since typically required models already exist and training can faster compared to the former approach.
+The downside is that typically such approaches require a large amount of training.
+In the latter approach, the RL policy is dependent on the model, thus modeling errors can decrease the performance of the policy.
+However, in radar applications, the latter method is still attractive since typically required models already exist and training can faster compared to the former approach.
 
-To avoid the difficulty with the variable number of targets, an optimal TBM problem is relaxed to easier problem using the same techniques that were discussed in Section \ref{sec:tbm}.
-The two-time scale approach is utilized to divide the TBM problem into FTS and STS scheduling problems.
-Moreover, the proposed RL approach can be integrated into existing STS scheduling algorithms by enabling RL algorithm to control the RIs of the tracking tasks.
-The RIs are controlled such that minimum time is spent on the target tracking tasks, which enables the STS scheduler to allocate the remaining time budget for another radar tasks.
-This approach enables using the same RL policy for each track separately, thus making the actions and observations easier to present.
+To avoid the difficulty with the variable number of targets, an optimal TBM problem is relaxed to an easier problem using the same techniques that were discussed in Section \ref{sec:RRM_tech}.
+Especially, the TBM problem is addressed with a rule-based approach, in which adaptive Revisit Interval Selection (RIS) algorithms can be used to select the Revisit Interval (RI) of the tracking filter.
+This approach enables using the RL policy for each track separately, thus making the actions and observations easier to present.
 
-In the proposed RL formulation, a single target tracking (STT) scenario is assumed. 
-Therefore, implementations of the STS and FTS schedulers are not addressed.
-However, the RL approach is extendable to multi-target tracking scenarios when two-time scale architecture is used and by considering the probability of mixing tracks in the observation presentation. 
+The proposed RL formulation is assuming a single target tracking (STT) scenario. 
+Therefore, the formulation is not addressing the track association and implementation of the low-level scheduler.
+However, the RL approach is extendable to multi-target tracking (MTT) scenarios by using a low-level scheduler and by considering the probability of mixing tracks with providing relevant observations for the RL agent.
 In STT scenario, it is possible to experiment if the learning-based approach can help to tackle problems caused by modelling inconveniences that affect conventional non-learning-based algorithms.
-As a reminder, the existing adaptive RIS algorithms was reviewed in Section \ref{sec:tbm_ri}.
+The performance of the RL approach is investigated in benchmark trajectories proposed in \cite{Blair1998} by evaluating the probability of losing a track (PLT) and tracking load.
 
-The performance of a RIS algorithm in STT scenario is investigated by evaluating probability of losing track (PLT) and tracking load.
-It should be emphasized that the PLT and tracking loads are closely linked together.
-For example, tracking load can be reduced by enabling higher PLT or vice-versa.
-Monte Carlo simulations are required to evaluate these quantities in realistic tracking scenarios, because the target models used in the filters are not optimal.
-One way to ensure fair comparison between algorithms is to specify upper limit for the PLT in the Monte Carlo simulations and rank the algorithms based on the tracking load.
-It requires tuning the algorithms parameters to find the most suitable set for the given evaluation criteria.
-
-In the next sections, a RL approach is proposed for the RIS problem for two different tracking systems.
-The Section \ref{sec:system_description} describes the considered radar systems
-such that it is possible to identify the actions, observations and rewards in the Section \ref{sec:RL_formulation}.
-In Section \ref{sec:ri_sim} the proposed reinforcement learning approach is evaluated in the benchmark problem. 
+In the next sections, an RL approach is proposed for the RIS problem and evaluated using Monte Carlo simulations.
+Section \ref{sec:system_description} describes the considered radar systems.
+In Section \ref{sec:RL_formulation}, the RL formulation of the RIS problem is proposed for the radar system introduced in Section \ref{sec:system_description}.
+In Section \ref{sec:ri_sim} the proposed RL approach is evaluated using the benchmark trajectories and a baseline algorithm.
 
 
 \subsection{Assumed radar system} \label{sec:system_description}
 
-The RL formulation is dependent on the radar system where it is applied. 
-In other words, the system prescribe what information is available for the agent to use as rewards and states. 
-The radar system can search new targets by using the search function. 
-A track is initiated for a target such that close to steady-state estimates can be assumed before entering the tracking loop. 
+The actions, observations, and rewards of the RL formulation are dependent on the radar system in which the RL algorithm is applied.
+In other words, the system prescribes the available information to use as rewards and states, and the possible actions of the radar system.
+
+The assumed radar system searches new targets using the search function. 
+A track is initiated for a target before entering the tracking loop. 
 In the assumed radar system, the tracking loop is implemented by the following steps.
 \begin{enumerate}
-\item\textbf{Predict target position at the current time instant denoted as $t_k$.}
+\item\textbf{Predict the target position at the current time instant denoted as $t_k$.}
 
-
-Target position is predicted using a tracking filter. The prediction is implemented by propagating the a priori estimates with an arbitrary processing interval $\dt$. The RI is selected that following equation holds $ t_r  =L \dt$ where L is an integer.
+The target position is predicted using a tracking filter. The prediction is implemented by propagating the predictive tracking equations with an arbitrary processing interval $\dt$. The RI is selected such that the following equation holds $ \ri  =L \dt$ where L is an integer.
 
 \item\textbf{Illuminate target at the predicted position.}
 
 The center of the beamlobe is directed to the predicted target position. 
-The center beam SNR is assumed to be a constant variable $SN_0$, if the predicted angle is exactly the target angle. 
+The center beam SNR is assumed to be a constant variable $SN_0$ if the predicted angle is exactly the target angle. 
 On the other hand, if angle error exists, the SNR will degrade depending on the radar beamshape. 
 In real-world radar, the center beam SNR could be kept approximately constant by adaptively controlling the transmit power using for example the Equation \eqref{eq:radar_snr} and the estimated target range. 
-Other way to control the SNR is to use different integration times. 
+Another way to control the SNR is to use different integration times which affects the dwell time. 
 It would add another dimension to the TBM problem. 
-However, only constant integration time is assumed here.
+However, the only constant integration time is assumed here.
 
 \item\textbf{If detection occurs, correct the target state estimate with the obtained measurement. If no detection obtained, either return to step 1 if the number missed detections is below a threshold $n_{max}$, or otherwise flag the target lost and exit the track update loop.}
 
-In the latter case the target is considered lost and it is not addressed what happens in that scenario. In some radars the track could be kept in memory if it is found again for example by search tasks. Then, the tracking loop could be restarted.
+In the latter case, the target is considered lost and it is not required to address here how the radar responds to such a scenario. 
+In some radars, the track could be kept in memory if the target is found again for example by the search function. 
+Then, the tracking loop could be restarted.
 
 
-\item\textbf{Select the RI $t_r$.}
+\item\textbf{Select the RI $\ri$.}
 
-The RI is selected by any suitable algorithm. For example, algorithms reviewed in section section here or by a reinforcement learning agent which will be described in the next section. 
+The RI is selected by using a RIS algorithm.
+For example, using RIS algorithms reviewed in Section \ref{sec:tbm_ri} or the RI could be selected by an RL agent.
 
+\item\textbf{Return to step 1 before time instant $t_k + \ri$.}
 
-\item\textbf{Return to step 1 before time instant $t_k + t_r$.}
-
-The certainty in the predicted state estimates will degrade in function of time. Therefore, $t_k + t_r$ is deadline for updating the track, but it could be also updated before the deadline depending on the STS and FTS implementation.
+The certainty in the predicted state estimates will degrade in the function of time. Therefore, $t_k + \ri$ is the deadline for updating the track, but it could be also updated before the deadline depending on the higher-level implementation of the RRM.
 
 \end{enumerate}
 
-The track loop would be the same for each target in MTT scenario. However, in the assumed STT tracking scenario only one tracking loop can occur. The STT scenario also simplifies the problem such that track association is not needed to consider.
-
-
+The track loop would be the same for each target in the MTT scenario. 
+However, in the assumed STT tracking scenario only one tracking loop can occur. 
+The STT scenario also simplifies the problem such that track association is not needed to consider.
 
 
 \subsection{Reinforcement learning formulation}\label{sec:RL_formulation}
 
-The RL formulation is proposed for algorithms such as Q-learning and SARSA which have discrete action and state spaces. 
-Therefore, cardinality of the spaces must be tolerable because otherwise the exploration would take too much time.
-In Section \ref{sec:actions} two different ways to present the action space is introduced.
-Section \ref{sec:rewards} proposes a reward function that prevent losing tracks based on a certain cost and minimizes the tracking load. 
-Finally, in Section \ref{sec:states} discrete observations are identified which at least approximately reflect valid MDP states in the problem at hand.
+The RL formulation is proposed for algorithms such as Q-learning \cite{Sutton2018}, which have discrete action and state spaces. 
+Therefore, the cardinality of the action and state spaces must be tolerable because otherwise, the exploration would take too much time.
+In Section \ref{sec:actions} two different ways to present the action space are introduced.
+Section \ref{sec:rewards} proposes a reward function that prevents losing tracks based on a certain cost and minimizes the tracking load. 
+Finally, in Section \ref{sec:states} discrete observations are identified which at least approximately present valid MDP states in the RIS problem.
 
 \subsubsection{Actions} \label{sec:actions}
 
-The agent can control the RI using two different approaches.
+\newcommand{\amax}{a_\text{max}}
+\newcommand{\amin}{a_\text{min}}
+
+The RL agent can control the RI using two different approaches.
 One approach is to select the RI from a set of intervals.
 This approach will be referred as direct selection.
 The other approach either decreases or increases the RI with arbitrary delta value, that is referred as delta selection.
 In other words, the action is mathematically interpreted as follows
 \begin{equation}
-    t_r(k) = \left\{
+    \ri(k) = \left\{
         \begin{array}{l l}
             A_k & \text{if direct selection used} \\
-            t_r(k-1) + A_k &  \text{if delta selection used}
+            \ri(k-1) + A_k &  \text{if delta selection used}
         \end{array}\right.
 \end{equation}
-where $A_k$ is the action taken at time instance $k$, and $t_r(k)$ is the RI selected at time instance $k$.
-Both of the approaches could have a continuous or a discrete action space.
-In fact, the discrete action space is just a discretized version of the continuous action space $a \in (\tmin, \tmax)$.
-Linear discretization is used here because it enables easy tuning, but non-linear discretization with more tuning parameters could be also used.
+where $A_k$ is the action taken at time instance $k$, and $\ri(k)$ is the RI selected at time instance $k$.
+Both of the approaches could have either a continuous or a discrete action space.
+In fact, the discrete action space is just a discretized version of the continuous action space $A_k \in [\amin, \amax]$.
 
 The action space for direct selections is discretized such that subsequent RIs have equal distance.
-In addition, the maximum RI $\tmax$ and the minimum RI $\tmin$ are loosely defined for example by using the dynamic models of the IMM estimator and the Van Keuk's criterion.
-An example of direct selections is $a \in \{0.5, 1.0, 1.5, 2.0, 2.5\}$, where $\tmax=2.5$, $\tmin=0.5$ and size of the action space is $5$.
+In addition, maximum RI $\tmax$ and minimum RI $\tmin$ are loosely defined by using expert knowledge of by using trial and error approach in the simulations. 
+By loosely defining it is meant that $\tmin$ can be shorter RI than the radar will ever use and similarly $\tmax$ can be longer.
+An example set of actions for direct selections is $A_k \in \{0.5, 1.0, 1.5, 2.0, 2.5\}$, where $\tmax=2.5$, $\tmin=0.5$ and size of the action space is $5$.
 In general form, the action space for direct selections is defined as follows
 \begin{equation}\label{eq:as_direct}
     \Asdir \coloneqq \{ \frac{n \tmax + (\nacts-n-1) \tmin}{\nacts-1} \}_{n=0}^{\nacts-1},    
@@ -2218,27 +2217,27 @@ However, larger $\nacts$ may enable higher performance since larger variety of R
 The action space for delta selections is defined using equal number of decreasing and increasing delta values. 
 In addition, the action $a=0$ is included that neither increases or decreases the RI.
 The deltas are are spaced with uniform distance as in \eqref{eq:as_direct}.
-The maximum action $\tmax=\deltalim$ and minimum action $\tmin=-\deltalim$ is defined using the parameter $\deltalim$ which should be chosen along with the parameter $\nacts$ to achieve sufficiently large deltas with satisfactory resolution.
+The maximum action $\amax=\deltalim$ and minimum action $\amin=-\deltalim$ are defined using the parameter $\deltalim$ which should be chosen along with the parameter $\nacts$ to achieve sufficiently large deltas with satisfactory resolution.
 An action space for delta selection could be for example $\{ -1.0, -0.5, 0, 0.5, 1.0 \}$, where $\deltalim=1$ and $L=5$.
 The general form of delta selection action space is
 \begin{equation}\label{eq:as_delta}
     \Asdelta \coloneqq \{ \frac{\deltalim \left( 2 n - \nacts + 1 \right)}{\nacts-1} \}_{n=0}^{\nacts-1},
 \end{equation}
 where $\nacts$ should be positive odd number.
-Contrary to the direct selection, $\tmax$ and $\tmin$ can be set lower than limits of the RI $t_r$.
-However, multiple actions might be needed to achieve the desired RI which is depends on $\deltalim$ and $\nacts$.
+It is not required to define the limits $\tmax$ and $\tmin$ unlike in the direct selection. 
+In addition, $\deltalim$ can be much lower than $\tmax - \tmin$.
+However, multiple actions might be needed to achieve the desired RI which depends on $\deltalim$ and $\nacts$.
 
 \subsubsection{Reward} \label{sec:rewards}
 
 \newcommand{\ploss}{P_\text{loss}}
-\newcommand{\ri}{t_r}
+
 \newcommand{\pref}{P_\text{ref}}
 \newcommand{\lref}{L_\text{ref}}
 
 The overall objective for the agent is to minimize time budget needed to maintain a track, and prevent track losses based on a cost of a track loss.
 The objective should be reflected in the immediate and cumulative rewards that are given for the RL agent as in Equation \ref{eq:discounted_sum}. 
-However, it is not compulsory to account the long-term rewards if it is not suitable for the given problem.
-For example, in the following reward structure it is possible to maximize only immediate rewards.
+However, it is not compulsory to account the long-term rewards if it is not required for the RL formulation.
 The proposed immediate rewards are
 \begin{equation}
     r = \left\{
@@ -2251,8 +2250,8 @@ where $\tau$ is dwell length and $n$ is number of dwells needed to achieve a det
 The immediate reward emphasizes target to minimize tracking load by using tracking load as a penalty.
 In addition, the cost $\closs$ is used to prevent agent from losing a track while minimizing the load.
 The discount factor $\lambda$ can be used to control if future tracking load and possibility to lose track is also accounted.
-The agent is capable of trading immediate performance for better long-term performance.
-However, the myopic case will converge faster.
+The agent is capable of trading immediate performance for better long-term performance when $\lambda > 0$.
+However, in myopic case when $\lambda = 0$, RL algorithms will converge faster.
 
 The value for $\closs$ is found by using a heuristic design rule, which is based on simplified two state MDP.
 The states of the MDP represent if target is lost or not.
@@ -2264,7 +2263,7 @@ The parameter $\closs$ should be defined such that
     \sum_{i=0}^\infty \lambda^i \lref = \closs
 \end{equation}
 which indicates that the discounted sum of rewards when taking action $a_1$ should be equal to the penalty of losing track if action $a_2$ is taken.
-Equation \eqref{eq:closs_criterion} can be rewritten in to from
+Equation \eqref{eq:closs_criterion} can be rewritten into form
 \begin{equation}
     \closs = \frac{1}{1-\lambda} \lref
 \end{equation}
@@ -2273,39 +2272,39 @@ Equation \eqref{eq:closs_criterion} can be rewritten in to from
 To understand the rewards in more detail, an expected value is examined.
 The expected value of a immediate reward given the state $s$ and action $a$ is
 \begin{equation}\label{eq:exp_reward}
-    \E{R_{t+1} | S_t=s, A_t=a} = -(1-\ploss(s, t_r)) 
+    \E{R_{t+1} | S_t=s, A_t=a} = -(1-\ploss(s, \ri)) 
         \frac
         {
-            \mathbb{E} \left[ n | s, t_r \right]
+            \mathbb{E} \left[ n | s, \ri \right]
         }
         {
         \ri
         } 
-        - \ploss(s, t_r) \closs
+        - \ploss(s, \ri) \closs
 \end{equation}
-where $\ploss(s, t_r)$ is PLT and $\E{n|s, \ri}$ is expected value of the number of dwells.
+where $\ploss(s, \ri)$ is the PLT given the state $s$ and RI $\ri$, and $\E{n|s, \ri}$ is expected value of the number of dwells.
 Equation \eqref{eq:exp_reward} is also the action-value in myopic case.
 The expected value of a non-myopic action-value is a little bit more complicated to write since the MDP can end if the track is lost.
 Therefore, 
 \begin{align}
-    \E{\sum_{i=0}^\infty \lambda^i R_{t+1} | S_t=s, A_t=a} =& \E{R_{t+1} | S_t=s, A_t=a} + (1-\ploss(s, t_r)) \lambda \\
+    \E{\sum_{i=0}^\infty \lambda^i R_{t+1} | S_t=s, A_t=a} =& \E{R_{t+1} | S_t=s, A_t=a} + (1-\ploss(s, \ri)) \lambda \\
     & \sum_{s'\in \Ss} p(S_{k+1}=s'|S_{k}=s, A_{k}=a)  V(s')  
 \end{align}
-where $(1-\ploss(s, t_r))$ shows that the non-myopic part is weighted by the probability of not losing the track.
+where $(1-\ploss(s, \ri))$ shows that the non-myopic part is weighted by the probability of not losing the track.
 
 \subsubsection{States and observations} \label{sec:states}
 
 \newcommand{\glow}{g_\text{low}}
 \newcommand{\ghigh}{g_\text{high}}
 
-The observations given for the agent are critical since they are the only source for the agent to know in which situation it is operating currently.
-An observation is generally a partial observation from an environment state.
+The observations given for the agent are critical since those are the only of information for the agent to know in which situation it is operating currently.
+In RL, an observation is generally a partial observation from an environment state.
 The environment state describes all the information that is needed to determine how the environment responds to an action of the agent. 
 An observation or sequence of observations is denoted as agent state.
 The agent state contains the information that is available and relevant for the agent to choose an action.
 Moreover, the achievable quality of the actions can be dependent on the amount of information that is available. 
-For Q-learning, the agent state needs to be discrete and approximately Markovian.
-In some cases, the latter requirement can be fulfilled by using a subset of past actions and observations to approximate the Markovian state \cite{Mnih2013}.
+
+For Q-learning algorithm, the agent state needs to be discrete and approximately Markovian.
 The information from the radar system is typically provided by continuous variables and therefore discretization is required.
 The continuous variables are discretized as follows. 
 Two states are defined for values below $\ghigh$ and above $\glow$. 
@@ -2313,12 +2312,14 @@ The remaining states are defined by using the following equation
 \begin{equation}\label{eq:state_limits}
     \frac{\ghigh - \glow}{N_d - 2} n + \glow
 \end{equation}
-where $N_d$ is number of discrete states and $n \in \{0, 1, ..., N_v\}$ is the discrete state.
+where $N_d$ is number of discrete states and $n \in \{0, 1, ..., N_d-1\}$ is the index of the discrete state.
 For $n$th state, lower limit is obtained by calculating equation \eqref{eq:state_limits} with $n$ and upper limit with $n+1$.
 Discretizing multiple variables will lead to exponentially growing cardinality.
+In some cases, the requirement for approximately Markovian state can be fulfilled by using a subset of past actions and observations \cite{Mnih2013}, but for discrete states the cardinality of the state space will grow exponentially.
+
 
 In RIS problem, 
-the environment state includes for example the target kinematic state and corresponding belief state of the tracker. 
+the environment state includes for example the target kinematic state and corresponding belief state obtained by the tracker. 
 The belief state and any signals from the radar can be used as an agent state, but only significant information need to be extracted for more efficient learning. 
 One good source of information from the tracking filters is innovation sequence. 
 It includes information about how well the tracker did predict the target position compared to the position estimate derived from a temporal radar measurement. 
@@ -2326,26 +2327,25 @@ In addition,
 the radars utilizing the Doppler phenomena, 
 range-rate can be examined. 
 The simplest way to utilize innovation sequence in discrete RL algorithms, is to use the last innovation as a state. 
-The size of the state space can be further reduced by using only the innovation in angle since it assumed that range is the target range is less important for steering the radar beam into correct direction. 
+The size of the state space can be further reduced by using only the innovation in angle since it assumed that the target range is less important for steering the radar beam into correct direction. 
 The state is not fully Markovian since the temporal angle estimates may contain noise. 
-It will be further discussed in Section \ref{sec:training} how the noise will affect the performance.
 
-Another appealing option is to utilize the mode probabilities $\mu$ when a multiple model estimator such as IMM is used. 
-The number of discrete state remain manageable as long as model the number of discrete probabilities and the number of mode are sufficient. 
-The choice of using mode probabilities is further justified by \eqref{eq:fimm} which calculates the RI using the mode probabilities and the steady-state RIs. 
+Another appealing option is to use the mode probabilities $\mu$ as a state if the tracking filter is multiple model estimator such as Interactive Multiple Model (IMM) estimator. 
+The number of discrete states remain tolerable as long as the number of discrete probabilities and modes are sufficient to prevent the exponential growth of the cardinality. 
+An similar approach in which the mode probabilities are used was presented in equation \eqref{eq:fimm} which calculates the RI using the mode probabilities and the steady-state RIs. 
 
-The state presentations based on the innovation or on the mode probabilities can be further extended by augmenting last RI to the state.
+The state presentations based on the innovation or on the mode probabilities can be further extended by augmenting previous RI to the state.
 Also, two additional states are included to the state space. 
 One for lost target and other for track initiation.
-The latter state enables agent learn RIs at the beginning of the tracking task where tracking filter might have unreliable estimates.
-The number of discrete states is $N_s = 2+N_d$ if last RI is not included into state and $N_s = N_d N_a + 2$ otherwise.
-In Section \ref{sec:training}, the most effective states will be identified among the different state spaces presented here.
+The latter state enables agent to learn RIs at the beginning of the tracking task where tracking filter might have unreliable estimates.
+The number of discrete states is $N_s = 2+N_d$ if the previous RI is not included into state and $N_s = N_d N_a + 2$ otherwise.
+In Section \ref{sec:training}, the most effective state presentation will be identified among the different state spaces presented here.
 
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.68\textwidth]{figures/benchmark/beamwidth.pdf}
-    \caption{Receive gain in function of beam offset. 
+    \caption{Receive gain in linear scale in function of the beam offset. 
     The half-power offset angles are illustrated with red lines.}
     \label{fig:beamwidth}
 \end{figure}
@@ -2372,14 +2372,14 @@ In Section \ref{sec:training}, the most effective states will be identified amon
     Dwell time                 & $\tau$          & $1e-3$ & s   \\ \hline
     Position                   & -               & $(0, 0)$ & m \\ \hline
     \end{tabular}
-    \caption{Radar parameters in the simulations. Note that probability of false alarm is only used to calculate the probability of detection.}
+    \caption{Radar parameters in the simulations. Note that the probability of false alarm is only used to calculate the probability of detection.}
     \label{tab:radar_parameters}
 \end{table}
 \egroup
 
-The RL approaches are evaluated using target trajectories from a benchmark problem proposed in \cite{Blair1998}, and Section \ref{fig:benchmark_trajectories} introduces the benchmark trajectories in more detail. 
-The simulation scenario contains a single monostatic radar at the position $x=0$ and $y=0$. 
-The radar is not using Doppler processing, and therefore the measurement model described in Equations \eqref{eq:position_measurement_matrix} and \eqref{eq:cartesian_measurement_covariance} is used.
+The RL approaches are evaluated using target trajectories from a benchmark problem proposed in \cite{Blair1998}. 
+Subsection \ref{sec:benchmark_trajectories} introduces the benchmark trajectories in more detail. 
+The simulation scenario contains the assumed monostatic radar presented in Subsection \ref{sec:system_description} at the position $x=0$ and $y=0$. 
 The probability of detection is simulated based on Swerling I RCS model as follows
 \begin{equation}\label{eq:singer_1_pd}
     P_\text{d} = P_\text{fa}^{\frac{1}{1+SNR}},
@@ -2396,16 +2396,17 @@ The angle offset of the radar beam is assumed to affect the SNR based on the fol
 \end{equation}
 where $\sno=50$ is boresight SNR in a linear scale, $B=0.02$ is half of the -3dB beamwidth in radians, $\theta$ is target angle and $\hat{\theta} $ is the boresight angle. 
 Furthermore, the parameters $\sno$ and $B$ are constant in the simulations. 
-The radar beam is visualized in Figure \ref{fig:beamwidth}, which illustrates that only main lobe without side lobes is considered. 
-The constant radar parameters are summarized in Table \ref{tab:radar_parameters}.
+The radar beam is visualized in Figure \ref{fig:beamwidth}.
+The fixed parameters of the simulated radar are summarized in Table \ref{tab:radar_parameters}.
 
+The measurement model described in Subsection \ref{sec:measurement_model} is used to map the states to the measurements in the tracking filter.
+In addition, the radar system is using an IMM estimator in which the Constant Velocity (CV) and the Constant Acceleration (CA) models presented in the Subsection \ref{sec:target_models} are used.
+The configuration of the IMM estimator will be covered in more detail in Subsection \ref{sec:IMM}.
 
-In addition, the simulated radar system is using IMM estimator.
-The configuration of the IMM estimator will be covered in Section \ref{sec:IMM}.
 
 \subsubsection{Benchmark trajectories} \label{sec:benchmark_trajectories}
 
-The trajectories used in the simulations are borrowed from a benchmark problem that was initially introduced in \cite{Blair1998}.
+The target trajectories used in the simulations are based on a benchmark problem that was initially introduced in \cite{Blair1998}.
 The original benchmark problem considered MTT in presence of electronic counter measure (ECM).
 However, in the simulations the trajectories are used for STT scenario and false alarms are neglected.
 For the sake of simplicity, the spatial dimension is downsized from 3D space to 2D space.
@@ -2420,7 +2421,7 @@ The trajectories include different kind of motion such as constant-g turns, turn
 The target speed can range approximately from 210 m/s to 460 m/s as it can be seen from Figure \ref{fig:benchmark_velocities}.
 The acceleration ranges approximately from 0 m/s$^2$ to 115 m/s$^2$ as it can be seen from Figure \ref{fig:benchmark_acceleration}.
 The benchmark trajectories are further summarized in Table \ref{tab:benchmark_table} which contains mean and standard deviation values for acceleration and velocity in each trajectory.
-The values are later in Section \ref{sec:IMM} used to configure the IMM estimator models. 
+The values are later in Subsection \ref{sec:IMM} utilized to select the IMM estimator parameters. 
 
 \begin{figure}[htb]
     \centering
@@ -2460,10 +2461,9 @@ The values are later in Section \ref{sec:IMM} used to configure the IMM estimato
 \newcommand{\varca}{\sigma_\text{ca}^2}
 \newcommand{\msp}{\mu}
 
-The employed IMM estimator is using two different target models.
-The IMM estimator configuration is simple, and the estimator can adapt to the various different maneuvers in the benchmark trajectories.  
-The CV and CA motion models described in Section \ref{sec:target_models} are used in the IMM estimator.
-The models are simple, but turns out to be effective combination.
+The employed IMM estimator is using two linear Kalman filters configured for two target motion models, that are the CV and CA models described in Subsection \ref{sec:target_models}.
+In addition, the measurement model described in Subsection \ref{sec:measurement_model} is used in both filters.
+The configuration is simple, but the estimator can adapt to the various different maneuvers in the benchmark trajectories.
 The mode transition probability from CV to CA and CA to CV is set to be equal such that the state transition matrix is
 \begin{equation}
     M = 
@@ -2476,14 +2476,14 @@ where $\msp$ is the mode transition probability.
 The IMM estimator configuration will be referred as CVCA-IMM estimator.
 
 There are couple reasons for using such a configuration.
-First, the models are linear such that linear Kalman filters introduced in Section \ref{sec:kalman_filter} can be used.
-However, RL approach is also applicable for non-linear filters.
-Second, since the IMM estimator has only two models, only one model probability is sufficient to present the state.
-Lastly, the CV-CV IMM estimator has three parameters to be tuned.
+First, the measurement and motion models are linear that is required for linear Kalman filters introduced in Subsection \ref{sec:kalman_filter}.
+However, RL approach would be applicable for non-linear filters without changing the RL formulation.
+Second, only one model probability is sufficient to present the state since the IMM estimator has only two models.
+Lastly, the CVCA-IMM estimator has only three parameters to be tuned.
 The parameters are the acceleration noise variance for CV model $\varcv$, the acceleration noise variance for CA model $\varca$, and the mode transition probability $\msp$.
 
-The parameter $\msp$ is selected for the processing time step $\dt=0.1$ which is used in the tracker.
-In other words, $\msp$ is the probability that model changes after $\dt$.
+The mode transition probabilities are defined for the processing time step $\dt=0.1$, because the tracker is using the time step to predict the future states recursively.
+In other words, $\msp$ is the probability that the motion mode switches after time step $\dt$.
 Sojourn time is the time that is expected for the system to spend in a specific state.
 The transition probability $\msp$ can be then calculated by the following equation
 \begin{equation}
@@ -2500,9 +2500,8 @@ The vector dimensions of the CV state \eqref{eq:x_mode1} and the CA state \eqref
 Moreover, the mode mixing equations \eqref{eq:imm_mx_init_x} and \eqref{eq:imm_mx_init_P} along with the state covariance fusion equations \eqref{eq:imm_fusion_x} and \eqref{eq:imm_fusion_P} require the dimensions to be equal.
 In \cite{Granstroem2015}, an enhanced approach for mixing states with different dimensions was proposed.
 However, here a simple approach is employed, which was also discussed in \cite{Granstroem2015}.
-The approach augments the state estimate and corresponding covariance estimate of the CV model with zeros.
-According to \cite{Granstroem2015}, it corresponds to situation where distribution of $\ddot{x}$ and $\ddot{y}$
-is approximated with Dirac delta function.
+The approach augments the state estimate and corresponding error covariance matrix of the CV model with zeros.
+According to \cite{Granstroem2015}, it corresponds to situation in which the distributions of thew accelerations in $x$ and $y$ coordinates are approximated with Dirac delta function.
 
 \begin{figure}[bt]
     \centering
@@ -2511,10 +2510,10 @@ is approximated with Dirac delta function.
     \label{fig:auto_correlation}
 \end{figure}
 
-The performance of a tracking filter can be visualized using the auto-correlation function of the innovation sequence.
-In ideal case the auto-correlation function should not show large correlations which indicates that innovation sequence is approximately non-correlated noise.
-Figure \ref{fig:auto_correlation} shows the auto-correlation function of innovation sequence in $x$ and $y$ axis.
-The figure shows that the auto-correlation function is mainly random such that the innovation sequence is not temporally correlated.
+The performance of the tracking filter can be examined by visualizing the auto-correlation function of the innovation sequence.
+In ideal case the auto-correlation function should not have large correlations which indicates that innovation sequence is approximately non-correlated noise.
+Figure \ref{fig:auto_correlation} shows the auto-correlation function of the innovation sequence in $x$ and $y$ axis on trajectory 6.
+From the figure, it can be seen that the auto-correlation function is mainly random such that he innovation sequence does not have significant correlations.
 Thus, the CVCA-IMM estimator functions in the tracking scenario as desired.
 
 
@@ -2528,16 +2527,16 @@ Thus, the CVCA-IMM estimator functions in the tracking scenario as desired.
     \label{fig:baseline_plt}
 \end{figure}
 
-A baseline algorithm is utilized for evaluating RL approach to existing state-of-the-art approaches. 
+A baseline algorithm is utilized for evaluating RL approach against existing RIS algorithm.
 The baseline algorithm for controlling the RI is based on an approach proposed in \cite{Daeipour1994}.
-The algorithm is based on error covariance matrix and relies on the following inequality
+The algorithm is error covariance matrix based algorithm, thus relies on the following inequality
 \begin{equation}\label{eq:baseline_ineq}
-    \sigma_\theta(t+t_r|t) \leq V_0 B, 
+    \sigma_\theta(t+\ri|t) \leq V_0 B, 
 \end{equation}
-where $V_0$ is denoted as track sharpness parameter, and $\sigma_\theta(t+t_r|t)$ is error standard deviation on \prior estimate of the parameter $\theta$.
+where $V_0$ is the track sharpness parameter, and $\sigma_\theta(t+\ri|t)$ is error standard deviation on \prior estimate of the target azimuth angle $\theta$.
 The highest RI to fulfil the Equation \eqref{eq:baseline_ineq} is found by propagating the predictive equations of the CVCA-IMM estimator with time step $\dt$.
-The track sharpness parameter $V_0$ affects PLT and needs to be tuned for the specific IMM estimator.
-Different track sharpness parameters were evaluated in the benchmark problem with 200 simulations per trajectory.
+The track sharpness $V_0$ affects PLT and needs to be tuned for the specific IMM estimator.
+Different track sharpness values were evaluated for the benchmark trajectories by  using 200 Monte Carlo iterations per trajectory.
 Figure \ref{fig:baseline_plt} shows the simulation results, and illustrates how $V_0$ affects the PLT. 
 
 
@@ -2553,31 +2552,31 @@ The simulations are used
     \item to determine connection between $\closs$ and PLT, and
     \item to compare RL approach against the baseline algorithm.
 \end{itemize}
-The first five of these will be covered in Section \ref{sec:training}, and the last one will be covered in Section \ref{sec:against_baseline}.
+The first five of these will be covered in Subsection \ref{sec:training}, and the last one will be covered in Subsection \ref{sec:against_baseline}.
 
 \subsubsection{Training RL agent}\label{sec:training}
 
 
 
 Various RL agents are trained by uniformly sampling target trajectories from the six benchmark trajectories.
-One training episode corresponds to simulating agent on a single trajectory as long as the end of trajectory is reached or the target is lost.
+One training episode corresponds to simulating agent on a single trajectory as long as the end of the trajectory is reached or the target is lost.
 Overall, each agent is trained for $4000$ episodes, which corresponds to training an agent on each trajectory approximately for $667$ times in expectation.
 
 All the agents use Q-learning algorithm with \egreedy exploration.
-The epsilon is initially $\epsilon=0.2$ and between each episode the epsilon is decayed by a fraction of $0.99867$ which corresponds to $\epsilon=0.001$ on the last training episode.
+The exploration probability is initially $\epsilon=0.2$ and between each episode the epsilon is decayed by a fraction of $0.99867$ which corresponds to $\epsilon=0.001$ on the last training episode.
 The learning rate $\alpha$ is controlled adaptively by using the asynchronous update strategy \cite{Even-Dar2003}.
 Thus, the learning rate is defined in function of time as follows
 \begin{equation}
     \alpha_t = \frac{1}{\#(s, a, t)^\omega},
 \end{equation}
 where $\#(s, a, t)$ is the number of times action $a$ is taken from state $s$ at time instant $t$, and $\omega \in (0.5, 1)$ controls how fast $\alpha_t$ decays.
-When $\omega=1$, the empirical mean for action-values are calculated in myopic case.
+In myopic case, the parameter $\omega$ can be set $1$, when the empirical mean for action-values are calculated.
 
 The action space with direct selections $\Asdir$ is used with $N_a=10,$ $\tmin=0.1s$ and $\tmax=7.5s$.
-Furthermore, the agents are configured such that it is possible to identify effective state presentations from the states discussed in Section \ref{sec:states}, and to determine is it sufficient to use myopic policy over non-myopic policy.
-The states presented in Section \ref{sec:states} are the innovation, the mode probability, and both can be augmented by the last RI.
-The discretization parameter is set to $N_d=10$, such that $N_s=12$ for state presentations without last RI and $N_s=102$ otherwise.
-For myopic agents the discount factor $\lambda=0$ and and adaptive learning rate parameter $\omega=1.0$.
+Furthermore, various agents are configured such that it is possible to identify effective state presentations from the states discussed in Section \ref{sec:states}, and to determine is it sufficient to use myopic policy over non-myopic policy.
+The states presented in Section \ref{sec:states} are the innovation, the mode probability, and both can be augmented by the previous RI.
+The discretization parameter is set to $N_d=10$, such that $N_s=12$ for state presentations without previous RI and $N_s=102$ otherwise.
+For myopic agents the discount factor $\lambda=0$ and adaptive learning rate parameter $\omega=1.0$.
 For non-myopic agents the corresponding values are set to $\lambda=0.7$ and $\omega=0.75$. 
 The configurations of the agents are shown in Table \ref{tab:agent_configurations}, and the ID's from the table are used in the figures later.
 
@@ -2589,22 +2588,22 @@ The configurations of the agents are shown in Table \ref{tab:agent_configuration
         \hline
         0 & innovation & 0.0 & 1.0 \\ \hline
         1 & innovation & 0.7 & 0.75 \\ \hline
-        2 & innovation \& last RI &  0.0 & 1.0 \\ \hline
-        3 & innovation \& last RI & 0.7 & 0.75 \\ \hline
+        2 & innovation \& previous RI &  0.0 & 1.0 \\ \hline
+        3 & innovation \& previous RI & 0.7 & 0.75 \\ \hline
         4 & mode probability &  0.0 & 1.0 \\ \hline
         5 & mode probability & 0.7 & 0.75 \\ \hline 
-        6 & mode probability \& last RI &  0.0 & 1.0 \\ \hline 
-        7 & mode probability \& last RI & 0.7 & 0.75 \\
+        6 & mode probability \& previous RI &  0.0 & 1.0 \\ \hline 
+        7 & mode probability \& previous RI & 0.7 & 0.75 \\
         \hline
     \end{tabular}
     \caption{Agent configurations.}
     \label{tab:agent_configurations}
 \end{table}
 
-Target and behavior policies, introduced in Section \ref{sec:q_learning}, will be evaluated in function of number of training episodes.
+Target and behavior policies, discussed in Section \ref{sec:q_learning}, will be evaluated in function of number of training episodes.
 The behavior policy includes the random actions of the epsilon greedy exploration strategy, and is used to evaluate the performance while learning.
 On the other hand, the target policy takes the actions with highest action-values, thus is purely exploiting, and can be used to evaluate the amount of learning needed achieve a certain level of performance.
-It corresponds to situation where learning ends after certain number of episodes, and thereafter the agent uses only the target policy.
+It corresponds to the situation where learning ends after certain number of episodes, and thereafter the agent uses only the target policy.
 The performance of a behavior policy will be referred as offline performance, and similarly online performance for a target policy.
 
 \begin{figure}[htb]
@@ -2648,35 +2647,35 @@ The former criterion, denoted as mean tracking load, evaluates tracking load usi
 \begin{equation}\label{eq:criterion_load}
     L_\text{mean} = \frac{1}{M} \sum_{m=0}^{M-1} \frac{1}{K_m}\sum_{k=0}^{K_m-1} L_{mk}
 \end{equation}
-where $M$ is number of episodes, $K_m$ is number of steps in episode $m$, and $L_{nm}$ is the tracking load in episode $m$ at step $k$.
-The latter criterion, denoted as mean PLT, calculates PLT in an episode as follows
+where $M$ is number of episodes, $K_m$ is number of steps in episode $m$, and $L_{mk}$ is the tracking load in episode $m$ at step $k$.
+The latter criterion, denoted as mean PLT, is calculated as follows
 \begin{equation}\label{eq:criterion_lost}
     \frac{1}{M} \sum_{n=0}^{M-1} \vec{1}_{\text{TrackLost}(m)}
 \end{equation}
 where $\vec{1}_{\text{TrackLost}(m)}$ is one if track is lost in episode $m$ and zero otherwise.
 
-The target policies are evaluated every 200 episode while training and using the past 200 training episodes to calculate \eqref{eq:criterion_load} and \eqref{eq:criterion_lost}.
+The behavior policies are evaluated every 200 episode while training and using the past M=200 training episodes to calculate \eqref{eq:criterion_load} and \eqref{eq:criterion_lost}.
 The online performance evaluated with the aforementioned criteria are shown in Figure \ref{fig:online_performance}.
 The target policies are also evaluated every 200 episodes. 
-However, the snapshots of the target policies need to be separately evaluated using Monte Carlo simulations.
+However, the snapshots of the target policies need to be separately evaluated using Monte Carlo simulations since training data can not be used.
 Thus, each policy snapshot is evaluated with 25 Monte Carlo iterations per trajectory.
 The offline performance is shown in Figure \ref{fig:offline_performance}.
 
 From Figure \ref{fig:online_performance} it is apparent that the online performance is slowly improving between episodes with a certain trend.
-On the other hand, for the offline performance in Figure \ref{fig:offline_performance} the trend is not as apparent.
+On the other hand, the trend for offline performance is not as apparent as shown in Figure \ref{fig:offline_performance}.
 Especially, the mean tracking load in Figure \ref{fig:offline_load} meets its lower limit quite fast, but the mean PLT in Figure \ref{fig:offline_load} will take more time to converge to tolerable levels.
 The differences between online and offline performance may be explained by differences in target and behavior policies.
 The behaviour policy takes the random actions that increase the tracking load compared to target policy which is purely exploiting.
 For the agent, it is certainly much more challenging to learn the expected PLT than the tracking load when taking actions from different states.
-Therefore, the offline tracking load converges to low values faster than the PLT
-Thus, keeping the PLT in desirable levels will take more training episodes.
-The offline mean tracking load rises a little bit when the agent is learning more because it becomes conscious about losing track with longer RIs.
+Therefore, the offline tracking load converges to low values faster than the PLT.
+Thus, learning to not lose tracks will take take more training episodes.
+The offline mean tracking load rises a little bit when the agent has learnt more because the agent becomes more conscious about losing track with longer RIs.
 
 In episodes approximately up to 1500, two distinct clusters can be seen in Figures \ref{fig:online_lost} and \ref{fig:offline_lost}.
 The clusters are divided to agents using the one dimensional state spaces and the two dimensional state spaces.
-The clusters are caused by the fact that the two dimensional state spaces have higher cardinality than the one dimensional state spaces, thus more state-action pairs to explore.
-At the end, the methods with two dimensional space have a little bit lower tracking load with similar PLT.
-Therefore, the higher dimensional state space seems to improve the performance if the learning speed is not subject of concern.
+The clusters are caused by the fact that the two dimensional state spaces have higher cardinality than the one dimensional state spaces, thus requiring more state-action to be explored.
+At the end, the methods with two dimensional spaces have a little bit lower tracking load with similar PLT.
+Therefore, the higher dimensional state space seems to improve the performance marginally if the learning speed is not subject of concern.
 
 \begin{table}[tb]
     \centering
@@ -2702,25 +2701,25 @@ For example, the agent with $id=1$ is non-myopic variant of the myopic agent wit
 The difference could be originated from two reasons.
 First, the non-myopic agents are more conscious of losing track because losing a track in the future is also accounted.
 Especially, from Table \ref{tab:plt_comparison} it can be seen that after learning 4000 episodes, the offline mean PLT is multiple times higher for myopic agents than for non-myopic agents.
-The second reason is that for non-myopic policies the q-values converge slower than for myopic policies. Thus, training an agent to its full potential could require more episodes to train.
+The second reason is that for non-myopic policies the q-values converge slower than for myopic policies. Thus, training an agent to its full potential could require more training episodes.
 
 \begin{figure}[b]
     \centering
     \includegraphics[width=.7\linewidth]{figures/benchmark/Simulations/policy.pdf}
-    \caption{Policy for agent with id=4. The state is "mode probability", and the agent chooses the revisit interval on y-axis when in a corresponding state.}
+    \caption{Policy for the agent with id=4. The state on x-axis is the mode probability, and the agent chooses the revisit interval on y-axis when in a corresponding state.}
     \label{fig:policy_id4}
 \end{figure}
 
-From Figures \ref{fig:online_load} and \ref{fig:offline_load}, it is seen that that agents using innovation based state presentation (ids from 0 to 3) perform worse than the agents with mode probability based state presentation (ids from 4 to 7).
+From figures \ref{fig:online_load} and \ref{fig:offline_load}, it can be seen that the agents using innovation based state presentation (ids from 0 to 3) perform worse than the agents with mode probability based state presentation (ids from 4 to 7).
 Obviously, it needs to be accounted that only the agents with similar type of configuration, e.g. myopic policy with one dimensional state presentation, are comparable.
 In terms of fast learning speed, low mean PLT and tracking load, the agent with $id=4$ is identified to have desirable performance.
 The agent is using mode probabilities as a state space, and it is based on myopic policy.
-The policy of the agent with $id=4$ is shown in Figure \ref{fig:policy_id4}
+The policy of the agent with $id=4$ is shown in Figure \ref{fig:policy_id4}.
 
 Lastly, the agent with $id=4$ is trained and evaluated with various different $\closs$.
-Figure \ref{fig:penalty_comparison} shows probability of losing track for each trajectory and the mean tracking load with using various $\closs$.
+Figure \ref{fig:penalty_comparison} shows PLT for each trajectory and the mean tracking load with using various $\closs$.
 As expected, using lower $\closs$ results in higher PLT and lower tracking load.
-However, Figure \ref{fig:penalty_comparison} is used to find $\closs$ with equivalent PLT compared to the baseline algorithm with parameter $V_0$. 
+Figure \ref{fig:penalty_comparison} is used to find $\closs$ with equivalent PLT compared to the baseline algorithm. 
 
 \begin{figure}[tb]
     \centering
@@ -2742,17 +2741,18 @@ However, Figure \ref{fig:penalty_comparison} is used to find $\closs$ with equiv
 
 \subsubsection{Performance against the baseline algorithm} \label{sec:against_baseline}
 
-A RL agent and the baseline algorithm are compared in the benchmark problem by evaluating tracking load in Equation \eqref{eq:load}.
-In addition, error in predictive target position estimates $|\vec{p}-\hat{\vec{p}}|_2$ is visualized, where $\vec{p}$ is the target position and $\hat{\vec{p}}$ is the predicted target position.
+A RL agent and the baseline algorithm are compared in the benchmark problem by evaluating the tracking load as defined in equation \eqref{eq:load}.
+In addition, error in predictive target position estimates $|\vec{p}-\hat{\vec{p}}|_2$ are visualized, where $\vec{p}$ is the target position and $\hat{\vec{p}}$ is the predicted target position.
 Lastly, RI selections are shown to illustrate differences in RL agent and the baseline algorithm.
 
 The agent with $id=4$ in Table \ref{tab:agent_configurations} is selected to the comparison since it was empirically identified to have desirable performance in Section \ref{sec:training}.
-From Figures \ref{fig:baseline_plt} and \ref{fig:penalty_plt}, matching parameters to tune the PLT between RL and baseline algorithms is found, and parameters $\closs = 0.2$ and $V_0=0.164$ are selected.
-With the corresponding parameters RL agent lost target in trajectory 4 with $0.5\%$ probability, and the baseline algorithm did not lose tracks in the Monte Carlo simulations with $1200$ iterations.
+From figures \ref{fig:baseline_plt} and \ref{fig:penalty_plt}, the parameters $c_loss$ and $V_0$ can be selected to obtain fair comparison between the RL and the baseline algorithms.
+Thus, the parameters $\closs = 0.2$ and $V_0=0.164$ were selected.
+With the corresponding parameters RL agent lost target in trajectory 4 with the probability of $0.5\%$, and the baseline algorithm did not lose tracks in the Monte Carlo simulations with $1200$ iterations.
 
 The tracking load is shown for each trajectory in Figure \ref{fig:tracking_load_comparison}.
-For trajectories 1, 5 and 6 the tracking load of the baseline algorithm settles to similar tracking load values of the RL agent when the target is not maneuvering. 
-On the other hand, the RL agent can keep the load smaller on the turns where tracking load peaks are induced.
+For trajectories 1, 5 and 6 the tracking load of the baseline algorithm settles to similar tracking load values compared to the RL agent when the target is not maneuvering.
+On the other hand, the RL agent can keep the load smaller on the turns where the tracking load peaks are induced.
 In trajectories 2 and 3, the target approaches the radar such that the baseline algorithm decreases the RI gradually, leading into higher tracking loads than RL algorithm.
 Based on the experience, the RL agent is confident enough that the corresponding situation does not require smaller RI such that lower tracking load is achieved.
 In trajectory 4, difference between the baseline algorithm and RL algorithm is the most apparent.
@@ -2763,7 +2763,7 @@ It could be possible that the track is lost with lower probability if the target
 
 In Figure \ref{fig:revisit_interval_comparison}, the selected RIs are shown for each benchmark trajectory.
 The RIs of the RL algorithm are shorter than the baseline algorithm approximately at first 50 seconds of trajectories 1, 2 and 3.
-However, significant tracking load difference is not induced shown in Figure \ref{fig:tracking_load_comparison}.
+However, significant tracking load difference is not shown in Figure \ref{fig:tracking_load_comparison}.
 Thus, the reward function explicitly minimizing the immediate tracking load seems to work as intended because longer RIs can increase the number of dwells needed to achieve a detection.
 Another major difference in all of the trajectories is that the baseline algorithm quite often uses shorter RIs when the target is maneuvering.
 Those shorter RIs affect significantly to the tracking load as shown in Figure \ref{fig:tracking_load_comparison}.
@@ -2924,7 +2924,7 @@ It explains why RL agent loses the trajectory 4 a little bit more often than the
 The RIS was formulated as a RL problem by identifying suitable states, actions and rewards for the problem at hand.
 Q-learning algorithm with \egreedy exploration was utilized to solve RIS problem.
 The different RL configurations were evaluated using the benchmark trajectories in terms of offline and online performance in addition to comparing the most promising RL configurations to the baseline algorithm.
-It was found that RL performance is comparable to the baseline algorithm.
+It was found that the performance of the RL agent is comparable to the baseline algorithm.
 In addition, the proposed learning-based approach can benefit from utilizing the past experience to reduce tracking load peaks compared to the baseline algorithm.
 Future research directions could include function approximation techniques that could enable applying higher dimension state spaces more efficiently. 
 In addition, more efficient exploration strategies from the MAB framework could be investigated especially when using the myopic policies.
@@ -2936,7 +2936,7 @@ In addition, more efficient exploration strategies from the MAB framework could 
 In this thesis RRM subproblems were formulated as RL problems which were solved using RL methods. 
 Since RRM contain multiple subproblems, only two distinct subproblems were considered. 
 The RL approaches were evaluated in Monte Carlo simulations and compared to baseline algorithms. 
-In both applications, the RL approaches did improve the performance through the experience, and with sufficient amount of learning significant advantage can be seen compared to the baseline algorithms.
+In both applications, the RL approaches did improve the performance through the experience, and with sufficient amount of learning an advantage can be seen compared to the baseline algorithms.
 
 In TX-RX selection for distributed MIMO radars, MAB framework was utilized to learn select subset of TXs and RXs that have highest total SINR in linear scale. 
 Furthermore, the problem was modeled as combinatorial MAB problem, that was used to reduce the dimensions of the action space.  
