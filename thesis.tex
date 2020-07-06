@@ -318,7 +318,7 @@ Otaniemi, 1.6.2020
 
 
 %% Symbols and abbreviations
-\mysection{Symbols and abbreviations}
+\mysection{Symbols and Abbreviations}
 
 \subsection*{Symbols}
 
@@ -400,7 +400,7 @@ $\nmodels$ & number of maneuvering models \\
 $\mimm$ & set of maneuvering models \\
 $m_i$ & maneuvering model, indexed by $i \in \{1, ..., \nmodels\}$ \\
 $M_k$ & maneuvering model at time instance $k$ \\
-$\modeprob$ & maneuver model probability for model $m_i \in \mimm$ at time instance $k$ \\
+$\modeprob$ & maneuver mode probability for model $m_i \in \mimm$ at time instance $k$ \\
 $\xmxinitcurr$ & mixed \post (filtered) estimate of $\x$ for model $m_i \in \mimm$\\
 $\ecovmxinitcurr$ & estimated error covariance matrix on estimate $\xmxinitcurr$\\
 &\\
@@ -447,28 +447,28 @@ MIMO & Multiple-Input Multiple-Output \\
 % MMSE & Minimum Mean Square Error \\
 % MSE & Mean square error \\
 % MTI & Moving target indication \\
-POMDP & Partially observable Markov decision process \\
-PLT & Probability to lose a track \\
+POMDP & Partially Observable Markov Decision Process \\
+PLT & Probability to Lose a Track \\
 PRF  &  Pulse Repetition Frequency \\
 PRT  & Pulse Repetition Time \\
 Q-RAM & Quality of service Resource Management Model \\
 RCS & Radar Cross Section \\
 RBE  & Recency Based Exploration \\
-RI  & Revisit interval \\
-RIS & Revisit interval selection \\
-RL & Reinforcement learning \\
+RI  & Revisit Interval \\
+RIS & Revisit Interval Selection \\
+RL & Reinforcement Learning \\
 RRM & Radar Resource Management \\
 RX & Receiver \\
 SDP  & Stochastic Dynamic Programming \\
 SINR  & Signal-to-Interference-plus-Noise Ratio \\
 SNR & Signal-to-Noise Ratio \\
 % STS & Slow Time Scale \\
-STT & Single target tracking \\
-TBM & Time budget management \\
+STT & Single Target Tracking \\
+TBM & Time Budget Management \\
 TX & Transmitter \\
 UCB & Upper Confidence Bound \\
 % 1D & One dimensional \\
-2D & Two dimensional \\
+2D & Two Dimensional \\
 \end{tabular}
 
 
@@ -503,29 +503,29 @@ and a sequential operation mode selection to improve detection performance for m
 Thus, most of the RL related research considers selecting either frequency or bandwidth. 
 However, many RRM subproblems have not been addressed, including transmitter (TX) and receiver (RX) selection in distributed MIMO radars \cite{Godrich2011a, Godrich2011, Sun2014}, and revisit interval selection (RIS) which is related to radar time budget management (TBM) \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007, Baek2010, Watson1993, Charlish2015, Keuk1975, Shin1995, Benoudnine2006, Esfahani2012}.
 
-This thesis aims to formulate RRM subproblems as RL problems to identify if learning-based approaches can improve the performance of a radar system when the system can learn from experience. 
+This thesis aims to formulate RRM subproblems as RL problems to identify if RL based algorithms can improve the performance of radar systems. 
 This thesis focuses on two explicit RRM subproblems that have not been addressed by RL methods before. 
 The two considered subproblems are the TX-RX selection problem for distributed MIMO radars and the RIS problem.
-TX-RX selection is addressed by utilizing the Multi-Armed Bandit (MAB) framework, which is developed for problems solely concentrating on the exploration-exploitation trade-off. 
-RIS is formulated as a general RL problem that is solved by using the Q-learning algorithm.
-It will be shown that the considered RRM subproblems can be addressed using RL methods and that the performance can be improved by enabling the radar system to learn in real-time.
+The TX-RX selection problem is addressed by utilizing the Multi-Armed Bandit (MAB) framework, which is developed for problems solely concentrating on the exploration-exploitation trade-off. 
+The RIS problem is formulated as a general RL problem that is solved by using the Q-learning algorithm.
+It will be shown that the considered RRM subproblems can be addressed using RL methods and that the performance can be improved by enabling the radar systems to learn in real-time.
 However, only single target tracking (STT) scenarios are considered, which simplifies the RL formulations. 
 
-The thesis is structured as follows. Chapter \ref{sec:background} describes principles of radars and target tracking. Chapter \ref{sec:RL} reviews the theory on RL that is important to understand the proposed RL approach. 
+The thesis is structured as follows. Chapter \ref{sec:background} describes principles of radars and target tracking with radars. Chapter \ref{sec:RL} reviews the theory on RL that is important to understand the proposed RL approaches. 
 Chapter \ref{sec:existing_RRM} explains the considered RRM subproblems in detail and describes existing solutions.
-The RL approach for distributed MIMO radar TX-RX selection is formulated and evaluated in Chapter \ref{sec:RL_TX_RX}. Moreover,  Chapter \ref{sec:rl_ri} introduces the RL formulation for the RIS problem, and the approach is evaluated in Monte Carlo simulations. 
+The RL approach for distributed MIMO radar TX-RX selection is formulated and evaluated in Chapter \ref{sec:RL_TX_RX}. Moreover,  Chapter \ref{sec:rl_ri} formulates and evaluates the RL approach for the RIS problem.
 Finally, Chapter \ref{sec:conclusions} concludes the suitability of using RL for the considered RRM subproblems. 
 
 
 \clearpage
 \section{Radar Systems}\label{sec:background}
 
-Radar resource management (RRM) stands for controlling any of the degrees of freedom (DoF) parameters of the radar or allocating radar resources, such as power, bandwidth, and time, for a specific radar task.
+Radar Resource Management (RRM) stands for controlling any of the Degrees of Freedom (DoF) parameters of the radar or allocating radar resources, such as power, bandwidth, and time, for a specific radar task.
 This chapter provides an overview of radar systems and underlying theory and methods to give background for the considered RRM problems.
 Section \ref{sec:radar_opertaion_principle} briefly introduces the operation principle of a radar.
 Different radar types are briefly described in Section \ref{sec:radar_types}. 
-Typically the RRM problems to be solved depends on the specific radar type. 
-Finally, Section \ref{sec:Tracking} covers basic concepts of target tracking because the target tracking is one of the essential radar tasks, which involves many RRM problems.
+Typically the RRM problems depend on the specific radar type. 
+Finally, Section \ref{sec:Tracking} covers basic concepts of target tracking because the target tracking is one of the essential radar tasks which involve many RRM problems.
 
 \subsection{Operation principles of radars} \label{sec:radar_opertaion_principle}
 
@@ -539,17 +539,17 @@ Finally, Section \ref{sec:Tracking} covers basic concepts of target tracking bec
 Radar is a sensing system that is used to detect targets using radio waves \cite{Curry2011}.
 Transmitter (TX) emits radio waves towards desired directions, and a receiver (RX) is used to receive radio waves reflected from surfaces and scattered off the targets. 
 The reflected or scattered waves are often called echoes.
-Radar cross-section (RCS) determines the fraction of electromagnetic energy scattered from the target in the direction of the receiver \cite{Curry2011}.
-The target RCS depends on target shape and materials as well as on radar frequency, viewing angles, and signal polarization.
+Radar Cross-Section (RCS) determines the fraction of electromagnetic energy scattered from the target in the direction of the receiver \cite{Curry2011}.
+The target RCS depends on the target shape and materials as well as on radar frequency, viewing angles, and signal polarization.
 The target RCS has a unit of square meter sm (or m$^2$) and often described in decibels by dBsm.
 
 The echoes produced from other sources than targets of interest are called clutter.
-The received signal is corrupted by clutter, additive noise from the receiver electronics, and possible also unintentional or intentional interferences from other radio systems.
+The received signal is corrupted by clutter, additive noise from the receiver electronics, and possibly also by unintentional or intentional interferences from other radio systems.
 In modern radar systems, signal processing algorithms are utilized to perform target detection from the corrupted received signal \cite{Mahafza2015}.
 Typical detection algorithms are based on matched filtering and hypothesis testing \cite{Mahafza2015}.
 
 There are two types of radar systems when categorized based on the waveform used.
-These systems are pulsed-wave radar systems and continuous wave (CW) radar systems.  \cite{Mahafza2015}.
+These systems are pulsed-wave radar systems and Continuous Wave (CW) radar systems.  \cite{Mahafza2015}.
 Only pulsed-wave radar systems are considered in the rest of the thesis.
 The target range is obtained by measuring the time taken by a radio wave to propagate from a TX via target to an RX.
 For a monostatic radar which has TX and RX at the same location, the range is obtained using the following equation \cite{Curry2011}
@@ -562,14 +562,14 @@ Doppler frequency shift is induced to the radio wave when object is moving towar
 \begin{equation}
     f_d = \frac{2 f_c v_r}{c},
 \end{equation}
-where $f_c$ is the frequency of the transmitter waveform, $v_r$ is radial velocity towards the receiver, and $c$ is speed of light.
-The shift can be utilized for determining moving target echoes, denoted as moving target indication (MTI) from the stationary clutter echoes.
-The Doppler shift can also be utilized to measure the range-rate, i.e., the radial velocity of the target.
+where $f_c$ is the transmit frequency, $v_r$ is the radial velocity towards the receiver, and $c$ is speed of light.
+The shift can be utilized for determining moving target echoes, denoted as Moving Target Indication (MTI) from the stationary clutter echoes \cite{Curry2011}.
+The Doppler shift can also be utilized to measure the range-rate, i.e., the radial velocity of the target \cite{Curry2011}.
 
 Pulsed wave radar systems sense the space by transmitting a train of pulses \cite{Mahafza2015}.
 Figure \ref{fig:pulsed_radar} illustrates the transmitted pulses and received echoes.
-The time between subsequent pulses is called pulse repetition time (PRT). 
-Furthermore, pulse repetition frequency (PRF) stands for the reciprocal of PRT.
+The time between subsequent pulses is called Pulse Repetition Time (PRT). 
+Furthermore, Pulse Repetition Frequency (PRF) stands for the reciprocal of PRT.
 As shown in Figure \ref{fig:pulsed_radar}, PRT is determined by pulse duration, receiving time, and dead time.
 Pulse duration affects the amount of energy that will be transmitted.
 With higher energy, it is easier to detect the targets.
@@ -579,7 +579,7 @@ If the target is at a longer range than the maximum unambiguous range, the recei
 Lastly, radars require a dead time for transitioning from a receiving mode to a transmission mode.
 The dead time is used for internal checks and steering the electromagnetic energy into the correct direction.
 
-Signal-to-noise ratio (SNR) of the radar can be calculated using the following equation \cite{Curry2011}
+Signal-to-Noise Ratio (SNR) of the radar can be calculated using the following equation \cite{Curry2011}
 \begin{equation} \label{eq:radar_snr}
 SNR = \frac{P_p \tau G_T \sigma G_R \lambda^2 C}{(4\pi)^3 R_T^2 R_R^2 k T_s L},
 \end{equation}
@@ -654,7 +654,7 @@ Furthermore, a multistatic radar system is a radar network that has multiple tra
 The individual radar components can be either monostatic radars or bistatic radars.
 In conventional multistatic radar systems, each radar component can function independently, and only high-level products of local processing are given for the central processor.
 
-A specific subcategory of multistatic radar systems is multiple-input multiple-output (MIMO) radars \cite{Haimovich2008}.
+A specific subcategory of multistatic radar systems is Multiple-Input Multiple-Output (MIMO) radars \cite{Haimovich2008}.
 The designation is used to distinguish the difference in designing and processing the multiple waveforms jointly, compared to the conventional multistatic radar systems.
 Therefore, each transmitter-receiver (TX-RX) pair forms an independent
 channel for illuminating and observing the targets.
@@ -681,14 +681,14 @@ Such models are known as state-space models \cite{RongLi2003}.
 
 The motion model describes how the kinematic state of a target $\x$ evolves through time.
 In general, the notation $\x$ is short hand for $\vec{x}_{t_k}$ which means value of $\vec{x}$ at time instant $t_k$. 
-A discrete-time motion model may be expressed as
+A discrete-time motion model may be expressed as \cite{RongLi2003}
 \begin{equation}\label{eq:spm_motion}
     \xnext  = f(\x, \cinput) + \pnoise,
 \end{equation}
-where $f(\x, \cinput)$ is a deterministic function the previous state $\x$ and the control input $\cinput$. 
-The variable $\pnoise$ models noise that describes uncertainty in the model.
+where $f(\x, \cinput)$ is a deterministic function of the previous state $\x$ and the control input $\cinput$.
+The variable $\pnoise$ models noise that describes uncertainty in the model, and it is called process noise.
 The measurement model is used to describe the relationship between the target state and the observation $\z$. 
-Similar to the motion model, the discrete-time measurement model is written as follows,
+Similar to the motion model, the discrete-time measurement model is written as follows \cite{RongLi2003}
 \begin{equation}\label{eq:spm_obs}
     \z = h(\x) + \onoise,
 \end{equation}
@@ -696,10 +696,10 @@ where $h(\z)$ maps the state to the observation, and $\onoise$ is the measuremen
 
 \subsubsection{Target motion models} \label{sec:target_models}
 
-Different kinds of target motion models have been developed to mimic the target motion with a desired accuracy. 
+Different kinds of target motion models have been developed to mimic a target motion with a desired accuracy. 
 Commonly used motion models include Constant Velocity (CV), Constant Acceleration (CA), and Coordinated Turn (CT) models \cite{RongLi2003}.
 On a higher level, the models can be divided into non-maneuvering and maneuvering models. 
-Non-maneuvering motion means that the target velocity and elevation remain approximately constant, and otherwise, the motion is considered a maneuver.
+Non-maneuvering motion means that the target velocity and elevation remain approximately constant, and otherwise, the motion is considered as a maneuver.
 The state transition function $f(\x, \cinput)$ is based on the physics of the target dynamics, where the control input $\cinput$ is typically unknown.
 In addition, the statistics of the process noise $\pnoise$ is typically unknown.
 Thus, the unknowns need to be estimated or chosen reasonably.
@@ -707,8 +707,8 @@ Thus, the unknowns need to be estimated or chosen reasonably.
 The considered CV and CA models are based on the assumption that target acceleration is white Gaussian noise and decoupled between each spatial dimension.
 Thus, the models are named as
 \begin{enumerate}
-    \item discrete white noise acceleration (DWNA) model, and
-    \item discrete Wiener process acceleration (DWPA) model \cite{BarShalom2001}.
+    \item Discrete White Noise Acceleration (DWNA) model, and
+    \item Discrete Wiener Process Acceleration (DWPA) model \cite{BarShalom2001}.
 \end{enumerate}
 The aforementioned target models can be expressed with linear combinations as follows
 \begin{equation}
@@ -723,7 +723,7 @@ Therefore, the model is denoted as a CA model.
 The following equations are written for target motion in two dimensional (2D) space, and
 the notation for time instance $k$ is omitted, and superscripts $1$ and $2$ denote CV and CA models, respectively. 
 In addition, notation $\dot{x}$ is used to denote the first order derivative $\frac{\partial x}{\partial t}$, and similarly $\ddot{x}=\frac{\partial^2 x}{\partial t^2}$ is the second order derivative.
-The state of the CV model in a 2D space may be expressed as follows
+The state of the CV model in a 2D space is expressed as follows
 \begin{equation}\label{eq:x_mode1}
     \hat{\mathbf{x}}_1 =
         \transpose{
@@ -742,14 +742,14 @@ In 1D space the state transition matrix is defined as follows
     \end{pmatrix},
 \end{equation}
 where $\dt=t_{k+1} - t_k$ is the time step.
-The Gaussian random variable $w$ will be multiplied by the following vector
+The Gaussian random variable $w$ is multiplied by the following vector
 \begin{equation}\label{eq:g_noise_mode1}
 \vec{g}_1 =\transpose{\begin{pmatrix}
         \frac{1}{2} \dt^2 & \dt
     \end{pmatrix}}
 \end{equation}
 which is derived from calculating how constant acceleration $w$ lasting for time period of $\dt$ affects the state transition.
-The process noise covariance matrix can be calculated using equation \eqref{eq:g_noise_mode1} as follows  
+The process noise covariance matrix is calculated as follows  
 \begin{equation}
     \Tilde{\vec{Q}}_1 = \sigma_p^2 \vec{g}_1 \transpose{\vec{g}_1}
     = \sigma_p^2
@@ -758,8 +758,8 @@ The process noise covariance matrix can be calculated using equation \eqref{eq:g
         \frac{1}{2} \dt^3 & \dt^2 \\ 
     \end{pmatrix},
 \end{equation}
-where $\sigma_p^2$ is the variance of the Gaussian random variable $w_k$.
-In two dimensional space, the state transition matrix and process noise covariance matrix can be expressed as block diagonal matrices as follows 
+where $\sigma_p^2$ is the variance of the Gaussian random variable $w$.
+In 2D space, the state transition matrix and process noise covariance matrix can be expressed as block diagonal matrices as follows 
 \begin{equation}\label{eq:F_mode1}
 \vec{F}_1 = \diag{\Tilde{\vec{F}}_1, \Tilde{\vec{F}}_1}
 \end{equation}
@@ -778,7 +778,7 @@ In other words, accelerations along each coordinates are included into the state
             x & \dot{x} & \ddot{x} & y & \dot{y} & \ddot{y}
         \end{pmatrix}}.
 \end{equation}
-The state transition and process noise covariance matrices are extended to the higher order model as follows    
+The state transition and process noise covariance matrices are extended to the higher order model by using the following equations:  
 \begin{equation}\label{eq:f_mode2}
     \Tilde{\vec{F}}_2 = 
     \begin{pmatrix}
@@ -809,19 +809,19 @@ The state transition and process noise covariance matrices are extended to the h
 \vec{F}_2 = \diag{\Tilde{\vec{F}}_2, \Tilde{\vec{F}}_2}
 \end{equation}
 \begin{equation}
-    \vec{Q}_2 = \diag{\Tilde{\vec{Q}}_2, \Tilde{\vec{Q}}_2}.
+    \vec{Q}_2 = \diag{\Tilde{\vec{Q}}_2, \Tilde{\vec{Q}}_2}
 \end{equation}
-which are based on the same principles that was shown for the CV model.
+where the equations are based on the same principles that was shown for the CV model.
 
 \subsubsection{Radar measurement model} \label{sec:measurement_model}
 
-In this section, a measurement model is introduced for the monostatic radars.
+In this section, a measurement model is introduced for monostatic radars.
 This model is suitable for linear trackers when using target models discussed is Section \ref{sec:target_models}.
 The linearity also implies that the range-rate measurements are not used.
 
 It is assumed that the monostatic radar obtains the position measurements in polar coordinates, and the measurements are distorted by uncorrelated Gaussian noise.
 Thus, noisy estimates on range $r$, azimuth angle $\theta$ in radians, and elevation angle $\beta$ in radians are obtained.
-The polar coordinates can be converted into Cartesian coordinate system using conversion equations:
+The polar coordinates can be converted into Cartesian coordinate system using the following conversion equations:
 \begin{equation}
 \left\{
 \begin{array}{l}
@@ -830,7 +830,7 @@ The polar coordinates can be converted into Cartesian coordinate system using co
     z = r \sin(\beta).
 \end{array}\right.
 \end{equation}
-In Cartesian coordinate system, the measurement model $h(\x)$ in equation \eqref{eq:spm_obs} can be expressed with linear combinations $h(\x) = \omodel \x$.
+After converting the radar measurements into the Cartesian coordinate system, the measurement model $h(\x)$ in equation \eqref{eq:spm_obs} can be expressed with linear combinations $h(\x) = \omodel \x$.
 For CV state in equation \eqref{eq:x_mode1} and CA state in equation \eqref{eq:x_mode2}, the measurement matrix $\omodel$ is defined as follows
 \begin{equation}\label{eq:position_measurement_matrix}
     \omodel = 
@@ -841,7 +841,8 @@ For CV state in equation \eqref{eq:x_mode1} and CA state in equation \eqref{eq:x
 \end{equation}
 where $n$ is the order of the motion model.
 
-The noise covariance matrix in Cartesian coordinates needs to be linearized, and the approximation shown here is for 2D space.
+The measurement model needs to be linearized to obtain the noise covariance matrix in the Cartesian coordinate system.
+The approximation shown here is for 2D space.
 Assume that target is at position $x=r$ and $y=0$, then $\Var{x}$ = $\Var{r} = \sigma_r^2$, and variance at y-coordinate can be linearized as follows
 \begin{equation*}
     \Var{y} \approx \Var{r \sin\left(\theta\right)} \approx \Var{r \theta} = r^2\sigma_\theta^2,
@@ -877,6 +878,7 @@ and
 \end{equation}
 where $r_\text{res}$ is range resolution, and $B$ is half of the -3dB beamwidth. 
 The parameter $k_m$ is a monopulse antenna pattern difference slope, which is a specific property of a monopulse beamlobe that affects the accuracy of the angle measurements \cite{Sherman2011}.
+The equations \eqref{eq:sigma_r} and \eqref{eq:sigma_theta} requires the SNR to be estimated.
 
 \subsubsection{Kalman filters for target tracking} \label{sec:kalman_filter}
 
@@ -904,7 +906,6 @@ Kalman filtering is optimal when the state-space model matches the real system, 
 The Kalman filtering can be divided into two distinct phases, as shown in Figure \ref{fig:KF}.
 In the first phase, the next state is predicted from the last estimate using the expectation of the equation \eqref{eq:lsp_state}.
 The predicted estimates are called \prior estimates, where \prior means predicting next estimates from last estimates without observing a measurement.
-On the other hand, \post estimate estimates variable at time instance $k$ when the variable is also observed through the measurements at time instance $k$.
 Filtered or \post estimate of the state is obtained at time instance $k$ after observing $\z$ and using the new information in the measurement for correcting the predicted estimate. 
 The notation $k|k-1$ is used to denote the \prior estimates and $k|k$ denote \post estimates at time instance $k$.
 The \prior error covariance matrix $\priorecov$, which estimates the accuracy of the state estimates $\xprior$, is updated based on the process noise covariance matrix and the previous estimated \post error covariance matrix.
@@ -916,14 +917,14 @@ The prediction phase can be summarized with two equations as follows \cite{Zarch
     \priorecov &= \stmodel \lastecov \stmodel^T + \pcov \label{eq:kf_prior_error_cov},
 \end{align}
 \end{subequations}
-where $\lastecov$ and $\xlast$ are previous \post error covariance matrix and corresponding last \post state estimate.
+where $\lastecov$ and $\xlast$ are previous \post error covariance matrix and corresponding \post state estimate.
 
 In the second Kalman filtering phase, a measurement is obtained, and the \prior estimates can be corrected using the measurement $\z$ and the Kalman gain $\gain$.
 The update phase starts by calculating a residual between the observation $\z$ and the predicted observation $\zhat = \omodel \xprior$.
-The residual is called innovation, and it is utilized to correct the \prior estimate $\xprior$.
+The residual $\z-\zhat$ is called innovation, and it is utilized to correct the \prior estimate $\xprior$.
 The Kalman gain defines how much the innovation needs to be weighted to correct the predicted estimate $\xprior$.
-When the measurement error covariance is high compared to the predicted error covariance, the Kalman gain corrects less the \post estimate compared to the situation where the measurement error covariance is lower when the measurement can be trusted more. 
-The Kalman gain is found by minimizing mean square error (MSE) between $\x$ and $\xpost$.
+When the measurement error covariance is high compared to the predicted error covariance, the Kalman gain corrects less the \post estimate compared to the situation where the measurement error covariance is lower and the measurements can be trusted more. 
+The Kalman gain is found by minimizing the Mean Square Error (MSE) between $\x$ and $\xpost$.
 As a result, following update equations are obtained
 \begin{subequations}
 \label{eq:kf_update}
@@ -938,7 +939,7 @@ As a result, following update equations are obtained
 where $\innocov$ is the covariance matrix of the innovation $\prefitinnov$. 
 Even if the notation in equations \eqref{eq:kf_predict} and \eqref{eq:kf_update} suggests to use \prior or \post estimates on the previous time instance, multiple predictions can be made sequentially, or multiple updates can be made at each time instance.
 
-\subsubsection{Interacting Multiple Model estimator}
+\subsubsection{Interacting multiple model estimator}
 \label{sec:IMM}
 
 \begin{figure}[b]
@@ -962,8 +963,9 @@ An Interacting Multiple Model (IMM) estimator is a specific suboptimal hybrid fi
 
 An IMM estimator assumes that the target motion at each time instance can be expressed by one of the models in the finite set $\mathcal{M} = \{ m_i \}_{i=1}^\nmodels$, where $\nmodels$ is the number of the alternate models.
 The modes transition according to an HMM, and the state transition probabilities of the HMM are assumed to be known.
-However, in practical scenarios, the modes and the transition probabilities are considered as design parameters \cite{Simeonova2002}.
+However, in practical scenarios, the models and the transition probabilities are considered as design parameters \cite{Simeonova2002}.
 Given $Z_k$ which is the observation sequence through time $k$, the posterior probability for model $m_i$ to be in effect at time instance $k$ is written as $\Pr{M_k=m_i | Z_k} = \modeprob$, where $M_k$ denotes to model in effect at time instance $k$.
+The probability is later referred to as mode probability.
 
 The IMM estimator can be summarized with four steps that are shown in Figure \ref{fig:IMM}.
 The steps are mixing, filtering, mode probability update, and state and covariance combination. 
@@ -1613,7 +1615,7 @@ In general, the target RCS cannot be assumed known without estimating it.
 Thus, all the TX-RX pairs need to be probed regularly to ensure that the estimates are precise because the target is continuously moving, and the RCS might be dependent on the illumination and scattering angles.
 
 
-\subsection{Adaptive Revisit Interval Selection algorithms} \label{sec:tbm_ri}
+\subsection{Adaptive revisit interval selection algorithms} \label{sec:tbm_ri}
 
 An integral part of the Time Budget Management (TBM) of radars is the selection of the Revisit Interval (RI) for the target tracking tasks.
 The radar time resources can be released from tracking tasks by using longer RIs. 
@@ -2521,7 +2523,7 @@ This IMM estimator configuration will be called the CVCA-IMM estimator.
 Such a configuration can be justified with three arguments.
 First, the measurement and motion models are linear that is necessary for the linear Kalman filters introduced in Section \ref{sec:kalman_filter}.
 However, it should be noted that the RL approach would apply even to non-linear filters without altering the RL formulation.
-Second, only one model probability is sufficient to present the state since the IMM estimator has only two motion models.
+Second, only one mode probability is sufficient to present the state since the IMM estimator has only two motion models.
 Lastly, the CVCA-IMM estimator has only three parameters to be tuned.
 These parameters are the acceleration noise variance for CV model $\varcv$, the acceleration noise variance for CA model $\varca$, and the mode transition probability $\msp$.
 
