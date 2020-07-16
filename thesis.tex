@@ -274,17 +274,17 @@
 %%
 \begin{abstractpage}[english]
 Radar Resource Management (RRM) considers the allocation and scheduling of radar resources as well as optimization or selection of radar operational parameters.
-Advanced radar technologies, such as phased-array antennas and Multiple-Input Multiple-Output (MIMO) systems, have increased the demand for intelligent RRM algorithms to maximize the radar performance in real-time. 
+Advanced radar technologies, such as phased-array antennas and Multiple-Input Multiple-Output (MIMO) systems, have increased the demand for intelligent RRM algorithms to maximize real-time radar performance. 
 Most of the RRM algorithms rely on models and optimization techniques. 
-However, RRM problems can be difficult to model as optimization problems, and the modeling errors can degrade the radar performance.
+However, RRM problems can be difficult to model as optimization problems, and modeling errors can degrade the radar performance.
 
-In this thesis, Reinforcement Learning (RL) methods are studied for addressing the RRM problem. 
-The RL methods enable software agents to learn from interaction while not using any model developed beforehand. 
-This thesis considers two RRM subproblems: transmitter (TX) and receiver (RX) subset selection for distributed MIMO radars, and Revisit Interval Selection (RIS) for target tracking tasks. 
+In this thesis, Reinforcement Learning (RL) methods are studied to address RRM problems. 
+The RL methods enable software agents to learn from interaction while not using models of the RRM problems developed beforehand. 
+The two considered RRM problems are: transmitter (TX) and receiver (RX) subset selection for distributed MIMO radars, and Revisit Interval Selection (RIS) for target tracking tasks. 
 
 Active TX-RX subset selection facilitates efficient resource use and adaptation to different target and propagation environments in distributed MIMO radar systems. 
 The TX-RX subset selection problem is formulated as a stochastic multi-armed bandit (MAB) problem and further extended to the combinatorial MAB framework.
-A variety of RL algorithms developed for the MAB problem are employed to learn the optimal subset in real-time. 
+Various RL algorithms developed for the MAB problem are employed to learn the optimal subset in real-time. 
 It is shown that such algorithms can be effectively used for the TX-RX subset selection problem even in non-stationary scenarios.
 
 An adaptive RIS algorithm is an integral part of efficient radar time budget management.
@@ -311,7 +311,7 @@ Tutkan resurssienhallinta käsittelee tutkan resurssien allokointia, aikataulutu
 Edistyneet tutkateknologiat kuten vaiheohjatut antennit ja MIMO-järjestelmät ovat lisänneet tarvetta älykkäille resurssienhallinta-algoritmeille, jotka reaaliaikaisesti maksivoivat tutkan toimintakyvyn. 
 Usein resurssienhallinta-algoritmit pohjautuvat malleihin ja optimointitekniikoihin. Tutkan resurssienhallinnan mallintaminen optimointi ongelmana voi olla kuitenkin haastavaa tai virheet malleissa voivat huonontaa tutkan suorituskykyä verrattuna optimaaliseen suorituskykyyn.
 
-Tässä diplomityössä tutkitaan vahvistusoppimismetodien käyttöä tutkan resurssienhallinnassa. Vahvistusoppiminen mahdollistaa ohjelmistopohjaisten agenttien oppimisen ainoastaan vuorovaikutuksen perusteella, jolloin ei tarvita ennalta kehitettyä mallia ongelmasta.
+Tässä diplomityössä tutkitaan vahvistusoppimismetodien käyttöä tutkan resurssienhallinnassa. Vahvistusoppiminen mahdollistaa ohjelmistopohjaisten agenttien oppimisen ainoastaan vuorovaikutuksen perusteella, jolloin ei tarvita ennalta kehitettyjä malleja resurssienhallintaongelmista.
 Tässä tutkielmassa käsitellään kahta aliongelmaa resurssienhallinnasta: lähettimien ja vastaanottimien valinta hajautetussa MIMO-tutkassa, ja takaisinpaluuaikavälin valinta kohteen seurannassa.
 
 Aktiivinen osajoukon valinta lähettimistä ja vastaanottimista mahdollistaa hajautetulle MIMO-tutkille tehokkaan resurssien käytön ja sopeutumisen erilaisiin kohteisiin ja etenemisympäristöihin. Osajoukon valintaongelma formuloidaan stokastisena monikätinen rosvo (MAB) -ongelmana. Lisäksi ongelmaa laajennetaan kombinatorisella MAB viitekehyksellä. Tällöin voidaan käyttää MAB ongelman ratkaisuun kehitettyjä vahvistusoppimisalgoritmeja, jotta tutka oppii valitsemaan optimaalisen osajoukon reaaliajassa. Työssä selviää, että oppimiseen perustuvaa valinta-algoritmia voidaan käyttää osajoukon valintaongelmaan hajautetussa MIMO tutkassa jopa epästationaarisissä tapauksissa.
@@ -560,10 +560,10 @@ UCB & Upper Confidence Bound \\
 \section{Introduction}
 \setcounter{page}{1}
 
-Reinforcement Learning (RL) refers to a subfield of machine learning methods that enable software agents to learn from interaction while not using any model developed beforehand \cite{Sutton2018}. 
+Reinforcement Learning (RL) refers to a subfield of machine learning methods that enable software agents to learn from interaction while not using a problem model developed beforehand \cite{Sutton2018}. 
 Over the last decade, RL has generated a great interest in the research community due to various improvements in RL algorithms. 
 Specifically, deep learning techniques have enabled applying RL to application domains that were considered too difficult before. 
-Deep reinforcement learning algorithms have been applied to solve many tasks in communications and networking applications \cite{Luong2018} as well as in robotics \cite{Kober2013} and smart grids \cite{Zhang2018}.
+Deep reinforcement learning algorithms have been applied to solve many problems in communications and networking applications \cite{Luong2018} as well as in robotics \cite{Kober2013} and smart grids \cite{Zhang2018}.
 Radar (RAdio Detection And Ranging) is a sensing system used to detect targets using radio waves \cite{Curry2011}.
 Despite the apparent advantages of the RL methods, those have not yet been researched as extensively for radar applications.
 
@@ -571,7 +571,8 @@ Despite the apparent advantages of the RL methods, those have not yet been resea
 Radar Resource Management (RRM) considers managing radar resources such as time, energy, and processing budget as well as selecting operational parameters of the radar \cite{Moo2016}.
 Phased-array technology has enabled modern radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
 RRM algorithms are studied to efficiently utilize radar resources for different radar functions to exploit the full potential of modern radars.
-The RRM problem can be divided into numerous subproblems, which are typically solved using models for the radar, the environment, and the target \cite{Moo2016, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
+
+The RRM problem can be divided into numerous subproblems, which are typically solved using radar, environment, and target models. \cite{Moo2016, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
 The models for the RRM problems can be difficult to derive, and typically non-optimal for real-world radar scenarios. 
 Thus algorithms using the models are vulnerable for modeling errors.
 This issue can be addressed by applying RL to replace or improve existing RRM algorithms. 
@@ -585,32 +586,33 @@ selecting transmit frequency to improve detection performance in environments wi
 information-theoretic beam scheduling for multi-target tracking \cite{Kreucher2005, Xu2010},
 a low-level scheduling algorithm for multichannel multifunction radars \cite{Shaghaghi2018},
 selecting the number of angle cells to be included into a beam pattern in colocated Multiple-Input Multiple-Output (MIMO) radar \cite{Wang2018}, 
-and a sequential operation mode selection to improve detection performance for moving radar platform \cite{Smits2008}.
+and a sequential operation mode selection to improve detection performance of a moving radar platform \cite{Smits2008}.
 Thus, most of the RL related research considers selecting either frequency or bandwidth. 
 However, many RRM subproblems have not been addressed, including transmitter (TX) and receiver (RX) selection in distributed MIMO radars \cite{Godrich2011a, Godrich2011, Sun2014}, and Revisit Interval Selection (RIS) for target tracking tasks \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007, Baek2010, Watson1993, Charlish2015, Keuk1975, Shin1995, Benoudnine2006, Esfahani2012}.
 
-This thesis aims to formulate RRM subproblems as RL problems and propose RL-based algorithms to solve the problems and to identify if RL can improve radar systems' performance. 
+This thesis aims to formulate RRM problems as RL problems and propose RL-based RRM algorithms to identify if RL can improve radar systems' performance.
 Two explicit RRM subproblems are considered that have not been addressed with RL methods before.
 The two considered subproblems are the TX-RX selection problem for distributed MIMO radars and the RIS problem for target tracking tasks.
-These problems diversely showcase different RL methods useful for RRM in general.
+Those problems are addressed with a diverse set of different RL methods.
 However, the proposed RL formulations consider only Single Target Tracking (STT) scenarios, simplifying the RL formulations. 
 The proposed RL algorithms are evaluated in Monte Carlo simulations, and the performance is compared against baseline algorithms.
 
 In distributed MIMO radars, the increased number of channels provides additional spatial diversity and degrees of freedom at the cost of larger amounts of data to be processed and higher power consumption \cite{Haimovich2008, Aittomäki2011}.
-In addition, active TXs may expose their location, which might be undesired in specific applications.
-TX-RX subsets are selected to obtain desired spatial diversity gain and simultaneously reduce the cost and power consumption.
+TX-RX subsets are selected to obtain desired spatial diversity gain and simultaneously reduce the cost and power consumption \cite{Godrich2011a, Godrich2011, Sun2014}.
+In addition, selecting a subset of TXs avoids exposing all the TXs for an adversary, which can be desirable in specific applications.
 In this thesis, the TX-RX selection problem is addressed by utilizing the Multi-Armed Bandit (MAB) framework, developed for problems solely concentrating on the exploration-exploitation trade-off. 
 
 Time Budget Management (TBM) is a subproblem of RRM which considers allocation and scheduling of radar time resources.
-An integral part of the TBM is the selection of the Revisit Interval (RI) for the target tracking tasks.
+An integral part of the TBM is the selection of the Revisit Interval (RI) for the target tracking tasks \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007, Baek2010, Watson1993, Charlish2015, Keuk1975, Shin1995, Benoudnine2006}.
 In this thesis, the RIS problem is formulated as an RL problem, and the Q-learning algorithm is used to solve the RL problem.
+The RL algorithm learns to allocate a minimal amount of time budget to track a target while keeping the risk of losing a track at a tolerable level.
 
 The thesis is structured as follows. 
-Chapter \ref{sec:background} introduces principles of radars and target tracking with radars. 
-Chapter \ref{sec:RL} reviews the theory on RL that is important to understand the proposed RL approaches. 
+Chapter \ref{sec:background} introduces principles of radars and presents target tracking models and algorithms used in radars.
+Chapter \ref{sec:RL} reviews the theory on RL that is important to understand the proposed RL approaches for RRM. 
 Chapter \ref{sec:existing_RRM} explains the considered RRM subproblems in detail and describes the existing solutions.
-The RL approach for distributed MIMO radar TX-RX selection is formulated and evaluated in Chapter \ref{sec:RL_TX_RX}. 
-Chapter \ref{sec:rl_ri} formulates and evaluates the RL approach for the RIS problem.
+The RL approach for distributed MIMO radar TX-RX selection is proposed and evaluated in Chapter \ref{sec:RL_TX_RX}. 
+Chapter \ref{sec:rl_ri} proposes and evaluates the RL approach for the RIS problem.
 Lastly, Chapter \ref{sec:conclusions} concludes the suitability of using RL methods for the considered RRM subproblems, and suggests future research directions. 
 
 
@@ -1189,7 +1191,7 @@ For instance, if the objective is to minimize the number of steps needed to get 
 Then negative reward could be given for each step that emphasizes the agent to learn a policy for taking a minimum amount of steps to get out of the maze.
 
 RL algorithms are based on a Markov Decision Process (MDP) framework in which state transition probabilities and reward distributions are unknown.
-This chapter is organized as follows.
+Therefore, this chapter is organized as follows.
 Section \ref{sec:MC} introduces a Markov chain, which is a fundamental component in an MDP.
 Furthermore, MDPs are described in Section \ref{sec:MDP}.
 Typical Radar Resource Management (RRM) problems are Partially Observable Markov Decision Processes (POMDP) in which the MDP state is not fully observable. 
@@ -1211,9 +1213,9 @@ Lastly, a particular RL algorithm, named Q-learning, is introduced in Section \r
 \end{figure}
 
 
-Consider a system that has a finite number of states which describe the operation point of the system.
+Consider an environment that has a finite number of states.
 The set of all different states is denoted by $\Ss$, which is also called state space.
-The state of the system can sequentially transition from one state to another based on a particular stochastic model.
+The state of the environment can sequentially transition from one state to another based on a particular stochastic model.
 A Markov chain is a stochastic model that can model the sequential state transitions if the transitions are memoryless.
 A memoryless transition means that state at time instance $k$, denoted as $S_k \in \Ss$, changes to another state $S_{k+1} \in \Ss$.
 Then the following equation will hold   
@@ -1240,10 +1242,10 @@ An example of a Markov chain with six states is shown in Figure \ref{fig:mc}.
         \centering
         \includegraphics[width=0.9\textwidth]{figures/MDP.pdf}
         \caption{
-        In an MDP, the agent takes an action that interacts with the system.
-        After the action is taken, the agent receives a reward and a new state of the system.
+        In an MDP, the agent takes an action that interacts with the environment.
+        After the action is taken, the agent receives a reward and a new state of the environment.
         The reward can depend on the action and the state transition.
-        The new system state is used to decide the next action.}
+        The new environment state is used to decide the next action.}
         \label{fig:mdp}
     \end{subfigure}
     \hfill
@@ -1251,8 +1253,8 @@ An example of a Markov chain with six states is shown in Figure \ref{fig:mc}.
         \centering
         \includegraphics[width=\textwidth]{figures/POMDP.pdf}
         \caption{
-        A POMDP is an extended MDP where the system state is observed through a sensor.
-        The sensor can be for example radar, and the measurements provide a noisy and partial state of the system. 
+        A POMDP is an extended MDP where the environment state is observed through a sensor.
+        The sensor can be for example radar, and the measurements provide a noisy and partial state of the environment. 
         In comparison to the MDP, the reward function can be additionally dependent on the observations.
         }
         \label{fig:pomdp}
@@ -1266,7 +1268,7 @@ If the outcomes of the decisions are non-deterministic, then the decision proces
 A Markov decision process (MDP) is a mathematical framework used to formalize stochastic sequential decision-making problems \cite{Sutton2018}.
 The decision-maker in an MDP is called an agent.
 
-The key element of an MDP is that the system is modeled as a Markov chain.
+The key element of an MDP is that the environment is modeled as a Markov chain.
 The agent observes the current state $s \in \Ss$ and chooses an action $a$ from a set of possible actions $\As$, which is also known as the action space.
 In some cases, the possible actions are dependent on the current state.
 Therefore, state-specific action space is denoted as $\As_s \subseteq \As$, which emphasizes the coupling between state $s$ and the available actions. 
@@ -1283,7 +1285,7 @@ The dynamics of an MDP can be summarized with a single probability distribution
 \begin{equation}\label{eq:MDP_probs}
     p(s', r | s, a) = \Pr{ S_{k+1}=s', R_{k+1}=r | S_k=s, A_k=a }.
 \end{equation}
-which is the probability that system changes from state $s \in \Ss$ to state $s' \in \Ss$ after the action $a \in \As_s$ was taken and agent receives immediate reward $r \in \Rs_{ss'}^a$.
+which is the probability that environment changes from state $s \in \Ss$ to state $s' \in \Ss$ after the action $a \in \As_s$ was taken and agent receives immediate reward $r \in \Rs_{ss'}^a$.
 
 An MDP can last for a finite or infinite number of steps, and the number of the steps is called horizon.
 The objective of the agent is to maximize the sum of rewards on the given horizon.
@@ -1295,7 +1297,7 @@ The sum of future rewards discounted with a discount factor $0 \leq \lambda < 1$
 where $R_{t+k+1}$ is the reward received from taking action $A_{t+k}$. 
 From the perspective of RL, theory for infinite horizon MDPs is more important \cite{Sutton2018}. Thus rest of the chapter will concentrate on infinite horizon MDPs.
 
-In MDP, it is assumed that the system state $S_k \in \Ss$ can be observed at each time instance $k$.
+In MDP, it is assumed that the environment state $S_k \in \Ss$ can be observed at each time instance $k$.
 Therefore, the agent needs to find a policy $\pi(a | s)$, which gives the probability for taking action $a \in \As$ given the state $s \in \Ss$.
 The optimal policy is defined as
 \begin{equation}\label{eq:mdp_optimal_policy}
@@ -1347,7 +1349,7 @@ The Bellman equation is the key for solving MDPs because it enables using recurs
 A partially observable Markov decision process (POMDP) is an extension of the MDP framework. 
 The difference between an MDP and a POMDP is that the state of a Markov chain is not fully observable \cite{Krishnamurthy2016}.
 A Markov chain that is not fully observable is called a hidden Markov model (HMM).
-In real-world systems, the state of a Markov chain is usually partially observable because sensor measurements contain random noise that is unobservable, or the observation does not include the full information about the state.
+In real-world environments, the state of a Markov chain is usually partially observable because sensor measurements contain random noise that is unobservable, or the observation does not include the full information about the state.
 
 The POMDP framework extends the MDP framework by introducing a set of all possible observations $\Os$, which is called observation space \cite{Krishnamurthy2016}.
 The set can be countable or uncountable.
@@ -1355,7 +1357,7 @@ An observation $z \in \Os$ is connected to state $s' \in \Ss$ and action $a \in 
 \begin{equation}\label{eq:pomdp_obs_prob}
     \Op(z , s', a) = \Pr{Z_{k+1}=z | S_{k+1}=s', A_k=a},
 \end{equation}
-which indicates that the probability of observing $z$ at time instance $k+1$ is conditional to the action $a$ taken at time instance $k$ and state of the system $s'$ at time instance $k+1$.
+which indicates that the probability of observing $z$ at time instance $k+1$ is conditional to the action $a$ taken at time instance $k$ and state of the environment $s'$ at time instance $k+1$.
 Thus, instead of observing the full state $S_{k+1}$ after an action, the agent obtains an observation that is conditioned on the full state.
 From equation \eqref{eq:mdp_st_prob} and equation \eqref{eq:pomdp_obs_prob}, it can be seen that in POMDP problem, the action can affect both observation and state transition probabilities.
 
@@ -1531,8 +1533,8 @@ The following rule \cite{Sutton2018}
     q(s, a) \leftarrow q(s, a) + \alpha (G - q(s, a))
 \end{equation}
 is used to update the estimates of the action-values, called Q-values, of a given policy with a Monte-Carlo method. 
-In the finite-horizon MDPs, the discounted sum $G$ from state $s$ and action $a$ is obtained by interacting with the system until the terminal state is reached.   
-In infinite horizon MDPs, the agent interacts with the system for a sufficient number of future states to approximate the discounted sum $G$.
+In the finite-horizon MDPs, the discounted sum $G$ from state $s$ and action $a$ is obtained by interacting with the environment until the terminal state is reached.   
+In infinite horizon MDPs, the agent interacts with the environment for a sufficient number of future states to approximate the discounted sum $G$.
 However, the recursion in the Bellman equation \eqref{eq:bellman_action} can be further utilized to rewrite the equation \eqref{eq:update_mc} as follows \cite{Sutton2018}
 \begin{equation}\label{eq:update_td}
     q(s, a) \leftarrow q(s, a) + \alpha \left( r + q(s', a') - q(s, a) \right)
@@ -2249,7 +2251,7 @@ It was shown that reinforcement learning could be effectively used to continuous
 An essential problem in multifunction radars is to determine how to share the limited time budget among the different radar tasks. 
 Consequently, phased-array technology creates an excellent opportunity to improve air surveillance radar performance by using more efficient Time Budget Management (TBM) algorithms. 
 An efficient TBM algorithm is needed to maximize the benefit of using adaptive phased-array technology. 
-In this Chapter, a Reinforcement Learning (RL) method is proposed to address the TBM problem.
+In this chapter, a Reinforcement Learning (RL) method is proposed to address the TBM problem.
 
 In Chapter \ref{sec:existing_RRM}, different techniques for Radar Resource Management (RRM) was introduced.
 Addressing the TBM problem with the Stochastic Dynamic Programming (SDP) technique seems appealing because the RL methods are used to solve MDPs.
