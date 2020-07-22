@@ -311,7 +311,7 @@ Usein resurssienhallinta-algoritmit pohjautuvat malleihin ja optimointitekniikoi
 Tässä diplomityössä tutkitaan vahvistusoppimismetodien käyttöä tutkan resurssienhallinnassa. Vahvistusoppiminen mahdollistaa ohjelmistopohjaisten agenttien oppimisen ainoastaan vuorovaikutuksen perusteella, jolloin ei tarvita ennalta kehitettyjä malleja resurssienhallintaongelmista.
 Tässä tutkielmassa käsitellään kahta resurssienhallinnta ongelmaa: lähettimien ja vastaanottimien valinta hajautetussa MIMO-tutkassa, ja takaisinpaluuaikavälin valinta kohteen seurannassa.
 
-Aktiivinen lähettimien ja vastaanottien valinta  mahdollistaa hajautetulle MIMO-tutkille tehokkaan resurssien käytön ja sopeutumisen erilaisiin kohteisiin ja etenemisympäristöihin. 
+Aktiivinen lähettimien ja vastaanottien valinta  mahdollistaa hajautetuille MIMO-tutkille tehokkaan resurssien käytön ja sopeutumisen erilaisiin kohteisiin ja etenemisympäristöihin. 
 Valintaongelma formuloidaan stokastisena monikätinen rosvo (MAB) -ongelmana. Lisäksi ongelmaa laajennetaan kombinatorisella MAB viitekehyksellä. Tällöin voidaan käyttää MAB ongelman ratkaisuun kehitettyjä vahvistusoppimisalgoritmeja, jotta tutka oppii valitsemaan optimaalisen osajoukon reaaliajassa. Työssä selviää, että oppimiseen perustuvaa valinta-algoritmia voidaan käyttää valintaongelmaan hajautetussa MIMO tutkassa jopa epästationaarisissä tapauksissa.
 
 Adaptiiviset takaisinpaluuaikavälin valinta-algoritmit mahdollistavat tutkan aikabudjetin tehokkaan hyödyntämisen. Takaisinpaluuaikavälin valintaongelma formuloidaan Markovin päätösprosessina, jossa tilojen siirtymistodennäköisyydet ja palkkioiden jakaumat eivät ole tunnettuja. Palkkiosignaali on kehitetty siten, että seurannasta aiheutuva kuorma on mahdollisimman pieni samalla kun pidetään kohteen menettämisen riski siedettävänä. Vahvistusoppimisongelma ratkaistaan käyttämällä Q-oppimis-algoritmia ja epsilon-ahnetta tutkimiskäytäntöä. Vertailukohtana pidettyyn algoritmiin verrattuna vahvistusoppimiseen perustuva algoritmi pystyy pienentämään seurannasta aiheutuvaa kuormaa, mikä on tärkeää etenkin kun tutka toimii ylikuormitettuna.
@@ -1018,7 +1018,7 @@ The prediction phase can be expressed with two equations as follows \cite{Zarcha
     \xprior &= \stmodel \xlast + \cimodel \cinput \label{eq:kf_pred_x} \\ 
     \priorecov &= \stmodel \lastecov \stmodel^T + \pcov \label{eq:kf_prior_error_cov},
 \end{align}
-where $\xlast$ is the previous \post state estimate, and $\lastecov$ the corresponding \post error covariance matrix.
+where $\xlast$ is the previous \post state estimate, and $\lastecov$ is the corresponding \post error covariance matrix.
 
 In the second phase, a measurement is obtained, and the \prior estimate is corrected using the measurement $\z$ and the Kalman gain $\gain$.
 The update phase starts by calculating a residual between the observation $\z$ and the predicted observation $\zhat = \omodel \xprior$, which is the expectation of the observation equation \eqref{eq:lsp_obs}.
@@ -1037,7 +1037,7 @@ As a result, following update equations are obtained \cite{Zarchan2000}
     \postecov &= \left( \eye - \gain \omodel \right) \priorecov  \label{eq:kf_post_error_cov}
 \end{align}
 where $\innocov$ is the covariance matrix of the innovation $\prefitinnov$. 
-Even if the notation in the prediction and update equations does not explicitly suggest it, multiple predictions can be made recursively using \prior estimates, or multiple updates can be made at each time instance.
+Even if the notation in the prediction and the update equations does not explicitly suggest it, multiple predictions can be made recursively using \prior estimates, or multiple updates can be made at each time instance.
 
 \subsubsection{Interacting multiple model estimator}
 \label{sec:IMM}
@@ -1114,7 +1114,7 @@ In addition, $\modemxcovlast$ is defined as follows
 % ---------------------------------------------------------
 \item[Filtering.]
 
-In the filtering phase, the probability density $\modeobsprob = p\left( \z | M_k = m_i, \mathcal{Z}_{k-1} \right) $ is calculated, which is the probability density of the observation $\z$ when mode $m_i$ is assumed active at time instance $k$ and observation history up to time instance $k-1$ is given.
+In the filtering stage, the probability density $\modeobsprob = p\left( \z | M_k = m_i, \mathcal{Z}_{k-1} \right) $ is calculated, which is the probability density of the observation $\z$ when mode $m_i$ is assumed active at time instance $k$ and the observation history up to time instance $k-1$ is given.
 The conditioning is approximated by assuming that $\xmxinit$ and $\ecovmxinit$ can be used to condition the filters before propagating the filtering equations.
 Therefore, probability densities for each mode $\modeobsprob$ are obtained using a Gaussian distribution $\normal{\modexprior}{\modeinnovcov}$.
 The predicted state $\modexprior$ is calculated using equations \eqref{eq:imm_mx_init_x} and \eqref{eq:kf_pred_x}.
@@ -1433,7 +1433,7 @@ However, in this thesis the following performance measure is used
 \end{equation}
 where the residuals are normalized by the optimal reward.
 Equation \eqref{eq:reg} will be referred to as normalized regret.
-The normalized regret utilizes the proportions of the optimal rewards missed at each time instance, which is useful when the reward distributions are non-stationary.
+The normalized regret calculates the cumulative sum of the proportions of the optimal rewards missed at each time instance, which is a useful measure when the reward distributions are non-stationary.
 
 To maximize the cumulative reward, an agent needs to find the arm, which gives the highest expected reward.
 The agent needs to decide when to explore different arms to identify those with possibly higher expected rewards and when to keep pulling the arm with currently known highest expected reward.
@@ -1445,7 +1445,7 @@ The update rule can be written as follows
 where $\leftarrow$ is assignment operator, $r$ is the received reward from selecting the arm $a$, $\alpha \in (0, 1]$ is called learning rate.
 Note that $q(a)$ is equivalent to the Q-value $q(s, a)$ but the notation is simplified because only one state exists in stochastic MAB problem.
 Moreover, $q(a)$ is also called Q-value.
-For stationary rewards, the learning rate $\alpha$ can be set to $n(a)^{-1}$ where $n(a)$ is the number of times the arm $a$ has been pulled, so that (\ref{eq:update1}) calculates the empirical mean. 
+For stationary rewards, the learning rate $\alpha$ can be set to $n(a)^{-1}$ where $n(a)$ is the number of times the arm $a$ has been pulled, so that \eqref{eq:update1} calculates the empirical mean. 
 For non-stationary rewards, the parameter $\alpha$ needs to be, for example, constant so that old rewards have a lower weight than more recent ones for $\alpha \in (0, 1)$ as shown in \cite{Sutton2018}.
 
 In practice, a policy is realized as an algorithm.
@@ -2407,7 +2407,7 @@ where $\tau_d$ is the dwell time and $n_d$ is number of dwells needed to achieve
 The penalty $\frac{n_d}{\ri}\tau_d$ is the tracking load in equation \eqref{eq:load} without expectation on the number of dwells, and it is referred to as temporal tracking load.
 The discount factor $\lambda$ can be used to control how much the future tracking load and the possibility to lose a track are valued.
 The agent can trade the immediate performance for better long-term performance when $\lambda > 0$.
-However, when $\lambda = 0$, the policy may converge faster.
+However, when $\lambda = 0$, the Q-values may converge faster.
 
 The value for $\closs$ can be selected using a heuristic design rule based on a simplified MDP with two states.
 The states of the MDP represent if a target is lost or not.
@@ -2627,7 +2627,7 @@ This IMM estimator configuration will be called the CVCA-IMM estimator.
 Such a configuration can be justified with three arguments.
 First, the measurement and motion models are linear that is necessary for the linear Kalman filters introduced in Section \ref{sec:kalman_filter}.
 However, it should be noted that the RL approach would apply even to non-linear filters without altering the RL formulation.
-Secondly, only one mode probability is sufficient to present the mode probability based RL agent state since the IMM estimator has only two motion models.
+Secondly, only one mode probability is sufficient to present the mode probability based MDP state since the IMM estimator has only two motion models.
 Lastly, the CVCA-IMM estimator has only three parameters to be tuned.
 These parameters are the acceleration noise variance for the CV model $\varcv$, the acceleration noise variance for the CA model $\varca$, and the mode transition probability $\msp$.
 
@@ -2706,7 +2706,7 @@ The configurations of the agents are shown in Table \ref{tab:agent_configuration
     \centering
     \begin{tabular}{|c | c | c |c |}
         \hline
-        \textbf{Agent ID} & \textbf{State}  & $\lambda$  &  $\omega$ \\
+        \textbf{Agent ID} & \textbf{State space}  & $\lambda$  &  $\omega$ \\
         \hline
         0 & innovation & 0.0 & 1.0 \\ \hline
         1 & innovation & 0.7 & 0.75 \\ \hline
@@ -2915,8 +2915,9 @@ For the baseline algorithm, the trajectory 6 is the most difficult to maintain w
 
 Using figures \ref{fig:penalty_plt} and \ref{fig:baseline_plt}, the parameters of the RL agent and the baseline algorithm were tuned to achieve an approximately equal PLT to evaluate the tracking load in equation \eqref{eq:load}, the selected RIs, and euclidean distances between the target positions and the predicted target positions.
 Thus, the parameters $\closs = 0.2$ and $V_0=0.164$ were selected.
-With the corresponding parameters, the RL agent lost the target in trajectory 4 one time out of 200 Monte Carlo iterations.
-The baseline algorithm did not lose any tracks in the Monte Carlo simulations.
+With the corresponding parameters, the RL agent lost the target in trajectory 4 one time out of 200 Monte Carlo iterations. 
+In other trajectories, the target was not lost a single time.
+In addition, the baseline algorithm did not lose any tracks in the Monte Carlo simulations.
 The cost of losing a track $\closs=0.2$ is equal to the value used in Section \ref{sec:training}.
 However, the policy of the agent with the identical configuration in Section \ref{sec:training} is different from the policy evaluated here because the agent was trained again.
 The policy evaluated here is shown in Figure \ref{fig:policy_id4}.
@@ -3133,13 +3134,13 @@ Furthermore, with a sufficient amount of learning, an advantage can be seen comp
 
 In distributed MIMO radars, transmitter (TX) and receiver (RX) subsets are selected to reduce the power consumption and the data to be processed at the central processor as well as to prevent exposing the locations of the TXs for an adversary.
 The Multi-Armed Bandit (MAB) framework was used to formulate the TX-RX selection problem as an RL problem.
-Furthermore, the problem was modeled as a combinatorial MAB problem used to reduce the dimensions of the action space.
+Furthermore, the problem was modeled as a combinatorial MAB problem, that was used to reduce the dimensions of the action space.
 A MAB algorithm was proposed to actively learn to select a subset of TXs and RXs that maximize the reward function.
 
 Each arm in the MAB formulation was modeled as a single TX-RX pair such that the RL agent selects multiple arms at a time. 
 The exploration-exploitation trade-off ensured that all the different TX-RX pairs were probed for a sufficient number of times to minimize the regret. 
 The RL agent's selections were driven by a reward function that calculates mean SINR in a linear scale.
-A constant learning rate was used to weight past rewards less than recent rewards to address the time-dependent reward distributions for moving target scenarios.
+A constant learning rate was used to weight past rewards less than recent rewards to address the time-dependent reward distributions of moving target scenarios.
 
 The performance of the generalized MAB algorithm was evaluated in Monte Carlo simulations.
 The simulation results exhibited that when using the RL approach, the mean SINR was close to optimal even in non-stationary scenarios and outperformed the exploration-free method.
@@ -3154,7 +3155,7 @@ The proposed rewards quantify the cost of losing a track while emphasizing the a
 Multiple RL agents with different configurations were simulated to identify the effective state space in terms of learning speed and performance.
 In addition, myopic and non-myopic agents were evaluated to determine if the myopic policy is sufficient for the RIS problem.
 The learning speed was significantly decreased when increasing the number of states.
-Therefore, using only the mode probabilities as the states were identified to enable fast learning, low PLT, and low tracking load.
+Therefore, using only the mode probabilities as the states enables fast learning, low PLT, and low tracking load.
 Furthermore, it was identified that the myopic policies achieve low tracking load with desirable PLT, and non-myopic agents obtain lower PLT, but the tracking load is considerably higher.
 The myopic RL agent using the mode probabilities as states was compared against the baseline algorithm in terms of the tracking load, and the position prediction error.
 The RL agent achieved lower tracking load peaks, which is essential when working on overload situations.
