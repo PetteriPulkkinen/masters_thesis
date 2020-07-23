@@ -571,7 +571,7 @@ Radar Resource Management (RRM) considers managing radar resources such as time,
 Phased-array technology has enabled modern radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
 RRM algorithms are studied to efficiently utilize radar resources for different radar functions to exploit the full potential of modern radars.
 
-The general RRM problem can be divided into numerous subproblems, which are typically solved using radar, environment, and target models. \cite{Moo2016, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
+The general RRM problem can be divided into numerous subproblems, which are typically solved using radar, environment, and target models \cite{Moo2016, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
 The models for the RRM problems can be difficult to derive, and typically non-optimal for real-world radar scenarios. 
 Thus algorithms using the models are vulnerable for modeling errors.
 This issue can be addressed by applying RL to replace or improve existing RRM algorithms. 
@@ -587,7 +587,7 @@ a low-level scheduling algorithm for multichannel multifunction radars \cite{Sha
 selecting the number of angle cells to be included into a beam pattern in colocated Multiple-Input Multiple-Output (MIMO) radar \cite{Wang2018}, 
 and a sequential operation mode selection to improve detection performance of a moving radar platform \cite{Smits2008}.
 Thus, most of the RL related research considers selecting either frequency or bandwidth. 
-However, many RRM problems have not been addressed, including transmitter (TX) and receiver (RX) selection in distributed MIMO radars \cite{Godrich2011a, Godrich2011, Sun2014}, and Revisit Interval Selection (RIS) for target tracking tasks \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007, Baek2010, Watson1993, Charlish2015, Keuk1975, Shin1995, Benoudnine2006, Esfahani2012}.
+However, many RRM problems have not been addressed, including transmitter (TX) and receiver (RX) selection in distributed MIMO radars \cite{Godrich2011a, Godrich2011, Sun2014}, and Revisit Interval Selection (RIS) for target tracking tasks \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007,Baek2010, Keuk1975, Watson1993, vanKeuk1993, Daeipour1994, Shin1995, Benoudnine2006, MasoumiGanjgah2017, Charlish2015}.
 
 This thesis aims to formulate RRM problems as RL problems and propose RL-based RRM algorithms to identify if RL can improve radar systems' performance.
 Two explicit RRM problems are considered that have not been addressed with RL methods before.
@@ -1730,7 +1730,7 @@ The radar time resources can be released from tracking tasks by using longer RIs
 However, the RI should be adjusted such that the tracking task can be maintained while minimizing the tracking load.
 Short RIs should be used for maneuvering targets with high process noise to maintain the quality of state estimates at a tolerable level. 
 Similarly, long RIs should be used for non-maneuvering targets with stable trajectories because the movement is more predictable.
-Different adaptive Revisit Interval Selection (RIS) algorithms have been widely studied to release time resources from target tracking to other radar tasks \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007, Baek2010, Watson1993, Charlish2015, Keuk1975, Shin1995, Benoudnine2006}.
+Different adaptive Revisit Interval Selection (RIS) algorithms have been widely studied to release time resources from target tracking to other radar tasks \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007,Baek2010, Keuk1975, Watson1993, vanKeuk1993, Daeipour1994, Shin1995, Benoudnine2006, MasoumiGanjgah2017, Charlish2015}.
 The algorithms are briefly covered in the following subsections.
 
 \subsubsection{Residual-based algorithms}
@@ -2391,7 +2391,7 @@ Contrary to the direct selection, there are no hard upper or lower limits for th
 In addition, $\deltalim$ can be much lower than $\tmax - \tmin$.
 However, achieving the desired RI might take multiple actions, where the number of actions required depends on $\deltalim$ and $\nacts$.
 
-\subsubsection{Reward} \label{sec:rewards}
+\subsubsection{Rewards} \label{sec:rewards}
 
 The agent's overall objective is to minimize the time budget needed to maintain a track and prevent track losses based on the cost of losing a track.
 The objective should be reflected in the immediate or cumulative rewards given for the RL agent, as shown in equation \eqref{eq:discounted_sum}. 
@@ -2739,7 +2739,7 @@ where $\Ne$ is number of episodes, $K_m$ is number of steps in episode $m$, and 
 An episode refers to simulating a sampled trajectory until the end of the trajectory or when the target is lost.
 
 The ability to track targets without losing them is measured in terms of Probability to Lose a Track (PLT).
-The PLT refers to the probability $\Pr{\text{Track lost}|\pi, i}$ that is the probability to lose a target in a certain trajectory $i$ given a RIS policy $\pi$.
+The PLT refers to the probability $\Pr{\text{Track lost}|\pi, i}$ that is the probability to lose a target in a certain trajectory $i$ given the RIS policy $\pi$.
 On the other hand, mean PLT is used to refer to the probability
 \begin{equation}
     P_\text{mean} = \Pr{\text{Track lost}|\pi, P_T(i)}
@@ -2789,7 +2789,7 @@ The performance of a target policy will be called target performance, and simila
         \caption{Mean probability to lose a track.}
         \label{fig:online_lost}
     \end{subfigure}
-    \caption{Performance of behavior policies.}
+    \caption{Performance of the behavior policies estimated from training data.}
     \label{fig:online_performance}
 \end{figure}
 
@@ -2803,11 +2803,11 @@ The performance of a target policy will be called target performance, and simila
     \hfill
     \begin{subfigure}[b]{0.8\textwidth}
         \includegraphics[width=\textwidth]{figures/benchmark/Training/offline_plt.pdf}
-        \caption{Probability to lose a track in an episode.}
+        \caption{Mean probability to lose a track.}
         \label{fig:offline_lost}
     \end{subfigure}
     \caption{
-        Offline performance estimated from Monte Carlo simulations.
+        Performance of the target policies estimated from Monte Carlo simulations.
     }
     \label{fig:offline_performance}
 \end{figure}
@@ -2825,7 +2825,7 @@ On the other hand, the trend in the target performance is not as apparent, as sh
 Notably, the mean tracking load in Figure \ref{fig:offline_load} meets its lower limit quite fast, but the mean PLT in Figure \ref{fig:offline_lost} requires more time to converge to tolerable levels.
 Differences in the target and the behavior policies may explain the differences between the target performance and the behavior performance.
 The behavior policy takes random actions that increase the tracking load compared to the target policy, which is purely exploiting.
-For the agent, it is undoubtedly more challenging to learn the PLT than the tracking load.
+It is undoubtedly more challenging for the agent to learn how the actions affect the risk of losing a target than the tracking load.
 Therefore, the target policies had fast improvement in the tracking load, as shown in Figure \ref{fig:offline_load}. 
 The mean tracking load even rises slightly when the agent has learned more because the agent becomes more conscious about losing tracks with longer RIs.
 Meanwhile, the PLT takes more training episodes to converge to low values, as shown in Figure \ref{fig:offline_lost}.
@@ -2898,7 +2898,7 @@ The agent uses the mode probabilities as states and is based on a myopic policy.
         \caption{The mean tracking load of the baseline algorithm.}
         \label{fig:baseline_load}
     \end{subfigure}
-    \caption{The reinforcement learning (RL) agent with ID=4 and the baseline algorithms compared with different parameterizations in terms of Probability to Lose a Track (PLT) and mean tracking load.}
+    \caption{The RL agent (ID=4) and the baseline algorithm compared with different parameterizations in terms of Probability to Lose a Track (PLT) and mean tracking load.}
     \label{fig:comparison}
 \end{figure}
 
@@ -2910,10 +2910,25 @@ The baseline algorithm was also evaluated with different track sharpness values.
 Figure \ref{fig:baseline_plt} shows how the track sharpness parameter $V_0$ affects the PLT.
 In addition, Figure \ref{fig:baseline_load} shows the mean tracking load with different track sharpness parameters.
 Each value of $\closs$ and $V_0$ were evaluated using $200$ Monte Carlo iterations per trajectory.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/benchmark/Simulations/rl_baseline_comparison.pdf}
+    \caption{The mean tracking load in function of mean Probability to Lose a Track (PLT) for the RL agent (ID=4) and the baseline algorithm. The RL agent achieves lower tracking load values than the baseline algorithm with mean PLT values below 0.02.}
+    \label{fig:comparison_TL_PLT}
+\end{figure}
+
 Figure \ref{fig:comparison} can be used to compare the RL approach and the baseline algorithm.
 For the baseline algorithm, the trajectory 6 is the most difficult to maintain while the trajectory 4 is the most difficult for the RL algorithm.
+In addition, in Figure \ref{fig:comparison_TL_PLT}, the mean tracking load is shown as a function of mean PLT for the RL agent and the baseline algorithm using the same data shown in Figure \ref{fig:comparison}. 
+It can be seen that the RL approach achieves a lower tracking load than the baseline algorithm when evaluated with mean PLT values below 0.02. 
+However, for mean PLT values approximately above 0.02, the RL agent's mean tracking load is slightly higher compared to the baseline algorithm. 
+In other words, the RL agent is more reliable at maintaining the tracks with a low tracking load. 
+It can also be seen that the baseline algorithm is quite sensitive to selection of $V_0$ parameter. 
+Especially when selecting small values of $V_0$ to desire low PLT, a high tracking load can be easily induced.
 
-Using figures \ref{fig:penalty_plt} and \ref{fig:baseline_plt}, the parameters of the RL agent and the baseline algorithm were tuned to achieve an approximately equal PLT to evaluate the tracking load in equation \eqref{eq:load}, the selected RIs, and euclidean distances between the target positions and the predicted target positions.
+
+Using figures \ref{fig:penalty_plt} and \ref{fig:baseline_plt}, the parameters of the RL agent and the baseline algorithm were tuned to achieve an approximately equal PLT to evaluate the tracking load in equation \eqref{eq:load}, the selected RIs, and Euclidean distances between the target positions and the predicted target positions.
 Thus, the parameters $\closs = 0.2$ and $V_0=0.164$ were selected.
 With the corresponding parameters, the RL agent lost the target in trajectory 4 one time out of 200 Monte Carlo iterations. 
 In other trajectories, the target was not lost a single time.
@@ -2925,7 +2940,7 @@ The policy evaluated here is shown in Figure \ref{fig:policy_id4}.
 \begin{figure}[tb]
     \centering
     \includegraphics[width=.8\linewidth]{figures/benchmark/Training/policy.pdf}
-    \caption{Policy of the RL agent with ID=4. The state on x-axis is the probability of the CV mode, and the agent chooses the revisit interval on y-axis when in a corresponding state.}
+    \caption{Policy of the RL agent (ID=4). The state on x-axis is the probability of the CV mode, and the agent chooses the revisit interval on y-axis when in a corresponding state.}
     \label{fig:policy_id4}
 \end{figure}
 
@@ -2984,8 +2999,7 @@ It could be possible that the track is lost with a lower probability if the targ
         \caption{Trajectory 6.}
         \label{fig:TL_T6}
     \end{subfigure}
-    \caption{Comparing the proposed reinforcement learning approach to the baseline algorithm in terms of tracking load.
-    The figures provide expected tracking load with 95\% confidence intervals.}
+    \caption{Comparing the RL agent (ID=4) to the baseline algorithm in terms of tracking load as a function of time. The figures provide expected tracking loads with 95\% confidence intervals.}
     \label{fig:tracking_load_comparison}
 \end{figure}
 
@@ -3038,8 +3052,7 @@ The significant difference between the baseline algorithm and the RL agent is th
         \caption{Trajectory 6.}
         \label{fig:RI_T6}
     \end{subfigure}
-    \caption{Comparing the proposed reinforcement learning approach to the baseline algorithm in terms of revisit intervals.
-    The figures provide expected revisit interval with 95\% confidence intervals.}
+    \caption{Comparing the RL agent (ID=4) to the baseline algorithm in terms of revisit intervals. The figures provide the expected revisit intervals with 95\% confidence intervals.}
     \label{fig:revisit_interval_comparison}
 \end{figure}
 
@@ -3092,8 +3105,7 @@ However, for example, in trajectory 6, the peak prediction error is not signific
         \caption{Trajectory 6.}
         \label{fig:PE_T6}
     \end{subfigure}
-    \caption{Comparing the proposed reinforcement learning approach to the baseline algorithm in terms of error in predictive target position estimates.
-    The figures provide expected revisit interval with 95\% confidence intervals.}
+    \caption{Comparing the RL agent (ID=4) to the baseline algorithm in terms of the error in predictive target position estimates. The figure provides expected Euclidean distances between the target positions and the predicted target positions with 95\% confidence intervals.}
     \label{fig:position_error_comparison}
 \end{figure}
 
@@ -3101,9 +3113,9 @@ However, for example, in trajectory 6, the peak prediction error is not signific
 \subsection{Summary}
 
 The RIS problem was formulated as an RL problem by identifying suitable states, actions, and rewards, when assuming the monostatic radar described in Section \ref{sec:system_description}.
-Mode probabilities of the IMM estimator, the most recent RIs, and innovations were discretized such that those could be used as states for the Q-learning algorithm.
 Two different action spaces were identified, which are referred to as direct selection and delta selection.
-The immediate rewards were proposed to balance the risk of losing a track and minimizing the tracking load.  
+The immediate rewards were proposed to balance the risk of losing a track and minimizing the tracking load.
+Mode probabilities of the IMM estimator, the most recent RIs, and innovations were discretized such that those could be used as states for the Q-learning algorithm.
 
 The most efficient state space was identified by simulating multiple differently configured  RL agents in the benchmark trajectories.
 The agents using the mode probabilities had excellent performance in terms of the mean tracking load and the mean PLT.
@@ -3114,8 +3126,8 @@ Lastly, it was identified that augmenting the state presentations with the most 
 Moreover, the larger state space leads to slower learning speed that causes higher PLT.  
 
 The myopic RL agent using the mode probabilities as states was compared against the baseline algorithm in terms of the tracking load, the PLT, and the position prediction error.
-It was found that the performance of the RL agent is comparable to the baseline algorithm.
-The proposed learning-based approach can benefit from utilizing the experience to reduce the tracking load peaks compared to the baseline algorithm.
+It was found that the mean tracking load of the RL agent is lower compared to the baseline algorithm when evaluated with low mean PLT values.
+Moreover, the proposed learning-based approach can benefit from utilizing the experience to reduce the tracking load peaks.
 Future research directions could include function approximation techniques that could enable applying higher dimensional state spaces more efficiently. 
 Furthermore, more efficient exploration strategies from the MAB framework could be investigated, especially when using the myopic policies.
 
@@ -3155,11 +3167,12 @@ The proposed rewards quantify the cost of losing a track while emphasizing the a
 Multiple RL agents with different configurations were simulated to identify the effective state space in terms of learning speed and performance.
 In addition, myopic and non-myopic agents were evaluated to determine if the myopic policy is sufficient for the RIS problem.
 The learning speed was significantly decreased when increasing the number of states.
-Therefore, using only the mode probabilities as the states enables fast learning, low PLT, and low tracking load.
+Therefore, using only the mode probabilities as the states enables fast learning, low Probability to Lose a Track (PLT), and low tracking load.
 Furthermore, it was identified that the myopic policies achieve low tracking load with desirable PLT, and non-myopic agents obtain lower PLT, but the tracking load is considerably higher.
 The myopic RL agent using the mode probabilities as states was compared against the baseline algorithm in terms of the tracking load, and the position prediction error.
-The RL agent achieved lower tracking load peaks, which is essential when working on overload situations.
-At the same time, the position prediction error was not significantly increased.
+The RL agent was more reliable on maintaining the tracks with low PLT and low tracking load. 
+Furthermore, the RL agent achieved to reduce the tracking load peaks, which is essential when working on overload situations.
+Simultaneously, the position prediction error was not significantly larger compared to the baseline algorithm.
 
 The RL approach for RIS could be improved in several different ways.
 Notably, the learning speed was the subject of concern when using multiple features to present the discrete state.
