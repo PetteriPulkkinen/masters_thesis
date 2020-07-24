@@ -143,8 +143,8 @@
 \newcommand{\Asdir}{\As_\text{D}}
 \newcommand{\Asdelta}{\As_\Delta}
 
-\def\prior{\textit{a priori}\ }
-\def\post{\textit{a posteriori}\ }
+\def\prior{\textit{a priori}}
+\def\post{\textit{a posteriori}}
 \newcommand{\zhat}{\hat{\vec{z}}_k}
 
 \newcommand{\mimm}{\mathcal{M}}
@@ -440,10 +440,10 @@ $\x$ & kinematic state of a target at time instance $k$ \\
 $\z$ & radar observation at time instance $k$ \\
 $\zhat$ & predicted radar observation at time instance $k$ \\
 $\prefitinnov$ & innovation at time instance $k$ \\
-$\xprior$ & \prior (predicted) estimate of state $\x$\\
-$\xpost$ & \post (filtered) estimate of state $\x$ \\
-$\priorecov$ & prediction error covariance matrix on estimate $\xprior$ \\
-$\postecov$ & estimation error covariance matrix on estimate $\xpost$ \\
+$\xprior$ & predicted (\prior{}) estimate of state $\x$\\
+$\xpost$ & filtered (\post{}) estimate of state $\x$ \\
+$\priorecov$ & prediction (\prior{}) error covariance matrix on estimate $\xprior$ \\
+$\postecov$ & estimation (\post{}) error covariance matrix on estimate $\xpost$ \\
 $\gain$ & Kalman gain at time instance $k$ \\
 $\innocov$ & innovation covariance matrix at time instance $k$ \\
 &\\
@@ -455,8 +455,8 @@ $\mimm$ & set of maneuvering models \\
 $m_i$ & maneuvering model, indexed by $i \in \{1, ..., \nmodels\}$ \\
 $M_k$ & maneuvering model at time instance $k$ \\
 $\modeprob$ & maneuver mode probability for model $m_i \in \mimm$ at time instance $k$ \\
-$\xmxinitcurr$ & mixed \post (filtered) estimate of $\x$ for model $m_i \in \mimm$\\
-$\ecovmxinitcurr$ & estimation error covariance matrix on estimate $\xmxinitcurr$\\
+$\xmxinitcurr$ & mixed filtered (\post{}) estimate of $\x$ for model $m_i \in \mimm$\\
+$\ecovmxinitcurr$ & estimation (\prior{}) error covariance matrix on estimate $\xmxinitcurr$\\
 $T_s$ & sojourn time \\
 &\\
 % -----------------------
@@ -1010,10 +1010,10 @@ Kalman filtering is optimal when the state-space model matches the real system, 
 
 The Kalman filtering can be divided into two distinct phases, as shown in Figure \ref{fig:KF}.
 In the first phase, the next state is predicted from the previous estimate using the expectation of the equation \eqref{eq:lsp_state}.
-The predicted estimates are also called \prior estimates.
-Filtered or \post estimate of the state is obtained at time instance $k$ after observing $\z$ and using the new information in the measurement for correcting the predicted estimate. 
-The notation $k|k-1$ is used to denote the \prior estimates and $k|k$ denote \post estimates.
-The prediction error covariance matrix $\priorecov$, which estimates the accuracy of the state estimates $\xprior$, is updated based on the process noise covariance matrix and the previous estimation or \post error covariance matrix.
+The predicted estimates are also called \prior{} estimates.
+Filtered or \post{} estimate of the state is obtained at time instance $k$ after observing $\z$ and using the new information in the measurement for correcting the predicted estimate. 
+The notation $k|k-1$ is used to denote the \prior{} estimates and $k|k$ denote \post{} estimates.
+The prediction error covariance matrix $\priorecov$, which estimates the accuracy of the state estimates $\xprior$, is updated based on the process noise covariance matrix and the previous estimation or \post{} error covariance matrix.
 The prediction phase can be expressed with two equations as follows \cite{Zarchan2000},
 \begin{align}
     \xprior &= \stmodel \xlast + \cimodel \cinput \label{eq:kf_pred_x} \\ 
@@ -1021,9 +1021,9 @@ The prediction phase can be expressed with two equations as follows \cite{Zarcha
 \end{align}
 where $\xlast$ is the previous filtered state estimate, and $\lastecov$ is the corresponding estimation error covariance matrix.
 
-In the second phase, a measurement is obtained, and the \prior estimate is corrected using the measurement $\z$ and the Kalman gain $\gain$.
+In the second phase, a measurement is obtained, and the \prior{} estimate is corrected using the measurement $\z$ and the Kalman gain $\gain$.
 The update phase starts by calculating a residual between the observation $\z$ and the predicted observation $\zhat = \omodel \xprior$, which is the expectation of the observation equation \eqref{eq:lsp_obs}.
-The residual $\z-\zhat$ is called innovation, and it is utilized to correct the \prior estimate $\xprior$.
+The residual $\z-\zhat$ is called innovation, and it is utilized to correct the \prior{} estimate $\xprior$.
 The Kalman gain defines how much the innovation is weighted to correct the predicted estimate $\xprior$.
 If the measurement error covariance is high, the measurements can be trusted less compared to the situation where the measurement error covariance is low.
 Thus in the former case, the Kalman gain corrects the estimates less than in the latter case.
@@ -1038,7 +1038,7 @@ As a result, following update equations are obtained \cite{Zarchan2000}
     \postecov &= \left( \eye - \gain \omodel \right) \priorecov  \label{eq:kf_post_error_cov}
 \end{align}
 where $\innocov$ is the covariance matrix of the innovation $\prefitinnov$. 
-Even if the notation in the prediction and the update equations does not explicitly show it, multiple predictions can be made recursively using \prior estimates, and multiple updates can be made at a single time instance.
+Even if the notation in the prediction and the update equations does not explicitly show it, multiple predictions can be made recursively using \prior{} estimates, and multiple updates can be made at a single time instance.
 
 \subsubsection{Interacting multiple model estimator}
 \label{sec:IMM}
@@ -1139,7 +1139,7 @@ is a normalization constant.
 % State and covariance fusion
 % ---------------------------------------------------------
 \item[State and covariance fusion.]
-Lastly, the posterior estimates $\xpost$ and $\postecov$ can be updated by weighting the \post estimates of each filter with the mode probabilities.
+Lastly, the posterior estimates $\xpost$ and $\postecov$ can be updated by weighting the \post{} estimates of each filter with the mode probabilities.
 Thus, the estimates are calculated as follows
 \begin{align}\label{eq:imm_fusion_x}
     \xpost =& \sum_{i=1}^\nmodels \mu_k^i \modexpost\\
@@ -1785,7 +1785,7 @@ The equations \eqref{eq:update_resid} and \eqref{eq:update_baek} are effectively
 \newcommand{\ndwells}{{n_d}}
 
 
-The target position needs to be estimated \prior to steer the TX beam in the correct direction. 
+The target position needs to be estimated \prior{} to steer the TX beam in the correct direction. 
 The prediction error covariance matrix estimates the uncertainty in the predicted state variables.
 Thus, it can be examined to evaluate the probability of the target being in the predicted position.
 The prediction error covariance matrix is a function of RI because the state transition and process noise covariance matrices are a function of RI.
@@ -1848,7 +1848,7 @@ In \cite{vanKeuk1993}, it was stated that fixed $V_0=0.3$ solves the optimizatio
 
 The research in \cite{Keuk1975, vanKeuk1993} was based on finding a formula to calculate the RI for the Singer motion model with known maneuver parameters.
 However, in \cite{Shin1995} the work was extended to IMM estimators where the parameters of the Singer model were estimated online.
-In other words, the parameters $\Theta$ and $\Sigma$ were calculated from the used IMM estimator models and their \post mode probabilities.
+In other words, the parameters $\Theta$ and $\Sigma$ were calculated from the used IMM estimator models and their \post{} mode probabilities.
 Then, the equation \eqref{eq:van_keuk_revisited} was used to calculate the RI.
 
 An optimal algorithm to maintain a desired state prediction error with IMM estimators was carried out in \cite{Watson1993}.
