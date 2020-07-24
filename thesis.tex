@@ -443,7 +443,7 @@ $\prefitinnov$ & innovation at time instance $k$ \\
 $\xprior$ & \prior (predicted) estimate of state $\x$\\
 $\xpost$ & \post (filtered) estimate of state $\x$ \\
 $\priorecov$ & prediction error covariance matrix on estimate $\xprior$ \\
-$\postecov$ & filtering error covariance matrix on estimate $\xpost$ \\
+$\postecov$ & estimation error covariance matrix on estimate $\xpost$ \\
 $\gain$ & Kalman gain at time instance $k$ \\
 $\innocov$ & innovation covariance matrix at time instance $k$ \\
 &\\
@@ -456,7 +456,7 @@ $m_i$ & maneuvering model, indexed by $i \in \{1, ..., \nmodels\}$ \\
 $M_k$ & maneuvering model at time instance $k$ \\
 $\modeprob$ & maneuver mode probability for model $m_i \in \mimm$ at time instance $k$ \\
 $\xmxinitcurr$ & mixed \post (filtered) estimate of $\x$ for model $m_i \in \mimm$\\
-$\ecovmxinitcurr$ & estimated error covariance matrix on estimate $\xmxinitcurr$\\
+$\ecovmxinitcurr$ & estimation error covariance matrix on estimate $\xmxinitcurr$\\
 $T_s$ & sojourn time \\
 &\\
 % -----------------------
@@ -572,7 +572,7 @@ Phased-array technology has enabled modern radars to simultaneously carry out mu
 RRM algorithms are studied to efficiently utilize radar resources for different radar functions to exploit the full potential of modern radars.
 
 The general RRM problem can be divided into numerous subproblems, which are typically solved using radar, environment, and target models \cite{Moo2016, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
-The models for the RRM problems can be difficult to derive, and typically non-optimal for real-world radar scenarios. 
+The models for the RRM problems can be difficult to derive and typically non-optimal for real-world radar scenarios. 
 Thus algorithms using the models are vulnerable for modeling errors.
 This issue can be addressed by applying RL to replace or improve existing RRM algorithms. 
 The RL would allow radar systems to learn in real-time from experience such that the modeling errors could be avoided. 
@@ -604,7 +604,7 @@ In this thesis, the TX-RX selection problem is addressed by utilizing the Multi-
 Time Budget Management (TBM) is a subproblem of RRM which considers allocation and scheduling of radar time resources.
 An integral part of the TBM is the selection of the Revisit Interval (RI) for the target tracking tasks \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007, Baek2010, Watson1993, Charlish2015, Keuk1975, Shin1995, Benoudnine2006}.
 In this thesis, the RIS problem is formulated as an RL problem, and the Q-learning algorithm is used to solve the RL problem.
-The RL algorithm learns to allocate a minimal amount of time to track a target while keeping the risk of losing a track at a tolerable level.
+Rewards are given for the RL agent to allocate a minimal amount of time to track a target while keeping the risk of losing a track at a tolerable level.
 
 The thesis is structured as follows. 
 Chapter \ref{sec:background} introduces principles of radars and presents target tracking models and algorithms used in radars.
@@ -656,12 +656,13 @@ For a monostatic radar which has TX and RX at the same location, the range is ob
     d = \frac{ v_c \tau}{2} 
 \end{equation}
 where $\tau$ is the propagation delay and $v_c$ is speed of light.
-When object is moving towards or away from the receiver, a Doppler frequency shift is induced to the radio wave according to the following equation \cite{Curry2011}
+When object is moving towards or away from the receiver or transmitter, a Doppler frequency shift is induced to the radio wave.
+If a monostatic radar is considered, the Doppler shift is induced  according to the following equation \cite{Curry2011}
 \begin{equation}
 \label{eq:doppler_freq}
     f_d = \frac{2 f v_r}{v_c},
 \end{equation}
-where $f$ is the transmit frequency, and $v_r$ is the radial velocity towards the receiver.
+where $f$ is the transmit frequency, and $v_r$ is the radial velocity towards the radar.
 The shift can be utilized for determining moving target echoes from the stationary clutter echoes \cite{Curry2011}.
 The Doppler shift can also be utilized to measure the range-rate, i.e., the radial velocity of the target \cite{Curry2011}.
 
@@ -813,7 +814,7 @@ Thus, the unknowns need to be estimated or chosen reasonably.
 
 Specific CV and CA target motion models are introduced here.
 The models are based on the assumption that target acceleration is white Gaussian noise and decoupled between each spatial dimension.
-The two target motion models are called
+The two target motion models are
 \begin{enumerate}
     \item Discrete White Noise Acceleration (DWNA) model, and
     \item Discrete Wiener Process Acceleration (DWPA) model \cite{BarShalom2001}.
@@ -830,7 +831,7 @@ Therefore, the model is referred to as the CA model.
 
 The following equations are written for target motion in two dimensional (2D) space, and
 the notation for time instance $k$ is omitted, and superscripts $1$ and $2$ denote CV and CA models, respectively. 
-In addition, notation $\dot{x}$ is used to denote the first order derivative $\frac{\partial x}{\partial t}$, and similarly $\ddot{x}=\frac{\partial^2 x}{\partial t^2}$ is the second order derivative.
+In addition, notation $\dot{x}$ is used to denote the first order derivative $\frac{\text{d} x}{\text{d} t}$, and similarly $\ddot{x}=\frac{\text{d}^2 x}{\text{d} t^2}$ is the second order derivative.
 The state of the CV model in a 2D space is expressed as follows
 \begin{equation}\label{eq:x_mode1}
     \hat{\mathbf{x}}_1 =
@@ -1012,13 +1013,13 @@ In the first phase, the next state is predicted from the previous estimate using
 The predicted estimates are also called \prior estimates.
 Filtered or \post estimate of the state is obtained at time instance $k$ after observing $\z$ and using the new information in the measurement for correcting the predicted estimate. 
 The notation $k|k-1$ is used to denote the \prior estimates and $k|k$ denote \post estimates.
-The \prior error covariance matrix $\priorecov$, which estimates the accuracy of the state estimates $\xprior$, is updated based on the process noise covariance matrix and the previous estimated \post error covariance matrix.
+The prediction error covariance matrix $\priorecov$, which estimates the accuracy of the state estimates $\xprior$, is updated based on the process noise covariance matrix and the previous estimation or \post error covariance matrix.
 The prediction phase can be expressed with two equations as follows \cite{Zarchan2000},
 \begin{align}
     \xprior &= \stmodel \xlast + \cimodel \cinput \label{eq:kf_pred_x} \\ 
     \priorecov &= \stmodel \lastecov \stmodel^T + \pcov \label{eq:kf_prior_error_cov},
 \end{align}
-where $\xlast$ is the previous \post state estimate, and $\lastecov$ is the corresponding \post error covariance matrix.
+where $\xlast$ is the previous filtered state estimate, and $\lastecov$ is the corresponding estimation error covariance matrix.
 
 In the second phase, a measurement is obtained, and the \prior estimate is corrected using the measurement $\z$ and the Kalman gain $\gain$.
 The update phase starts by calculating a residual between the observation $\z$ and the predicted observation $\zhat = \omodel \xprior$, which is the expectation of the observation equation \eqref{eq:lsp_obs}.
@@ -1037,7 +1038,7 @@ As a result, following update equations are obtained \cite{Zarchan2000}
     \postecov &= \left( \eye - \gain \omodel \right) \priorecov  \label{eq:kf_post_error_cov}
 \end{align}
 where $\innocov$ is the covariance matrix of the innovation $\prefitinnov$. 
-Even if the notation in the prediction and the update equations does not explicitly suggest it, multiple predictions can be made recursively using \prior estimates, or multiple updates can be made at each time instance.
+Even if the notation in the prediction and the update equations does not explicitly show it, multiple predictions can be made recursively using \prior estimates, and multiple updates can be made at a single time instance.
 
 \subsubsection{Interacting multiple model estimator}
 \label{sec:IMM}
@@ -1055,9 +1056,8 @@ Such systems are called hybrid systems.
 Those are characterized by a continuous-time stochastic process, such as equation \eqref{eq:spm_motion}, that describes the motion model for each mode, and by a discrete-time stochastic process that describes the evolution of the modes \cite{BarShalom2001}.
 Thus, the target mode designates the specific behavior of a target, which is modeled with a target motion model.
 
-The multiple model approach, in which numerous target models are concurrently used for tracking, has emerged to track the hybrid systems effectively \cite{BarShalom2001}.
+The multiple model approach, in which numerous target models are concurrently used for target tracking, has emerged to track the hybrid systems effectively \cite{BarShalom2001}.
 The approach assumes that target motion obeys one of the modes from a finite set of modes at a time.
-However, in real-word trackers, the target motion models are chosen to approximate the underlying modes \cite{Simeonova2002}.
 The underlying mode is identified by a mode-matched filter, which calculates the probability for each mode given the past observations.
 For an optimal approach, the number of mode matched filters would grow exponentially as a function of time, even if the modes are switched based on a hidden Markov model (HMM) \cite{BarShalom2001}.
 The HMM is presented in more detail in Chapter \ref{sec:RL}.
@@ -1094,9 +1094,9 @@ where $P_{ji}$ is the probability of the mode $m_j$ switching to the mode $m_i$,
 \begin{equation}
     \mxnorm = \sum_j^\nmodels P_{ji} \mu^j_{k-1}. \label{eq:imm_mx_normalization}
 \end{equation}
-The mixing probabilities are used to calculate mixed estimates for the most recent posterior state variables and error covariance matrices, which are further used in the tracking filters.
+The mixing probabilities are used to calculate mixed estimates for the most recent posterior state variables and estimation error covariance matrices, which are further used in the tracking filters.
 Moreover, the mixed estimates are calculated for each tracking filter by assuming that the current mode of the target matches to the motion model of the tracking filter, as described by equation \eqref{eq:mixing_conditional_prob}.
-Therefore, the mixed state and estimation error covariance matrices at time instance $k-1$ are calculated as follows
+Therefore, the mixed states and estimation error covariance matrices at time instance $k-1$ are calculated as follows
 \begin{align}
     \xmxinit &= \sum_j^\nmodels \lastmxprobs \modexlast \label{eq:imm_mx_init_x}\\
     \ecovmxinit &= \sum_j^\nmodels \lastmxprobs \left[ \modecovlast + \modemxcovlast \right], \label{eq:imm_mx_init_P}
@@ -1114,7 +1114,7 @@ In addition, $\modemxcovlast$ is defined as follows
 % ---------------------------------------------------------
 \item[Filtering.]
 
-In the filtering stage, the probability density $\modeobsprob = p\left( \z | M_k = m_i, \mathcal{Z}_{k-1} \right) $ is calculated, which is the probability density of the observation $\z$ when mode $m_i$ is assumed active at time instance $k$ and the observation history up to time instance $k-1$ is given.
+In the filtering stage, the probability density $\modeobsprob = p\left( \z | M_k = m_i, \mathcal{Z}_{k-1} \right) $ is calculated for each mode $m_i$, which is the probability density of the observation $\z$ when mode $m_i$ is assumed active at time instance $k$ and the observation history is given up to time instance $k-1$.
 The conditioning is approximated by assuming that $\xmxinit$ and $\ecovmxinit$ can be used to condition the filters before propagating the filtering equations.
 Therefore, probability densities for each mode $\modeobsprob$ are obtained using a Gaussian distribution $\normal{\modexprior}{\modeinnovcov}$.
 The predicted state $\modexprior$ is calculated using equations \eqref{eq:imm_mx_init_x} and \eqref{eq:kf_pred_x}.
@@ -1243,7 +1243,7 @@ An example of a Markov chain with six states is shown in Figure \ref{fig:mc}.
         \includegraphics[width=\textwidth]{figures/POMDP.pdf}
         \caption{
         A POMDP is an extended MDP where the environment state is observed through a sensor.
-        The sensor can be for example radar, and the measurements provide a noisy and partial state of the environment. 
+        The sensor can be for example a radar, and the measurements provide a noisy and partial state of the environment. 
         In comparison to the MDP, the reward function can be additionally dependent on the observations.
         }
         \label{fig:pomdp}
@@ -1397,7 +1397,7 @@ Therefore, the policy can be written as follows
     \left\{
         \begin{array}{ll}
             \arg\max_{a \in \As} q(s, a) & \text{with probability $1-\epsilon$}\\
-            \text{random action} & \text{with probability $\epsilon$}.
+            \text{random action} & \text{with probability $\epsilon$},
         \end{array}
     \right.
 \end{equation}
@@ -1444,12 +1444,12 @@ The update rule can be written as follows
 \end{equation}
 where $\leftarrow$ is assignment operator, $r$ is the received reward from selecting the arm $a$, $\alpha \in (0, 1]$ is called learning rate.
 Note that $q(a)$ is equivalent to the Q-value $q(s, a)$ but the notation is simplified because only one state exists in stochastic MAB problem.
-Moreover, $q(a)$ is also called Q-value.
+Furthermore, $q(a)$ is also called Q-value.
 For stationary rewards, the learning rate $\alpha$ can be set to $n(a)^{-1}$ where $n(a)$ is the number of times the arm $a$ has been pulled, so that \eqref{eq:update1} calculates the empirical mean. 
 For non-stationary rewards, the parameter $\alpha$ needs to be, for example, constant so that old rewards have a lower weight than more recent ones for $\alpha \in (0, 1)$ as shown in \cite{Sutton2018}.
 
 In practice, a policy is realized as an algorithm.
-Five commonly used MAB algorithms are reviewed here because the algorithms are widely used to solve MAB problems and used for simulations in Chapter \ref{sec:RL_TX_RX}.
+Five widely used MAB algorithms are reviewed here because the algorithms are used for simulations in Chapter \ref{sec:RL_TX_RX}.
 These algorithms are
 \begin{enumerate}
     \item $\epsilon$-greedy \cite{Sutton2018},
@@ -1508,7 +1508,7 @@ The regret of the RBE policy is asymptotically lower bounded by a logarithmic fu
     \While{\text{learning}}{
     choose $a$ using policy $\pi$ ($\argmax_a q(s, a)$ and $\epsilon$-greedy)\;
     $r, s' \leftarrow$ take action $a$\;
-    $q(s, a) \leftarrow q(s, a) + \alpha (r + \lambda \max_a q(s', a) - q(s, a))$\;
+    $q(s, a) \leftarrow q(s, a) + \alpha (r + \lambda \max_{a'} q(s', a') - q(s, a))$\;
     }
 \caption{Q-learning algorithm with \egreedy exploration \cite{Sutton2018}}
 \label{alg:q_learning}
@@ -1540,7 +1540,7 @@ However, the learning rate can be discounted, as discussed in \cite{Even-Dar2003
 The advantage of using TD learning compared to the Monte Carlo method is that the Q-values can be updated at each time instance, instead of waiting to obtain the discounted sum $G$.
 
 In the general case, the RL policy can be divided into target and behavior policies \cite{Sutton2018}.
-The behavior policy is used to improve the target policy, which is usually better in achieving higher rewards.
+The behavior policy is used to improve the target policy, where the target policy is better in achieving higher rewards.
 Off-policy RL algorithms have different behavior and target policies.
 Typically, behavior policy implements the exploration-exploitation trade-off, which is required to converge to an optimal policy. 
 However, the target policy is typically purely for exploitation. 
@@ -1566,7 +1566,7 @@ For RL problems that involve neural networks, the models are usually trained wit
 
 Phased-array technology has enabled modern radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
 Each radar function executes one or more tasks, and each radar task may involve multiple looks.
-For example, a radar task can indicate tracking a specific target, and maintaining the task may require multiple looks.
+For example, a tracking task indicates tracking a specific target, and maintaining the task may require multiple looks.
 The look of radar is defined to be uninterruptible and has a finite duration in which radar beam is steered into one or more positions \cite{Moo2016}.
 A scheduler is responsible for deciding when each look is executed and which looks are dropped in overload situations \cite{Moo2016}. 
 Task prioritization is used to make the scheduler prefer tasks with high priority over low priority ones to solve overload situations where all of the tasks cannot be executed simultaneously.
@@ -1581,7 +1581,7 @@ An efficient RRM is required to maximize the radar resource utilization for opti
 Moreover, cognitive radars use the perception-action cycle to exploit past observations and construct situational awareness for improved performance in the future \cite{Haykin2006}; thus, it creates an additional source of information to be used for RRM.
 
 Time Budget Management (TBM) is a subproblem of RRM in which radar time resources are allocated for radar looks and the looks are scheduled into the timeline. 
-The time duration of a look is called the dwell time, and the time duration between the looks for a given task is called the revisit interval (RI). 
+The time duration of a look is called the dwell time, and the time duration between the looks for a given task is called the Revisit Interval (RI). 
 The dwell times and RIs are illustrated in Figure \ref{fig:timeline}. 
 If a tracking task is considered, the RI is the time between the track update trials. 
 The time budget of a multifunction radar is shared among multiple tasks.
@@ -1725,7 +1725,7 @@ Thus, all the TX-RX pairs need to be probed regularly to ensure that the estimat
 
 \subsection{Adaptive revisit interval selection algorithms} \label{sec:tbm_ri}
 
-An integral part of the Time Budget Management (TBM) is the selection of the Revisit Interval (RI) for the target tracking tasks.
+An integral part of the TBM is the selection of the Revisit Interval (RI) for the target tracking tasks.
 The radar time resources can be released from tracking tasks by using longer RIs. 
 However, the RI should be adjusted such that the tracking task can be maintained while minimizing the tracking load.
 Short RIs should be used for maneuvering targets with high process noise to maintain the quality of state estimates at a tolerable level. 
@@ -1780,20 +1780,20 @@ A higher target priority implies that shorter RI is used to reduce the probabili
 The equations \eqref{eq:update_resid} and \eqref{eq:update_baek} are effectively the same if $e_0$ is replaced by $\sigma_m$.
 
 
-\subsubsection{Error covariance matrix based algorithms}
+\subsubsection{Prediction error covariance matrix based algorithms}
 
 \newcommand{\ndwells}{{n_d}}
 
 
 The target position needs to be estimated \prior to steer the TX beam in the correct direction. 
-The predictive error covariance matrix estimates the uncertainty in the predicted state variables.
+The prediction error covariance matrix estimates the uncertainty in the predicted state variables.
 Thus, it can be examined to evaluate the probability of the target being in the predicted position.
-The predictive error covariance matrix is a function of RI because the state transition and process covariance matrices are a function of RI.
-Thus, a criterion for the predictive error covariance matrix can be defined to formulate the RIS as an optimization problem.
+The prediction error covariance matrix is a function of RI because the state transition and process noise covariance matrices are a function of RI.
+Thus, a criterion for the prediction error covariance matrix can be defined to formulate the RIS as an optimization problem.
 
-Van Keuk proposed a criterion for an error covariance matrix in \cite{Keuk1975} that is widely utilized in the adaptive RIS literature.
+Van Keuk proposed a criterion for a prediction error covariance matrix in \cite{Keuk1975} that is widely utilized in the adaptive RIS literature.
 In addition, an equation was proposed to calculate the RI efficiently for a target with a known or estimated Signer motion model \cite{RongLi2003} parameters.
-Initially, the target tracking problem was considered in one-dimensional space such that the Van Keuk's criterion can be written as follows
+Initially, the target tracking problem was considered in 1D space such that the Van Keuk's criterion can be written as follows
 \begin{equation}\label{eq:criterion}
     \sigma_p(t + \ri | t) \leq V_0 \sigma_m,
 \end{equation}
@@ -1848,7 +1848,7 @@ In \cite{vanKeuk1993}, it was stated that fixed $V_0=0.3$ solves the optimizatio
 
 The research in \cite{Keuk1975, vanKeuk1993} was based on finding a formula to calculate the RI for the Singer motion model with known maneuver parameters.
 However, in \cite{Shin1995} the work was extended to IMM estimators where the parameters of the Singer model were estimated online.
-In other words, the parameters $\Theta$ and $\Sigma$ were calculated from the used IMM estimator models and their posterior mode probabilities.
+In other words, the parameters $\Theta$ and $\Sigma$ were calculated from the used IMM estimator models and their \post mode probabilities.
 Then, the equation \eqref{eq:van_keuk_revisited} was used to calculate the RI.
 
 An optimal algorithm to maintain a desired state prediction error with IMM estimators was carried out in \cite{Watson1993}.
@@ -1879,7 +1879,7 @@ Then, the RI was obtained using a simple equation
 \end{equation}
 where $\mucv$ and $\muca$ are the probabilities for CV and CA models, respectively.
 
-Another fast algorithm for RIS selection was also proposed in \cite{MasoumiGanjgah2017}.
+Another fast algorithm for RIS selection was proposed in \cite{MasoumiGanjgah2017}.
 An IMM estimator with three different maneuver models was used, and a minimum RI $\tmin$ and a maximum RI $\tmax$ were defined for the RIS algorithm.
 The models were designed to have different maneuvering levels starting from low maneuvering model to high maneuvering model.
 The RI was controlled recursively such that if the highest maneuvering model has the highest posterior probability, then RI is decreased by multiplying it with a constant less than one.
@@ -1897,6 +1897,7 @@ The RIS was formulated as a Partially Observable Markov Decision Process (POMDP)
 where $\tau_d$ is the dwell time, and the utility function $u(\cdot)$ is 1 if the prediction uncertainty is below a defined threshold.
 If the prediction uncertainty is above the threshold, the utility function will gradually decrease towards zero.
 The anticipation was obtained by maximising the discounted sum of rewards in equation \eqref{eq:discounted_sum}.
+However, the method required knowing the environment model, which defines the location of the occluded area.
 
 \subsection{Summary}
 
@@ -1911,16 +1912,17 @@ It was recognized that probing channels in distributed MIMO radars could be addr
 Therefore, the TX-RX selection problem is addressed in Chapter \ref{sec:RL_TX_RX} by applying RL techniques.
 
 Lastly, two distinct classes for RIS algorithms were identified. 
-The classes were residual-based algorithms and error covariance based algorithms.
+The classes were residual-based algorithms and prediction error covariance based algorithms.
 Moreover, most of the latest RIS algorithms for IMM estimators are error covariance based algorithms.
 In Chapter \ref{sec:rl_ri}, principles of the RIS algorithms will be utilized to propose an RL approach for the RIS problem.
 
 
 \newpage
-\section{Reinforcement Learning Based Transmitter and Receiver Selection for Distributed MIMO Radars}\label{sec:RL_TX_RX}
+\section[Reinforcement Learning Based Transmitter and Receiver Selection for Distributed MIMO Radars]{Reinforcement Learning Based Transmitter \\
+and Receiver Selection for Distributed MIMO \\ Radars}\label{sec:RL_TX_RX}
 
 Transmitter (TX) and receiver (RX) selection for distributed MIMO radars is studied to obtain the desired spatial diversity gain while reducing the data to be processed and the power consumption.
-Previous studies in TX-RX selection for distributed MIMO radars assumed that the Signal-to-Interference-plus-Noise Ratio (SINR) is known \cite{Sun2014} or can be estimated \cite{Godrich2011a, Godrich2011}, as discussed in Section \ref{sec:TX_RX_selection_review}.
+As discussed in Section \ref{sec:TX_RX_selection_review}, previous studies in TX-RX selection for distributed MIMO radars assumed that the Signal-to-Interference-plus-Noise Ratio (SINR) is known \cite{Sun2014} or can be estimated \cite{Godrich2011a, Godrich2011}.
 It is possible to estimate the SINR based on assumed particular propagation environments and target models, but a real-world radar environment may deviate from the assumed model and consequently lead to performance degradation.
 
 Another way to form the estimates is to probe the different channels for a sufficient number of times to learn their state.
@@ -1970,7 +1972,7 @@ The non-stationary character of $\esp$ can stem from the target moving in the en
 the movement causes variability to path losses and the radar cross-section (RCS).
 Moreover, unintentional and intentional interference levels might change in time, further contributing to the system's non-stationary behavior.
 It is assumed that sufficiently accurate estimates of the noise power $\thnoise$ and the interference power $\eintnoise$ at receiver $n$ are available.
-Therefore, the channel SINR can expressed on a linear scale as
+Therefore, the channel SINR can expressed on a linear scale as follows
 \begin{equation}\label{eq:sinr}
      \esinrexp = \frac{\E{\esp} - (\thnoise + \eintnoise)}{\thnoise + \eintnoise },
 \end{equation}
@@ -1996,7 +1998,7 @@ Furthermore, the reward maximization problem can be formulated as
                 \end{array}\right.
     \end{array}
 \end{equation}
-It is possible to find an optimal solution for the equation (\ref{eq:obj_func}) if $\vsinrexp$ is known.
+It is possible to find an optimal solution for the objective (\ref{eq:obj_func}) if $\vsinrexp$ is known.
 However, $\vsinrexp$ is not known since we can only obtain the measurements $\esp$. 
 Furthermore, it might not be possible to probe all the channels at the same time.
 Therefore, $\vsinrexp$ needs to be estimated from the received signal. 
@@ -2020,10 +2022,10 @@ The arms are chosen to maximize the reward function and satisfy the constraints.
 When this formulation is used, the Q-values introduced in Section~\ref{sec:MAB} are the channel SINR estimates $\vsinrb$.
 The total number of arms is reduced to $\nrx\ntx$ and the agent selects $\srx\stx$ arms at each iteration.
 The formulation is known as the combinatorial MAB, in which the subset of arms is called a super arm \cite{Chen2014}.
-The reformulation is possible because the reward function ($\ref{eq:obj_func}$) is an increasing function of the radar channel SINR values and each arm is independent since waveforms from different transmitters do not interfere with each other if orthogonal waveforms are used.
+The reformulation is possible because the reward function \eqref{eq:reward_func} is an increasing function of the radar channel SINR values and each arm is independent since waveforms from different transmitters do not interfere with each other if orthogonal waveforms are used.
 
 Usually, in the combinatorial MAB problem, the agent does not know the mapping from the arm rewards to the super arm rewards.
-However, the reward function $\eqref{eq:reward_func}$ is known, which enables using the MAB algorithms from the classical MAB problem.
+However, the reward function \eqref{eq:reward_func} is known, which enables using the MAB algorithms from the classical MAB problem.
 Authors in \cite{Mukherjee2012} and \cite{Kuai2019} use a similar approach for MIMO antenna selection in mobile communications to maximize throughput.
 The approach in \cite{Mukherjee2012} uses the UCB1 algorithm and the reward statistics are constant, while authors in \cite{Kuai2019} use Thompson sampling, and both non-stationary, as well as stationary rewards, are considered.
 
@@ -2125,7 +2127,7 @@ where the transmit power $\epower=1$ is constant in time and equal for each tran
         \includegraphics[width=.45\textwidth]{figures/MAB/non_stationary/regret.pdf}
         \label{fig:non_stationary_regret}
     }
-    \caption{The normalized regret at each time instant. 
+    \caption{The normalized regret as a function of time. 
             RBE and KL-UCB perfom well in the both cases.}
     \label{fig:regret}
 \end{figure}
@@ -2142,7 +2144,7 @@ where the transmit power $\epower=1$ is constant in time and equal for each tran
         \includegraphics[width=.45\textwidth]{figures/MAB/non_stationary/regret_box.pdf}
         \label{fig:non_stationary_ci}
     }
-    \caption{The normalized regret for the whole time horizon compared between different simulation runs.
+    \caption{The normalized regret of different simulation runs illustrated with box plots.
             RBE and KL-UCB obtain excellent results in both stationary and non-stationary scenarios.}
     \label{fig:ci}
 \end{figure}
@@ -2159,7 +2161,7 @@ where the transmit power $\epower=1$ is constant in time and equal for each tran
         \includegraphics[width=.45\textwidth]{figures/MAB/non_stationary/sinr.pdf}
         \label{fig:non_stationary_sinr}
     }
-    \caption{Reward at each time instant.
+    \caption{Expected reward as a function of time.
     The reward is a mean of the channel SINRs in a linear scale for the selected subset.
     The MAB algorithms are compared to a simple exploration-free method in which the subset of the receivers and the transmitters closest to the target is selected.
     On average, most of the MAB algorithms obtain rewards close to the maximum rewards.}
@@ -2187,12 +2189,12 @@ Moreover, the RBE algorithm stands out with excellent reliability and regret per
 
 \subsubsection{Stationary target}
 
-In the stationary case, the learning rate can be set to $\alpha=n(a)^{-1}$, as discussed in Section \ref{sec:MAB}.
-The value of $\epsilon$ for $\epsilon$-greedy exploration is set to 0.1, which means that it explores random subsets 10\% of the time.
+In the stationary case, the learning rate is set to $\alpha=n(a)^{-1}$, as discussed in Section \ref{sec:MAB}.
+The exploration probability $\epsilon$ of the $\epsilon$-greedy algorithm is set to 0.1, which means that it explores random subsets 10\% of the time.
 Lower $\epsilon$ can sometimes result in lower regret, but the variance of the regret may increase.
 The value 0.1 was found empirically in this simulation.
 The other algorithms do not have any tunable parameters.
-The time horizon is set to 1000, which is sufficiently long for finding the optimal TX-RX configuration.
+The time horizon $K$ is set to 1000, which is sufficiently long for finding the optimal TX-RX configuration.
 
 The stationary target implies that the expected rewards of the arms do not change in time.
 Therefore, it is possible to achieve a logarithmic regret \cite{Lattimore2019}.
@@ -2361,7 +2363,7 @@ In other words, the action is mathematically interpreted as follows
 \end{equation}
 where $A_k$ is the action taken at time instance $k$, and $\ri(k)$ is the RI selected at time instance $k$.
 Both approaches can have either a continuous or a discrete action space.
-Furthermore, the discrete action space is just a discretized version of the continuous action space $A_k \in [\amin, \amax]$.
+The discrete action space is a discretized version of the continuous action space $A_k \in [\amin, \amax]$.
 
 The action space for direct selection is discretized, such that resulting RIs are equally spaced.
 The minimum RI $\tmin=\amin$ and the maximum RI $\tmax=\amax$ need to be loosely defined for the approach. 
@@ -2386,7 +2388,7 @@ The general form of delta selection action space is
 \begin{equation}\label{eq:as_delta}
     \Asdelta \coloneqq \{ \frac{\deltalim \left( 2 n - \nacts + 1 \right)}{\nacts-1} \}_{n=0}^{\nacts-1},
 \end{equation}
-where $\nacts$ should be a positive odd number.
+where $\nacts$ should be a positive odd integer.
 Contrary to the direct selection, there are no hard upper or lower limits for the RI other than the limits given by the radar system.
 In addition, $\deltalim$ can be much lower than $\tmax - \tmin$.
 However, achieving the desired RI might take multiple actions, where the number of actions required depends on $\deltalim$ and $\nacts$.
@@ -2558,7 +2560,7 @@ Lastly, different RL agent configurations are presented in Section \ref{sec:RL_c
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{figures/benchmark/trajectories.pdf}
-    \caption{Six different target trajectories. The trajectories start from ``x'' and end to ``o''.}
+    \caption{Six different target trajectories. The trajectories start from ``o'' and end to ``x''.}
     \label{fig:benchmark_trajectories}
 \end{figure}
 
@@ -2636,7 +2638,7 @@ The dimension of the CV state vector \eqref{eq:x_mode1} and the CA state vector 
 Moreover, while the mode mixing equations \eqref{eq:imm_mx_init_x} and \eqref{eq:imm_mx_init_P} along with the state covariance fusion equations \eqref{eq:imm_fusion_x} and \eqref{eq:imm_fusion_P} require the dimensions to be equal.
 In \cite{Granstroem2015}, an enhanced approach for mixing states with different dimensions was proposed.
 However, here a simple approach is employed, which was also discussed in \cite{Granstroem2015}.
-This approach augments the state estimate and corresponding error covariance matrix of the CV model with zeros.
+This approach augments the state estimates and corresponding error covariance matrices of the CV model with zeros.
 According to \cite{Granstroem2015}, it corresponds to the situation in which the distributions of the accelerations in $x$ and $y$ coordinates are approximated with Dirac delta function.
 
 The mode transition probabilities are defined for the processing time step $\dt=0.1$ because the tracker uses the time step to predict the future states recursively.
@@ -2671,7 +2673,7 @@ Thus, the CVCA-IMM estimator functions in the tracking scenario as desired.
 
 A baseline algorithm is utilized to compare the RL approach against an existing RIS algorithm.
 The baseline algorithm for controlling the RI is based on an approach proposed in \cite{Daeipour1994}.
-This algorithm is error covariance matrix based algorithm that is used to optimize
+This algorithm is prediction error covariance matrix based algorithm that is used to optimize
 \begin{equation}\label{eq:baseline_ineq}
     \begin{array}{ll}
          & \max_{t_r} t_r \\
@@ -2822,7 +2824,7 @@ The target performance is shown in Figure \ref{fig:offline_performance}.
 
 Figure \ref{fig:online_performance} shows that the behavior performance is slowly improving between the episodes with a particular trend.
 On the other hand, the trend in the target performance is not as apparent, as shown in Figure \ref{fig:offline_performance}.
-Notably, the mean tracking load in Figure \ref{fig:offline_load} meets its lower limit quite fast, but the mean PLT in Figure \ref{fig:offline_lost} requires more time to converge to tolerable levels.
+Especially, the mean tracking load in Figure \ref{fig:offline_load} meets its lower limit quite fast, but the mean PLT in Figure \ref{fig:offline_lost} requires more time to converge to tolerable levels.
 Differences in the target and the behavior policies may explain the differences between the target performance and the behavior performance.
 The behavior policy takes random actions that increase the tracking load compared to the target policy, which is purely exploiting.
 It is undoubtedly more challenging for the agent to learn how the actions affect the risk of losing a target than the tracking load.
@@ -2837,8 +2839,8 @@ The clusters divide the agents between using the 1D state spaces and the 2D stat
 The terminology 1D and 2D refer to the state spaces without and with the augmented most recent RI, respectively.
 The clusters are caused by the fact that the 2D state spaces have higher cardinality than the 1D state spaces, thus requiring more state-action pairs to be explored.
 Therefore, the agents with 1D state space learn faster than agents with 2D state space.
-At the end of the training, the agents with 2D spaces have slightly lower tracking load with similar PLT.
-Therefore, the higher dimensional state space seems to improve the performance marginally if the learning speed is not a subject of concern.
+At the end of the training, augmenting the state presentation with the most recent RI seems to decrease the tracking load for most of the agent configurations. 
+Therefore, it can be stated that the higher dimensional state space could improve the performance if the learning speed is not a subject of concern.
 
 \begin{table}[tb]
     \centering
@@ -2945,7 +2947,7 @@ The policy evaluated here is shown in Figure \ref{fig:policy_id4}.
 \end{figure}
 
 The tracking load is shown for each trajectory in Figure \ref{fig:tracking_load_comparison}.
-For trajectories 1, 5, and 6, the tracking load for the baseline algorithm and the RL agent are approximately equal when the target is not maneuvering.
+For trajectories 1, 5, and 6, the tracking load of the baseline algorithm and the RL agent are approximately equal when the target is not maneuvering.
 On the other hand, the RL agent can keep the load smaller when the target turns and the tracking load peaks are induced.
 In trajectories 2 and 3, the target approaches the radar. 
 Therefore, the baseline algorithm decreases the RI gradually, which increases the tracking load.
@@ -3142,11 +3144,11 @@ The RRM can be approached by dividing the RRM problem into subproblems that cons
 In this thesis, Reinforcement Learning (RL) methods were proposed for two specific RRM problems.
 RL enables the radar systems to learn in real-time from experience without using any model developed beforehand.
 In both RRM problems, RL methods were successfully applied to learn to act in the problems at hand. 
-Furthermore, with a sufficient amount of learning, an advantage can be seen compared to the baseline algorithms.
+Furthermore, with a sufficient amount of learning, performance advantages were identified compared to the baseline algorithms.
 
 In distributed MIMO radars, transmitter (TX) and receiver (RX) subsets are selected to reduce the power consumption and the data to be processed at the central processor as well as to prevent exposing the locations of the TXs for an adversary.
 The Multi-Armed Bandit (MAB) framework was used to formulate the TX-RX selection problem as an RL problem.
-Furthermore, the problem was modeled as a combinatorial MAB problem, that was used to reduce the dimensions of the action space.
+Furthermore, the problem was modeled as a combinatorial MAB problem, used to reduce the dimensions of the action space.
 A MAB algorithm was proposed to actively learn to select a subset of TXs and RXs that maximize the reward function.
 
 Each arm in the MAB formulation was modeled as a single TX-RX pair such that the RL agent selects multiple arms at a time. 
@@ -3155,20 +3157,21 @@ The RL agent's selections were driven by a reward function that calculates mean 
 A constant learning rate was used to weight past rewards less than recent rewards to address the time-dependent reward distributions of moving target scenarios.
 
 The performance of the generalized MAB algorithm was evaluated in Monte Carlo simulations.
-The simulation results exhibited that when using the RL approach, the mean SINR was close to optimal even in non-stationary scenarios and outperformed the exploration-free method.
-However, the RL approach's limitation is that the radar was assumed to probe different subsets with short intervals.
+The RL algorithms achieved mean SINR close to optimal even in non-stationary scenarios and outperformed the exploration-free method.
+However, the limitation of the RL approach is that the radar was assumed to probe different subsets with short intervals.
 Contextual multi-armed bandits \cite{Lu2010} could be used to address the non-stationary reward distributions and enable using the RL approach even with longer intervals. 
 
-Adaptive Revisit Interval Selection (RIS) algorithms are used for decreasing the time budget allocated for tracking tasks.
-RIS problem was addressed using the Q-learning algorithm meaning that the states, the actions, and the rewards were defined. 
+Adaptive Revisit Interval Selection (RIS) algorithms are used to decrease the time budget allocated for target tracking tasks.
+The RIS problem was addressed using the Q-learning algorithm meaning that the states, the actions, and the rewards were defined. 
 Alternative state spaces were identified based on the innovation sequence, the mode probabilities of an IMM estimator, and the most recent revisit interval.
 The proposed rewards quantify the cost of losing a track while emphasizing the agent for minimizing the tracking load.
 
 Multiple RL agents with different configurations were simulated to identify the effective state space in terms of learning speed and performance.
 In addition, myopic and non-myopic agents were evaluated to determine if the myopic policy is sufficient for the RIS problem.
-The learning speed was significantly decreased when increasing the number of states.
-Therefore, using only the mode probabilities as the states enables fast learning, low Probability to Lose a Track (PLT), and low tracking load.
-Furthermore, it was identified that the myopic policies achieve low tracking load with desirable PLT, and non-myopic agents obtain lower PLT, but the tracking load is considerably higher.
+The learning speed was significantly decreased when the number of states was increased.
+Therefore, using only the mode probabilities as the states enabled fast learning, low Probability to Lose a Track (PLT), and low tracking load.
+Furthermore, it was identified that the myopic policies achieved low tracking load with desirable PLT, and non-myopic agents obtained lower PLT, but the tracking load was considerably higher.
+
 The myopic RL agent using the mode probabilities as states was compared against the baseline algorithm in terms of the tracking load, and the position prediction error.
 The RL agent was more reliable on maintaining the tracks with low PLT and low tracking load. 
 Furthermore, the RL agent achieved to reduce the tracking load peaks, which is essential when working on overload situations.
@@ -3176,7 +3179,7 @@ Simultaneously, the position prediction error was not significantly larger compa
 
 The RL approach for RIS could be improved in several different ways.
 Notably, the learning speed was the subject of concern when using multiple features to present the discrete state.
-The learning speed could be improved by applying function approximators \cite{Sutton2018} to generalize states-action pairs the agent has not seen before.  
+The learning speed could be improved by applying function approximators \cite{Sutton2018} to generalize states-action pairs the agent has not observed before.
 Additionally, it would be possible to utilize more effective policies to handle the exploration-exploitation trade-off, especially in the myopic case.
 In future research, RIS could also be extended by applying RL to control the dwell times.
 
