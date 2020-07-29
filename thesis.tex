@@ -16,6 +16,7 @@
 \usepackage{longtable}
 \usepackage{mathtools}
 \usepackage{multirow}
+\usepackage{nomencl}
 \usepackage{outlines}
 \usepackage{subcaption}
 \numberwithin{equation}{section}
@@ -253,7 +254,7 @@
 
 % \makeglossaries
 
-
+\makenomenclature
 
 \pagenumbering{roman}
 
@@ -389,158 +390,135 @@ Vertailukohtana pidettyyn algoritmiin verrattuna vahvistusoppimiseen perustuva a
 
 \subsection*{Symbols}
 
-\begin{longtable}{ll}
-% -----------------------
-% General symbols
-% -----------------------
+\begin{longtable}[l]{ll}
+% -------
+% Other
+% -------
 $\leftarrow$ & assignment operator \\
-&\\
-$k$ & time index \\
-$t_k$ & time at time instance $k$ \\
-&\\
-% -----------------------
-% RL/MDP/POMDP related symbols
-% -----------------------
-$\nstates$ & number of all possible states \\
-$\Ss$ & set of all possible states, i.e state space \\
-$s$ & state \\
-$S_k$ & state at time instance $k$ \\
-$\stprobs$ & state transition probability matrix \\
-&\\
-$\nacts$ & number of all possible actions \\
-$\As$ & set of all possible actions, i.e action space \\
-$\As_s$ & set of possible actions given the state $s$ \\
-$a$ & action \\
-$A_k$ & action at time instance $k$ \\
-&\\
-$\Rs$ & set of all possible rewards \\
-$\Rs_{ss'}^a$ & set of possible rewards for action $a$ given state transition from $s$ to $s'$ \\
-$R_k$ & reward at time instance $k$ \\
-$r$ & reward \\
-&\\
+% -------
+% Greek letters (Upper)
+% -------
+$\vsinrexp$ & SINR matrix of a distributed MIMO radar \\
+$\vsinrb$ & estimate of the SINR matrix $\vsinrexp$ \\
+$\deltalim$ & maximum increase or decrease in delta revisit interval action \\
+$\dt$ & processing interval used in tracking filters \\
+$\priorecov$ & prediction (\prior{}) error covariance matrix on estimate $\xprior$ \\
+$\postecov$ & estimation (\post{}) error covariance matrix on estimate $\xpost$ \\
+$\ecovmxinitcurr$ & estimation (\prior{}) error covariance matrix on estimate $\xmxinitcurr$\\
+$\vrcs$ & target RCS matrix of a distributed MIMO radar \\
 $\Os$ & set of all possible observations, i.e. observation space \\
 $\Os_s^a$ & set of possible observations given action $a$ and state $s$ \\
-$z$ & observation \\
-$Z_k$ & observation at time instance $k$ \\
-$\mathcal{Z}_k$ & set of observations up to time instance $k$ \\
-$I_k$ & information history up to time instance $k$ \\
-$\Op(z, s, a)$ & probability of observing $z$ given state $s$ and action $a$ \\
-$b$ & belief state \\
-$b_k(s)$ & probability of being in state $s$ at time instance $k$ \\
-&\\
+% -------
+% Greek letters (Lower)
+% -------
+$\alpha$ & learning rate \\
+$\beta$ & target elevation angle \\
+$\esinr$ & instantaneous channel SINR of transmitter $n$ and receiver $m$ \\
+$\vasvtx$ & transmitter selection vector \\
+$\vasvrx$ & receiver selection vector \\
+$\epsilon$ & probability of random action in \egreedy policy \\
+$\theta$ & target azimuth angle \\
+$\modeprob$ & maneuver mode probability for model $m_i \in \mimm$ at time instance $k$ \\
+$\lambda$ & discount factor \\
 $\pi$ & policy \\
 $\pi^*$ & optimal policy \\
 $\pi(a|s)$ & probability of taking action $a$ given state $s$ \\
-$v_\pi(s)$ & value for state $s$ under policy $\pi$ \\
-$v(s)$ & estimated value for state $s$ \\
-$q_\pi(s, a)$ & action-value for action $a$ and state $s$ under policy $\pi$ \\
-$q(s, a)$ &  Q-value, i.e. estimated action-value for action $a$ and state $s$ \\
-$G_k$ & discounted sum of rewards \\
-$\lambda$ & discount factor \\
-$\epsilon$ & probability of random action in \egreedy policy \\
-&\\
-% -----------------------
-% MAB related symbols
-% -----------------------
-$\regret$ & normalized regret \\
-$q(a)$ & Q-value, i.e. estimate of the action-value in stochastic MAB \\
-$\alpha$ & learning rate \\
-$\omega$ & parameter controlling decay of the learning rate \\ 
-&\\
-% -----------------------
-% Radar related symbols
-% -----------------------
-$N_\text{rx}$ & number of receivers \\
-$N_\text{tx}$ & number of transmitters \\
-$M_\text{rx}$ & number of transmitters in a subset \\
-$M_\text{tx}$ & number of receivers in a subset \\
-$\theta$ & target azimuth angle \\
-$\beta$ & target elevation angle \\
-$\phi$ & backscatter angle \\
-$d$ & target range in monostatic radars \\
-$d_\text{rx}$ & target range from receiver \\
-$d_\text{tx}$ & target range from transmitter \\
-$d_\text{res}$ & range resolution \\
-$B$ & half of -3dB beamwidth \\
-$k_m$ & monopulse antenna pattern difference slope \\
-$P_d$ & probability of detection \\
-$P_\text{fa}$ & probability of false alarm \\
-$SNR$ & signal-to-noise ratio (SNR) \\
-$\sno$ & SNR of the beam center \\
-&\\
-% -----------------------
-% KF related symbols
-% -----------------------
-$\stmodel$ & state-transition matrix at time instance $k$\\
-$\pnoise$ & process noise vector at time instance $k$\\
-$\omodel$ & observation matrix at time instance $k$\\
-$\onoise$ & observation noise vector at time instance $k$\\
-$\cinput$ & control input vector at time instance $k$\\
-$\cimodel$ & control input matrix at time instance $k$\\
-$\pcov$ & process noise covariance matrix at time instance $k$\\
-$\ocov$ & observation noise covariance matrix at time instance $k$\\
-&\\
-$\x$ & kinematic state vector of a target at time instance $k$ \\
-$\z$ & radar observation vector at time instance $k$ \\
-$\zhat$ & predicted radar observation at time instance $k$ \\
-$\prefitinnov$ & innovation vector at time instance $k$ \\
-$\xprior$ & predicted (\prior{}) estimate of state $\x$\\
-$\xpost$ & filtered (\post{}) estimate of state $\x$ \\
-$\priorecov$ & prediction (\prior{}) error covariance matrix on estimate $\xprior$ \\
-$\postecov$ & estimation (\post{}) error covariance matrix on estimate $\xpost$ \\
-$\gain$ & Kalman gain at time instance $k$ \\
-$\innocov$ & innovation covariance matrix at time instance $k$ \\
-&\\
-% -----------------------
-% IMM related symbols
-% -----------------------
-$\nmodels$ & number of maneuvering models \\
-$\mimm$ & set of maneuvering models \\
-$m_i$ & maneuvering model, indexed by $i \in \{1, ..., \nmodels\}$ \\
-$M_k$ & maneuvering model at time instance $k$ \\
-$\modeprob$ & maneuver mode probability for model $m_i \in \mimm$ at time instance $k$ \\
-$\xmxinitcurr$ & mixed filtered (\post{}) estimate of $\x$ for model $m_i \in \mimm$\\
-$\ecovmxinitcurr$ & estimation (\prior{}) error covariance matrix on estimate $\xmxinitcurr$\\
-$T_s$ & time expected of a system to spend in a state, i.e. sojourn time \\
-&\\
-% -----------------------
-% TX-RX selection related symbols
-% -----------------------
-$\vrcs$ & target RCS matrix of a distributed MIMO radar \\
-$\vpl$ & path loss matrix of a distributed MIMO radar\\
-$\thnoise$ & thermal noise power \\
 $\vintnoise$ & vector containing power of interfering signals observed at receivers \\
-$\esinr$ & instantaneous channel SINR of transmitter $n$ and receiver $m$ \\
-$\vsinrexp$ & SINR matrix of a distributed MIMO radar \\
-$\vsinrb$ & estimate of the SINR matrix $\vsinrexp$ \\
-$\vpower$ & vector containing transmit powers of a distributed MIMO radar \\
-$\vasvtx$ & transmitter selection vector \\
-$\vasvrx$ & receiver selection vector \\
-&\\
-% -----------------------
-% revisit interval selection related symbols
-% -----------------------
-$\ri$ & revisit interval \\
+$\thnoise$ & thermal noise power \\
 $\tau_d$ & dwell time \\
-$n_d$ & number of dwells needed to achieve a detection \\
-$n_\text{max}$ & number of subsequent dwells after target is considered lost \\
-$V_0$ & track sharpness parameter \\
+$\phi$ & backscatter angle \\
+$\omega$ & parameter controlling decay of the learning rate \\
+% -------
+% Fancy letters
+% -------
+$\As$ & set of all possible actions, i.e action space \\
+$\Asdelta$ & set of possible actions for delta revisit interval selections \\
+$\Asdir$ & set of possible actions for direct revisit interval selections \\
+$\As_s$ & set of possible actions given the state $s$ \\
+$\mimm$ & set of maneuvering models \\
+$\Rs$ & set of all possible rewards \\
+$\Rs_{ss'}^a$ & set of possible rewards for action $a$ given state transition from $s$ to $s'$ \\
+$\Ss$ & set of all possible states, i.e state space \\
+$\mathcal{Z}_k$ & set of observations up to time instance $k$ \\
+% -------
+% Latin letters (upper case)
+% -------
+$A_k$ & action at time instance $k$ \\
+$B$ & half of -3dB beamwidth \\
+$\stmodel$ & state-transition matrix at time instance $k$\\
+$G_k$ & discounted sum of rewards \\
+$\omodel$ & observation matrix at time instance $k$\\
+$I_k$ & information history up to time instance $k$ \\
+$\gain$ & Kalman gain at time instance $k$ \\
 $L$ & tracking load \\
 $L_\text{mean}$ & mean tracking load \\
-$\dt$ & processing interval used in tracking filters \\
-&\\
-% -----------------------
-% RL for revisit interval related symbols
-% -----------------------
-$\Asdir$ & set of possible actions for direct revisit interval selections \\
-$\Asdelta$ & set of possible actions for delta revisit interval selections \\
-$\deltalim$ & maximum increase or decrease in delta revisit interval action \\
-$\tmin$ & minimum revisit interval \\
-$\tmax$ & maximum revisit interval \\
+$\vpl$ & path loss matrix of a distributed MIMO radar\\
+$\regret$ & normalized regret \\
+$M_k$ & maneuvering model at time instance $k$ \\
+$\Ne$ & number of simulation episodes \\
+$\nmodels$ & number of maneuvering models \\
+$M_\text{rx}$ & number of transmitters in a subset \\
+$M_\text{tx}$ & number of receivers in a subset \\
+$\nacts$ & number of all possible actions \\
+$N_\text{rx}$ & number of receivers \\
+$\nstates$ & number of all possible states \\
+$N_\text{tx}$ & number of transmitters \\
+$\Op(z, s, a)$ & probability of observing $z$ given state $s$ and action $a$ \\
+$\stprobs$ & state transition probability matrix \\
+$P_\text{d}$ & probability of detection \\
+$P_\text{fa}$ & probability of false alarm \\
+$\pcov$ & process noise covariance matrix at time instance $k$\\
+$R_k$ & reward at time instance $k$ \\
+$\ocov$ & observation noise covariance matrix at time instance $k$\\
+$SNR$ & signal-to-noise ratio (SNR) \\
+$\sno$ & SNR of the beam center \\
+$S_k$ & state at time instance $k$ \\
+$\innocov$ & innovation covariance matrix at time instance $k$ \\
+$T_s$ & time expected of a system to spend in a state, i.e. sojourn time \\
+$\cimodel$ & control input matrix at time instance $k$\\
+$V_0$ & track sharpness parameter \\
+$Z_k$ & observation at time instance $k$ \\
+% -------
+% Latin letters (lower case)
+% -------
+$a$ & action \\
 $\amin$ & minimum value for revisit interval selection action \\
 $\amax$ & maximum value for revisit interval selection action \\
-$\Ne$ & number of simulation episodes \\
+$b$ & belief state \\
+$b_k(s)$ & probability of being in state $s$ at time instance $k$ \\
 $\closs$ & cost of losing a track \\
+$d$ & target range in monostatic radars \\
+$d_\text{res}$ & range resolution \\
+$d_\text{rx}$ & target range from receiver \\
+$d_\text{tx}$ & target range from transmitter \\
+$k$ & time index \\
+$k_m$ & monopulse antenna pattern difference slope \\
+$m_i$ & maneuvering model, indexed by $i \in \{1, ..., \nmodels\}$ \\
+$n_d$ & number of dwells needed to achieve a detection \\
+$n_\text{max}$ & number of subsequent dwells after target is considered lost \\
+$\vpower$ & vector containing transmit powers of a distributed MIMO radar \\
+$q(a)$ & Q-value, i.e. estimate of the action-value in stochastic MAB \\
+$q(s, a)$ &  Q-value, i.e. estimated action-value for action $a$ and state $s$ \\
+$q_\pi(s, a)$ & action-value for action $a$ and state $s$ under policy $\pi$ \\
+$r$ & reward \\
+$s$ & state \\
+$t_k$ & time at time instance $k$ \\
+$\tmax$ & maximum revisit interval \\
+$\tmin$ & minimum revisit interval \\
+$\ri$ & revisit interval \\
+$\cinput$ & control input vector at time instance $k$\\
+$v(s)$ & estimated value for state $s$ \\
+$v_\pi(s)$ & value for state $s$ under policy $\pi$ \\
+$\onoise$ & observation noise vector at time instance $k$\\
+$\pnoise$ & process noise vector at time instance $k$\\
+$\x$ & kinematic state vector of a target at time instance $k$ \\
+$\xpost$ & filtered (\post{}) estimate of state $\x$ \\
+$\xprior$ & predicted (\prior{}) estimate of state $\x$\\
+$\xmxinitcurr$ & mixed filtered (\post{}) estimate of $\x$ for model $m_i \in \mimm$\\
+$\prefitinnov$ & innovation vector at time instance $k$ \\
+$z$ & observation \\
+$\z$ & radar observation vector at time instance $k$ \\
+$\zhat$ & predicted radar observation at time instance $k$ \\
 \end{longtable}
 
 
@@ -634,7 +612,7 @@ bandwidth allocation in environments with interfering communications system \cit
 selecting transmit frequency to improve detection performance in environments with clutter \cite{Wabeke2010}, 
 information-theoretic beam scheduling for multi-target tracking \cite{Kreucher2005, Xu2010},
 a low-level scheduling algorithm for multichannel multifunction radars \cite{Shaghaghi2018},
-selecting the number of angle cells to be included into a beam pattern in colocated d Multiple-Input Multiple-Output(MIMO) radar \cite{Wang2018}, 
+selecting the number of angle cells to be included into a beam pattern in colocated Multiple-Input Multiple-Output (MIMO) radar \cite{Wang2018}, 
 and a sequential operation mode selection to improve detection performance of a moving radar platform \cite{Smits2008}.
 Thus, most of the RL related research considers selecting either frequency or bandwidth. 
 However, many RRM problems have not been addressed using RL, including transmitter (TX) and receiver (RX) selection in distributed MIMO radars \cite{Godrich2011a, Godrich2011, Sun2014}, and Revisit Interval Selection (RIS) for target tracking tasks \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007,Baek2010, Keuk1975, Watson1993, vanKeuk1993, Daeipour1994, Shin1995, Benoudnine2006, MasoumiGanjgah2017, Charlish2015}.
@@ -773,7 +751,7 @@ Thus the returns can be integrated with aligned phases \cite{Curry2011}.
 
 The radars steer the transmitted radio waves into the desired direction, either mechanically by rotating the transmit antenna \cite{Curry2011} or using Electronically Steerable Antennas (ESA) such as Active Electronically Scanned Arrays (AESA), which are based on a phased-array technology \cite{Mailloux2017}.
 Mechanically steerable radar systems typically rotate with constant angular velocity, such that each azimuth-elevation bin is revisited with a constant revisit time.
-An ESA can be steered in any direction with a relatively short delay within the field of view.
+ESA can be steered in any direction with a relatively short delay within the field of view.
 Thus, RRM for ESA radars has more degrees of freedom for controlling the beam pattern.
 
 
@@ -1621,7 +1599,7 @@ For RL problems that involve neural networks, the models are usually trained wit
 \section{Radar Resource Management} \label{sec:existing_RRM}
 
 
-Modern radar technologies, such as electronically steerable antennas and waveform diversity, have enabled radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
+Modern radar technologies, such as electronically steerable antennas, have enabled radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
 Each radar function executes one or more tasks, and each radar task may involve multiple looks.
 For example, a tracking task indicates tracking a specific target, and maintaining the track may require multiple looks.
 The look of radar is defined to be uninterruptible and has a finite duration in which radar beam is steered into one or more positions \cite{Moo2016}.
@@ -1629,7 +1607,7 @@ A scheduler is responsible for deciding when each look takes place and which loo
 Task prioritization is used to make the scheduler prefer tasks with high priority over low priority ones to solve overload situations where all of the tasks cannot be executed simultaneously.
 Radar Resource Management (RRM) considers scheduling of the radar looks, prioritization of the radar tasks as well as allocating radar resources and selecting operational parameters \cite{Moo2016}. 
 
-For monostatic and bistatic radars, the significant radar resources are the time, frequency, energy, antennas and beampatterns. 
+For monostatic and bistatic radars, the significant radar resources are the time, frequency, energy, antennas, and beampatterns. 
 Also, modern radars can adaptively adjust almost any radar operational parameter such as the transmit power, frequency, bandwidth, revisit interval, dwell time, PRF, and choose among different waveforms.
 Networked radars have an additional degree of freedom to allocate and configure individual detectors for the radar tasks \cite{Moo2016}. 
 For example, distributed MIMO radars can select different TX and RX subsets \cite{Godrich2011a, Godrich2011, Sun2014}.
