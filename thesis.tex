@@ -3,7 +3,7 @@
 
 \usepackage{amsfonts,amssymb,amsbsy,amsmath}
 \usepackage[vlined, ruled, linesnumbered, commentsnumbered]{algorithm2e}
-\usepackage{biblatex}
+\usepackage[style=ieee]{biblatex}
 \usepackage{bm}
 \usepackage{bbm}
 \usepackage{calc} % To reset the counter in the document after title page
@@ -594,11 +594,11 @@ Radar (RAdio Detection And Ranging) is a sensing system used to detect targets u
 Despite the apparent advantages of the RL methods, the topic has not been studied extensively for radar applications.
 
 
-Radar Resource Management (RRM) considers managing radar resources such as time, energy, and processing budget as well as selecting operational parameters of the radar \cite{Moo2016}.
+Radar Resource Management (RRM) considers managing radar resources such as time, energy, and processing budget as well as selecting operational parameters of the radar \cite{Moo2015}.
 Phased-array technology has enabled modern radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
 RRM algorithms are studied to efficiently utilize radar resources for different radar functions to exploit the full potential of modern radars.
 
-The general RRM problem can be divided into numerous subproblems, which are typically solved using radar, environment, and target models \cite{Moo2016, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
+The general RRM problem can be divided into numerous subproblems, which are typically solved using radar, environment, and target models \cite{Moo2015, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
 The models for the RRM problems can be difficult to derive, and typically they are suboptimal for real-world radar scenarios. 
 Thus algorithms using the models are vulnerable for modeling errors.
 This issue can be addressed by applying RL to replace or improve existing RRM algorithms. 
@@ -606,7 +606,7 @@ RL would allow radar systems to learn and autonomously improve their performance
 
 Current research for applying RL to RRM problems considers
 jamming strategies \cite{Qiang2017, Wang2019, Wang2019a, Zhang2019},
-anti-jamming strategies \cite{Kang2018, Ak2019}, 
+anti-jamming strategies \cite{Kang2018, Ak2020}, 
 bandwidth allocation in environments with interfering communications system \cite{Selvi2018, Kozy2019},
 selecting transmit frequency to improve detection performance in environments with clutter \cite{Wabeke2010}, 
 information-theoretic beam scheduling for multi-target tracking \cite{Kreucher2005, Xu2010},
@@ -748,7 +748,7 @@ The SNR gain factor depends on whether coherent or non-coherent integration is u
 Coherent integration means that phase information can be preserved. 
 Thus the returns can be integrated with aligned phases \cite{Curry2011}.
 
-The radars steer the transmitted radio waves into the desired direction, either mechanically by rotating the transmit antenna \cite{Curry2011} or using Electronically Steerable Antennas (ESA) such as Active Electronically Scanned Arrays (AESA), which are based on a phased-array technology \cite{Mailloux2017}.
+The radars steer the transmitted radio waves into the desired direction, either mechanically by rotating the transmit antenna \cite{Curry2011} or using Electronically Steerable Antennas (ESA) such as Active Electronically Scanned Arrays (AESA), which are based on a phased-array technology \cite{Mailloux2005}.
 Mechanically steerable radar systems typically rotate with constant angular velocity, such that each azimuth-elevation bin is revisited with a constant revisit time.
 ESA can be steered in any direction with a relatively short delay within the field of view.
 Thus, RRM for ESA radars has more degrees of freedom for controlling the beam pattern.
@@ -1027,15 +1027,15 @@ The equations \eqref{eq:sigma_r} and \eqref{eq:sigma_theta} require the SNR to b
     \label{fig:KF}
 \end{figure}
 
-Kalman filtering is a Minimum Mean Square Error (MMSE) state estimation algorithm for linear state-space systems \cite{Zarchan2000}.
-The discrete-time linear state-space model is expressed using linear combinations as follows \cite{Zarchan2000}
+Kalman filtering is a Minimum Mean Square Error (MMSE) state estimation algorithm for linear state-space systems \cite{Zarchan2014}.
+The discrete-time linear state-space model is expressed using linear combinations as follows \cite{Zarchan2014}
 \begin{align}
     \xnext &= \stmodel \x + \cimodel \cinput + \pnoise \label{eq:lsp_state} \\
     \z &= \omodel \x + \onoise \label{eq:lsp_obs}
 \end{align}
 where $\stmodel$ is state transition matrix, $\cimodel$ is control-input matrix, $ \omodel $ is observation matrix. 
 The noise statistics are described with zero mean Gaussian distributions $\pnoise \sim \normal{0}{\pcov}$ and $\onoise \sim \normal{0}{\ocov}$, where $\pcov$ is the process noise covariance matrix and $\ocov$ is the measurement noise covariance matrix.
-Kalman filtering is optimal when the state-space model matches the real system, the noises are Gaussian and uncorrelated, and the noise covariances are known \cite{Zarchan2000}.
+Kalman filtering is optimal when the state-space model matches the real system, the noises are Gaussian and uncorrelated, and the noise covariances are known \cite{Zarchan2014}.
 
 The Kalman filtering can be divided into two distinct phases, as shown in Figure \ref{fig:KF}.
 In the first phase, the next state is predicted from the previous estimate using the expectation of the equation \eqref{eq:lsp_state}.
@@ -1043,7 +1043,7 @@ The predicted estimates are also called \prior{} estimates.
 Filtered or \post{} estimate of the state is obtained at time instance $k$ after observing $\z$ and using the new information in the measurement for correcting the predicted estimate. 
 The notation $k|k-1$ is used to denote the \prior{} estimates and $k|k$ denote \post{} estimates.
 The prediction error covariance matrix $\priorecov$, which estimates the accuracy of the state estimates $\xprior$, is updated based on the process noise covariance matrix and the previous estimation or \post{} error covariance matrix.
-The prediction phase can be expressed with two equations as follows \cite{Zarchan2000},
+The prediction phase can be expressed with two equations as follows \cite{Zarchan2014},
 \begin{align}
     \xprior &= \stmodel \xlast + \cimodel \cinput \label{eq:kf_pred_x} \\ 
     \priorecov &= \stmodel \lastecov \stmodel^T + \pcov \label{eq:kf_prior_error_cov},
@@ -1058,7 +1058,7 @@ The Kalman gain defines how much the innovation is weighted to correct the predi
 If the measurement error covariance is high, the measurements can be trusted less compared to the situation where the measurement error covariance is low.
 Thus in the former case, the Kalman gain corrects the estimates less than in the latter case.
 The Kalman gain is found by minimizing the Mean Square Error (MSE) between $\x$ and $\xpost$.
-As a result, following update equations are obtained \cite{Zarchan2000}
+As a result, following update equations are obtained \cite{Zarchan2014}
 
 \begin{align}
     \prefitinnov &= \z - \omodel \xprior \label{eq:kf_prefit_innov}\\ 
@@ -1438,7 +1438,7 @@ An estimate of the action-value $q_\pi(s, a)$ is also known as Q-value.
 The \egreedy policy cannot achieve optimality with a fixed value of the exploration parameter $\epsilon$ because random actions will always be taken.
 One solution is to decay the parameter $\epsilon$ gradually towards zero, but specifying the decay rate can be difficult without causing a significant change in the convergence speed.
 
-The majority of the other exploration and exploitation policies that have been proposed in the literature are not suitable for solving general RL problems \cite{Lattimore2019}.
+The majority of the other exploration and exploitation policies that have been proposed in the literature are not suitable for solving general RL problems \cite{Lattimore2020}.
 Instead, they are suitable for a particular RL problem called stochastic Multi-Armed Bandit (MAB), which is an MDP with one state and unknown rewards.
 
 \subsubsection{Stochastic multi-armed bandits}\label{sec:MAB}
@@ -1496,7 +1496,7 @@ Typically, the index is constructed in a way that the arm with the highest index
 
 Another way to solve a MAB problem is to divide the exploration and the exploitation into two distinct phases. 
 This division can be fully deterministic or random. 
-Deterministic algorithms divide the exploration and the exploitation phases into blocks of specific lengths \cite{Lattimore2019}. 
+Deterministic algorithms divide the exploration and the exploitation phases into blocks of specific lengths \cite{Lattimore2020}. 
 Random algorithms, such as \egreedy, explore different arms with some probability, and otherwise, they exploit the arm with the currently highest Q-value.
 
 The \egreedy algorithm was already given in equation \eqref{eq:epsilon_greedy}.
@@ -1598,14 +1598,14 @@ For RL problems that involve neural networks, the models are usually trained wit
 Modern radar technologies, such as electronically steerable antennas and MIMO radars, have enabled radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
 Each radar function executes one or more tasks, and each radar task may involve multiple looks. 
 For example, a tracking task indicates tracking a specific target, and maintaining the track may require updating it with certain intervals.
-The look of radar is defined to be uninterruptible and has a finite duration in which radar beam is steered into one or more positions \cite{Moo2016}.
-A scheduler is responsible for deciding when each look takes place and which looks are dropped in overload situations \cite{Moo2016}. 
+The look of radar is defined to be uninterruptible and has a finite duration in which radar beam is steered into one or more positions \cite{Moo2015}.
+A scheduler is responsible for deciding when each look takes place and which looks are dropped in overload situations \cite{Moo2015}. 
 Task prioritization is used to make the scheduler prefer tasks with high priority over low priority ones to solve overload situations where all of the tasks cannot be executed simultaneously.
-Radar Resource Management (RRM) considers scheduling of the radar looks, prioritization of the radar tasks as well as allocating radar resources and selecting operational parameters \cite{Moo2016}. 
+Radar Resource Management (RRM) considers scheduling of the radar looks, prioritization of the radar tasks as well as allocating radar resources and selecting operational parameters \cite{Moo2015}. 
 
 The significant radar resources are the time, frequency, energy, and antennas.
 Also, modern radars can adaptively adjust almost any radar operational parameter such as the transmit power, frequency, bandwidth, revisit interval, dwell time, PRF, and choose among different waveforms.
-Networked radars have an additional degree of freedom to allocate and configure individual detectors for the radar tasks \cite{Moo2016}. 
+Networked radars have an additional degree of freedom to allocate and configure individual detectors for the radar tasks \cite{Moo2015}. 
 For example, distributed MIMO radars can select different TX and RX subsets \cite{Godrich2011a, Godrich2011, Sun2014}.
 Radar networks create additional difficulty in RRM because each radar can be configured and scheduled individually to improve the overall performance \cite{Sun2014}.
 Efficient RRM algorithms are required to maximize the radar resource utilization for optimal behavior, quantified by utility functions. 
@@ -1651,7 +1651,7 @@ In Section \ref{sec:tbm_ri}, Revisit Interval Selection (RIS) problem is describ
 A typical RRM algorithm can be divided into three components that prioritize, allocate, and schedule radar resources, as shown in Figure \ref{fig:RRM_diagram}.
 However, for some RRM techniques, the division is not strict.
 For example, RRM techniques can implement jointly the functions of each aforementioned component while optimizing the objective function.
-The following techniques for addressing RRM problems were presented in the literature \cite{Moo2016, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
+The following techniques for addressing RRM problems were presented in the literature \cite{Moo2015, Koch1999, Krishnamurthy2001, Wintenby2006, LaScala2006, Rajkumar1997, Rajkumar1998, Kastella1997, Kreucher2004, Kreucher2005, Xu2010}.
 
 \begin{description}
 
@@ -1861,7 +1861,7 @@ Therefore, the criterion \eqref{eq:criterion} was reformulated by replacing the 
     \sigma_\angle(t + \ri | t) \leq V_0 B
 \end{equation}
 where $\sigma_\angle$ stands for the standard deviation of the error along the major axis of ellipsoid in the sine space \cite{vanKeuk1993}.
-The sine space consists of $u$, $v$ and $d$ coordinates where $d$ is target range, $u=\cos \beta \sin \theta$ and $v=\sin \beta$ for elevation angle $\beta$ and azimuth angle $\theta$ \cite{Mailloux2017}.
+The sine space consists of $u$, $v$ and $d$ coordinates where $d$ is target range, $u=\cos \beta \sin \theta$ and $v=\sin \beta$ for elevation angle $\beta$ and azimuth angle $\theta$ \cite{Mailloux2005}.
 The sine space is commonly used coordinate system with phased-array antennas.
 A refined version of the RI rule was obtained based on the half-power beamwidth
 \begin{equation}\label{eq:van_keuk_revisited}
@@ -1967,7 +1967,7 @@ Another way to form the estimates is to probe the different channels for a suffi
 The probing needs to be efficient since the channels are continuously evolving, and the probing will impact the radar performance because it requires performing extra tasks in addition to the main operation of the radar.  Therefore, it is necessary to decide when to exploit the TX-RX subset currently providing the best payoff or explore other subsets that may or may not provide even higher SINR levels. 
 This is the exploration--exploitation trade-off.
 
-The Multi-Armed Bandit (MAB) framework provides policies for selecting actions to balance the exploration--exploitation trade-off while maximizing the employed reward function \cite{Lattimore2019}.
+The Multi-Armed Bandit (MAB) framework provides policies for selecting actions to balance the exploration--exploitation trade-off while maximizing the employed reward function \cite{Lattimore2020}.
 In the literature, such a framework is effectively used, for example, for opportunistic spectrum access, in which the secondary user must choose a frequency band in a way that does not cause interference to the primary user \cite{Zhao2008}.
 Moreover, authors in \cite{Mukherjee2012} and \cite{Kuai2019} use a combinatorial MAB approach as a robust way for selecting the MIMO antenna subset for maximizing throughput in communication systems.
 The combinatorial MAB formulation is used to address a problem with a large combinatorial action space.
@@ -2252,7 +2252,7 @@ The other algorithms do not have any tunable parameters.
 The time horizon $K$ is set to 1000, which is sufficiently long for finding the optimal TX-RX configuration.
 
 The stationary target implies that the expected rewards of the arms do not change in time.
-Therefore, it is possible to achieve a logarithmic regret \cite{Lattimore2019}.
+Therefore, it is possible to achieve a logarithmic regret \cite{Lattimore2020}.
 From Figure~\ref{fig:stationary_regret}, it can be observed that all algorithms other than $\epsilon$-greedy can achieve sublinear regret.
 Algorithms like Thompson sampling and KL-UCB, which require knowledge about the reward distribution, have excellent performance in these simulations.
 The $\epsilon$-greedy algorithm has the highest regret, and it is visible in Figure~\ref{fig:stationary_ci} that such random policies have a high variance.
@@ -3253,9 +3253,9 @@ In future research, also a multi-target tracking scenario should be considered.
 It would require taking into account low-level scheduling and the track association. 
 
 \newpage
+
 \thesisbibliography
 
 \printbibliography
-
 
 \end{document}
