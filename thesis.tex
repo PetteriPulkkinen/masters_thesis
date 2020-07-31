@@ -229,7 +229,7 @@
 % \newacronym{mdp}{MDP}{Markov Decision Process}
 % \newacronym{mimo}{MIMO}{Multiple-Input Multiple-Output}
 % \newacronym{pomdp}{POMDP}{Partially Observable Markov Decision Process}
-% \newacronym{plt}{PLT}{Probability to Lose a Track}
+% \newacronym{tlp}{TLP}{Track Loss Probability}
 % \newacronym{prf}{PRF}{Pulse Repetition Frequency}
 % \newacronym{prt}{PRT}{Pulse Repetition Time}
 % \newacronym{qram}{Q-RAM}{Quality of service Resource Management Model}
@@ -555,7 +555,7 @@ MMSE & Minimum Mean Square Error \\
 MSE & Mean square error \\
 MTT & Multi-Target Tracking \\
 POMDP & Partially Observable Markov Decision Process \\
-PLT & Probability to Lose a Track \\
+TLP & Track Loss Probability \\
 PRF  &  Pulse Repetition Frequency \\
 PRT  & Pulse Repetition Time \\
 Q-RAM & Quality of service Resource Management Model \\
@@ -1244,7 +1244,7 @@ A memoryless transition means that the following equation will hold
     \Pr{S_{k+1} | S_k, S_{k-1}, ..., S_1, S_0} = \Pr{S_{k+1} | S_k},
 \end{equation}
 where $S_k$ is the state at time instance $k$.
-In other words, the equation \eqref{eq:markov_property} indicates that the state transition probability to state $S_{k+1}$ is only dependent on the current state $S_k$.
+In other words, the equation \eqref{eq:markov_property} indicates that the probability of the state transition to state $S_{k+1}$ is only dependent on the current state $S_k$.
 Thus, there is no need to remember the history of the past state transitions to determine the state transition probability.
 The property in equation \eqref{eq:markov_property} is known as Markov property.
 
@@ -2339,7 +2339,7 @@ The proposed RL formulation is assuming a Single Target Tracking (STT) scenario.
 Therefore, the formulation is not addressing the track association and implementation of the low-level scheduler.
 However, the RL approach is extendable to Multi-Target Tracking (MTT) scenarios by using a low-level scheduler, and by considering the probability of mixing tracks with providing relevant observations for the RL agent.
 In the STT scenario, it is possible to experiment if the learning-based approach can help to tackle problems caused by modeling errors that affect conventional non-learning-based algorithms.
-The performance of the RL approach is investigated in Monte Carlo simulations by evaluating the Probability to Lose a Track (PLT) and the tracking load.
+The performance of the RL approach is investigated in Monte Carlo simulations by evaluating the Track Loss Probability (TLP) and the tracking load.
 
 In the following sections, an RL approach is proposed for the RIS problem and evaluated using Monte Carlo simulations.
 Section \ref{sec:system_description} describes the considered radar systems.
@@ -2494,7 +2494,7 @@ The expected value of an immediate reward given the state $s$ and action $a$ is
         } 
         - \ploss(s, \ri) \closs
 \end{equation}
-where $\ploss(s, \ri)$ is the probability to lose a target when in state $s$ and using the RI $\ri$, and $\E{n_d|s, \ri}$ is expected value of the number of dwells.
+where $\ploss(s, \ri)$ is the probability of losing a target when in state $s$ and using the RI $\ri$, and $\E{n_d|s, \ri}$ is expected value of the number of dwells.
 Equation \eqref{eq:exp_reward} gives also the action-value in myopic case.
 The non-myopic action-value is more complicated since the MDP can transition to the terminal state if the target is lost.
 Therefore, the expected discounted sum of rewards is
@@ -2796,14 +2796,14 @@ Therefore, the mean tracking load is evaluated in Monte Carlo simulations as fol
 where $\Ne$ is number of episodes, $K_m$ is number of steps in episode $m$, and $L_{mk}$ is the temporal tracking load in episode $m$ at step $k$.
 An episode refers to simulating a sampled trajectory until the end of the trajectory or when the target is lost.
 
-The ability to track targets without losing them is measured in terms of Probability to Lose a Track (PLT).
-The PLT refers to the probability $\Pr{\text{Track lost}|\pi, i}$ that is the probability to lose a target on a certain trajectory $i$ given the RIS policy $\pi$.
-On the other hand, mean PLT refers to the probability
-\begin{equation}\label{eq:mean_plt_exp}
+The ability to track targets without losing them is measured in terms of Track Loss Probability (TLP).
+The TLP refers to the probability $\Pr{\text{Track lost}|\pi, i}$ that is the probability of losing a target on a certain trajectory $i$ given the RIS policy $\pi$.
+On the other hand, mean TLP refers to the probability
+\begin{equation}\label{eq:mean_tlp_exp}
     P_\text{mean} = \Pr{\text{Track lost}|\pi, P_T(i)}
 \end{equation} 
-that is similar to the PLT but the trajectories are sampled from the distribution $P_T(i)$.
-Therefore, the mean PLT is evaluated in Monte Carlo simulations as follows
+that is similar to the TLP but the trajectories are sampled from the distribution $P_T(i)$.
+Therefore, the mean TLP is evaluated in Monte Carlo simulations as follows
 \begin{equation}\label{eq:criterion_lost}
 \   P_\text{mean} \approx \frac{1}{\Ne} \sum_{m=0}^{\Ne-1} \vec{1}_{\text{TrackLost}(m)},
 \end{equation}
@@ -2814,9 +2814,9 @@ The objectives of the simulations were to
 \begin{itemize}
     \item identify effective state space,
     \item determine if using a myopic policy is sufficient,
-    \item evaluate the mean PLT and the mean tracking load during the learning,
+    \item evaluate the mean TLP and the mean tracking load during the learning,
     \item evaluate the amount of learning required to achieve a certain level of performance,
-    \item determine the connection between $\closs$ and the PLT, and
+    \item determine the connection between $\closs$ and the TLP, and
     \item compare the RL approach against the baseline algorithm.
 \end{itemize}
 The first four of these will be covered in Section \ref{sec:training}, and the last two will be covered in Section \ref{sec:against_baseline}.
@@ -2824,7 +2824,7 @@ The first four of these will be covered in Section \ref{sec:training}, and the l
 \subsubsection{Reinforcement learning agent training}\label{sec:training}
 
 RL agents with various configurations were trained by uniformly sampling the target trajectories from the six benchmark trajectories.
-Therefore, the sampling distribution of the tracks $P_T(i)$ in equations \eqref{eq:mean_load_exp} and \eqref{eq:mean_plt_exp} is a discrete uniform distribution.
+Therefore, the sampling distribution of the tracks $P_T(i)$ in equations \eqref{eq:mean_load_exp} and \eqref{eq:mean_tlp_exp} is a discrete uniform distribution.
 Each agent was trained for $4000$ episodes, such that each trajectory was sampled approximately for $667$ times on average.
 The exploration probability was initially $\epsilon=0.2$, and it was decayed between each episode. The decay factor was $0.99867$, which resulted in $\epsilon=0.001$ on the last training episode.
 In the reward function, the cost of losing a track $\closs$ was set to $0.2$.
@@ -2837,18 +2837,18 @@ Committing to a target policy corresponds to a situation where learning ends aft
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.8\textwidth}
+    \begin{subfigure}[b]{0.72\textwidth}
         \includegraphics[width=\textwidth]{figures/benchmark/Training/online_load.pdf}
         \caption{Mean tracking load. Myopic agents have lower mean tracking load compared to the non-myopic agents.}
         \label{fig:online_load}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.8\textwidth}
+    \begin{subfigure}[b]{0.72\textwidth}
         \includegraphics[width=\textwidth]{figures/benchmark/Training/online_plt.pdf}
-        \caption{Mean PLT. Two distinct clusters can be seen which divide the agents to myopic and non-myopic policies.}
+        \caption{Mean TLP. Two distinct clusters can be seen which divide the agents to myopic and non-myopic policies.}
         \label{fig:online_lost}
     \end{subfigure}
-    \caption{Behavior policy performance estimated from training data. Myopic agents using the states based on mode probabilities achieve low mean Probability to Lose a Track (PLT) and low tracking load.}
+    \caption{Behavior policy performance estimated from training data. Myopic agents using the states based on mode probabilities achieve low mean Track Loss Probability (TLP) and low tracking load.}
     \label{fig:online_performance}
 \end{figure}
 
@@ -2862,12 +2862,12 @@ Committing to a target policy corresponds to a situation where learning ends aft
     \hfill
     \begin{subfigure}[b]{0.8\textwidth}
         \includegraphics[width=\textwidth]{figures/benchmark/Training/offline_plt.pdf}
-        \caption{Mean PLT. Achieving a low mean PLT requires multiple training episodes, especially for non-myopic agents.}
+        \caption{Mean TLP. Achieving a low mean TLP requires multiple training episodes, especially for non-myopic agents.}
         \label{fig:offline_lost}
     \end{subfigure}
     \caption{
         Target policy performance estimated from Monte Carlo simulations. 
-        The agent with ID=4 achieves fast learning speed, low mean Probability to Lose a Track (PLT), low mean tracking load.  
+        The agent with ID=4 achieves fast learning speed, low mean Track Loss Probability (TLP), low mean tracking load.  
     }
     \label{fig:offline_performance}
 \end{figure}
@@ -2882,14 +2882,14 @@ The target policy performance is shown in Figure \ref{fig:offline_performance}.
 
 Figure \ref{fig:online_performance} shows that the behavior policy performance is slowly improving between the episodes with a particular trend.
 On the other hand, the trend in the target policy performance is not as apparent, as shown in Figure \ref{fig:offline_performance}.
-Especially, the mean tracking loads in Figure \ref{fig:offline_load} reach stable levels quite fast, but the mean PLT in Figure \ref{fig:offline_lost} requires more time to converge to tolerable levels.
+Especially, the mean tracking loads in Figure \ref{fig:offline_load} reach stable levels quite fast, but the mean TLP in Figure \ref{fig:offline_lost} requires more time to converge to tolerable levels.
 
 Differences in the target and the behavior policies explain the differences between the target policy performance and the behavior policy performance.
 The behavior policy takes random actions that increase the tracking load compared to the target policy, which is purely exploiting.
 It is undoubtedly more challenging for the agent to learn how the actions affect the risk of losing a target than the tracking load.
 Therefore, the target policies had fast improvement in the tracking load, as shown in Figure \ref{fig:offline_load}. 
 The mean tracking load even rises slightly when the agent has learned more because the agent becomes more conscious about losing tracks with longer RIs.
-Meanwhile, the PLT takes more training episodes to converge to low values, as shown in Figure \ref{fig:offline_lost}.
+Meanwhile, the TLP takes more training episodes to converge to low values, as shown in Figure \ref{fig:offline_lost}.
 Thus, learning to not lose tracks will take more training episodes.
 
 
@@ -2915,8 +2915,8 @@ Therefore, it can be stated that the higher dimensional state space could improv
         6: myopic, prob. \& RI & 0 & 0 & 0 & 0.07  & 0     & 0     \\ \hline
         7: non-myopic, prob. \& RI & 0 & 0 & 0 & 0.035 & 0     & 0.005 \\ \hline
     \end{tabular}
-    \caption{Mean Probability to Lose a Track (PLT) for target policies after 4000 episodes of learning. T1 $\ldots$ T6 denote the employed trajectories from 1 to 6.}
-    \label{tab:plt_comparison}
+    \caption{Mean Track Loss Probability (TLP) for target policies after 4000 episodes of learning. T1 $\ldots$ T6 denote the employed trajectories from 1 to 6.}
+    \label{tab:tlp_comparison}
 \end{table}
 
 Another distinct performance differences between the configurations can be seen for myopic and non-myopic agents.
@@ -2924,29 +2924,29 @@ With no exception, the non-myopic agents have a higher tracking load than the co
 For example, the agent with $\text{ID}=1$ is non-myopic variant of the myopic agent with $\text{ID}=0$.
 The difference could be originated from two reasons.
 First, the non-myopic agents are more conscious about losing tracks because the long-term consequences for actions are considered.
-Especially from Table \ref{tab:plt_comparison}, it can be seen that after learning for 4000 episodes, the mean PLT of target policies is significantly higher for myopic agents than for non-myopic agents.
+Especially from Table \ref{tab:tlp_comparison}, it can be seen that after learning for 4000 episodes, the mean TLP of target policies is significantly higher for myopic agents than for non-myopic agents.
 The second reason may be that for the non-myopic policies, the Q-values converge slower than for the myopic policies.
 Thus, training a non-myopic agent to its full potential generally requires more training episodes than needed for a myopic agent.
 
-In terms of fast learning speed, low mean PLT, and low mean tracking load, the agent with $\text{ID}=4$ achieves desirable performance.
+In terms of fast learning speed, low mean TLP, and low mean tracking load, the agent with $\text{ID}=4$ achieves desirable performance.
 The agent uses a myopic policy and the mode probabilities as states.
 
 \subsubsection{Performance against the baseline algorithm} \label{sec:against_baseline}
 
 % \begin{figure}
 %     \centering
-%     \subcaptionbox{The PLT of the RL agent.\label{fig:penalty_plt}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/plt_agent.pdf}}
+%     \subcaptionbox{The TLP of the RL agent.\label{fig:penalty_tlp}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/plt_agent.pdf}}
 %     \subcaptionbox{The mean tracking load of the RL agent.\label{fig:penalty_load}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/tracking_load_agent.pdf}}
-%     \subcaptionbox{The PLT of the baseline algorithm.\label{fig:baseline_plt}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/plt_baseline.pdf}}
+%     \subcaptionbox{The TLP of the baseline algorithm.\label{fig:baseline_tlp}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/plt_baseline.pdf}}
 %     \subcaptionbox{The mean tracking load of the baseline algorithm.\label{fig:baseline_load}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/tracking_load_baseline.pdf}}
-%     \caption{The RL agent (ID=4) and the baseline algorithm compared with different parameterizations in terms of Probability to Lose a Track (PLT) and mean tracking load.}
+%     \caption{The RL agent (ID=4) and the baseline algorithm compared with different parameterizations in terms of Track Loss Probability (TLP) and mean tracking load.}
 %     \label{fig:comparison}
 % \end{figure}
 % \begin{figure}
 %     \centering
-%     \subcaptionbox{The PLT of the RL agent.\label{fig:penalty_plt}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/plt_agent.pdf}}
-%     \subcaptionbox{The PLT of the baseline algorithm.\label{fig:baseline_plt}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/plt_baseline.pdf}}
-%     \caption{The RL agent (ID=4) and the baseline algorithm with different parameterizations in terms of Probability to Lose a Track (PLT).}
+%     \subcaptionbox{The TLP of the RL agent.\label{fig:penalty_tlp}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/plt_agent.pdf}}
+%     \subcaptionbox{The TLP of the baseline algorithm.\label{fig:baseline_tlp}}{\includegraphics[width=0.45\textwidth]{figures/benchmark/Simulations/plt_baseline.pdf}}
+%     \caption{The RL agent (ID=4) and the baseline algorithm with different parameterizations in terms of Track Loss Probability (TLP).}
 %     \label{fig:comparison}
 % \end{figure}
 
@@ -2955,47 +2955,47 @@ The agent uses a myopic policy and the mode probabilities as states.
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/benchmark/Simulations/plt_agent.pdf}
-        \caption{The PLT of the RL agent.}
-        \label{fig:penalty_plt}
+        \caption{The TLP of the RL agent.}
+        \label{fig:penalty_tlp}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/benchmark/Simulations/plt_baseline.pdf}
-        \caption{The PLT of the baseline algorithm.}
-        \label{fig:baseline_plt}
+        \caption{The TLP of the baseline algorithm.}
+        \label{fig:baseline_tlp}
     \end{subfigure}
     \caption{
         Target policy performance estimated from Monte Carlo simulations. 
-        The agent with ID=4 achieves fast learning speed, low mean Probability to Lose a Track (PLT), low mean tracking load.  
+        The agent with ID=4 achieves fast learning speed, low mean Track Loss Probability (TLP), low mean tracking load.  
     }
     \label{fig:comparison}
 \end{figure}
 
 The most promising RL agent (ID=4) was trained and evaluated with various values of $\closs$.
-Figures \ref{fig:penalty_plt} shows the PLT for each benchmark trajectory.
-It can be seen that low cost of losing a track results in high PLT, and vice versa.
+Figures \ref{fig:penalty_tlp} shows the TLP for each benchmark trajectory.
+It can be seen that low cost of losing a track results in high TLP, and vice versa.
 The baseline algorithm was also evaluated with different track sharpness values.
-Figure \ref{fig:baseline_plt} shows the PLT for each benchmark trajectory with different the track sharpness parameter $V_0$ values.
+Figure \ref{fig:baseline_tlp} shows the TLP for each benchmark trajectory with different the track sharpness parameter $V_0$ values.
 The figures show that maintaining the track of trajectory 6 is the most difficult for the baseline algorithm, while the trajectory 4 is the most challenging track for the RL algorithm.
 Each value of $\closs$ and $V_0$ were evaluated using $200$ Monte Carlo iterations per trajectory.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{figures/benchmark/Simulations/rl_baseline_comparison.pdf}
-    \caption{The mean tracking load as a function of mean Probability to Lose a Track (PLT) for the baseline algorithm and the RL agent (ID=4). The labels for the data points are the track sharpness parameter values and the cost of losing a track for the baseline algorithm and RL agent, respectively. The RL agent achieves a lower tracking load than the baseline algorithm with mean PLT values below 0.02.}
-    \label{fig:comparison_TL_PLT}
+    \caption{The mean tracking load as a function of mean Track Loss Probability (TLP) for the baseline algorithm and the RL agent (ID=4). The labels for the data points are the track sharpness parameter values and the cost of losing a track for the baseline algorithm and RL agent, respectively. The RL agent achieves a lower tracking load than the baseline algorithm with mean TLP values below 0.02.}
+    \label{fig:comparison_TL_TLP}
 \end{figure}
 
-Figure \ref{fig:comparison_TL_PLT} shows the mean tracking load as a function of mean PLT for the RL agent and the baseline algorithm. 
+Figure \ref{fig:comparison_TL_TLP} shows the mean tracking load as a function of mean TLP for the RL agent and the baseline algorithm. 
 The figure uses the same data that was used to generate Figure \ref{fig:comparison}.
-It can be seen that the RL approach achieves a lower tracking load than the baseline algorithm when evaluated with mean PLT values below 0.02. 
-However, for mean PLT values approximately above 0.02, the RL agent's mean tracking load is slightly higher compared to the baseline algorithm. 
+It can be seen that the RL approach achieves a lower tracking load than the baseline algorithm when evaluated with mean TLP values below 0.02. 
+However, for mean TLP values approximately above 0.02, the RL agent's mean tracking load is slightly higher compared to the baseline algorithm. 
 In other words, the RL agent is more reliable in maintaining the tracks with a low tracking load. 
 It can also be seen that the baseline algorithm is quite sensitive to the selection of $V_0$ parameter. 
-Especially when selecting small values of $V_0$ to desire a low PLT, a high tracking load can be easily induced.
+Especially when selecting small values of $V_0$ to desire a low TLP, a high tracking load can be easily induced.
 
 
-Using figures \ref{fig:penalty_plt} and \ref{fig:baseline_plt}, the parameters of the RL agent and the baseline algorithm were tuned to achieve an approximately equal PLT to evaluate the tracking load in equation \eqref{eq:load}, the selected RIs, and Euclidean distances between the target positions and the predicted target positions.
+Using figures \ref{fig:penalty_tlp} and \ref{fig:baseline_tlp}, the parameters of the RL agent and the baseline algorithm were tuned to achieve an approximately equal TLP to evaluate the tracking load in equation \eqref{eq:load}, the selected RIs, and Euclidean distances between the target positions and the predicted target positions.
 Thus, the parameters $\closs = 0.2$ and $V_0=0.164$ were selected.
 With the corresponding parameters, the RL agent lost the target track in trajectory 4 once in 200 Monte Carlo iterations. 
 In other trajectories, the target was not lost a single time.
@@ -3021,7 +3021,7 @@ Based on the experience, the RL agent is confident enough that the corresponding
 In trajectory 4, the difference between the baseline algorithm and the RL algorithm is the most apparent.
 As with trajectories 2 and 3, the lower tracking load can be related to the range of the target.
 The RL agent is more eager to take the risk of using longer RIs because the experience indicates that using such RIs does not have a high risk of losing track.
-However, the PLT is at $0.5\%$, which is higher compared to the other tracks because the state space may not generalize the corresponding trajectory well enough.
+However, the TLP is at $0.5\%$, which is higher compared to the other tracks because the state space may not generalize the corresponding trajectory well enough.
 It could be possible that the track would be lost with a lower probability if the target range was included to the state presentation.
 
 \begin{figure}[h]
@@ -3187,15 +3187,15 @@ The immediate rewards were proposed to balance the risk of losing a track and mi
 Mode probabilities of the IMM estimator, the most recent RIs, and innovations were discretized such that those could be used as states for the Q-learning algorithm.
 
 The most efficient state space was identified by simulating multiple differently configured  RL agents in the benchmark trajectories.
-The agents using the mode probabilities had excellent performance in terms of the mean tracking load and the mean PLT.
+The agents using the mode probabilities had excellent performance in terms of the mean tracking load and the mean TLP.
 The difference between the myopic and the non-myopic agents was also investigated.
 The myopic agents learned faster and had better mean tracking load performance.
-However, the non-myopic agents' ability to consider the long-term consequences resulted in lower PLT. 
+However, the non-myopic agents' ability to consider the long-term consequences resulted in lower TLP. 
 Lastly, it was identified that augmenting the state presentations with the most recent RI does not significantly improve the tracking load performance.
-Moreover, the larger state space leads to slower learning speed that causes higher PLT.  
+Moreover, the larger state space leads to slower learning speed that causes higher TLP.  
 
-The myopic RL agent using the mode probabilities as states was compared against the baseline algorithm in terms of the tracking load, the PLT, and the position prediction error.
-It was found that the mean tracking load of the RL agent is lower compared to the baseline algorithm when evaluated with low mean PLT values.
+The myopic RL agent using the mode probabilities as states was compared against the baseline algorithm in terms of the tracking load, the TLP, and the position prediction error.
+It was found that the mean tracking load of the RL agent is lower compared to the baseline algorithm when evaluated with low mean TLP values.
 Thus the tracks were maintained with with a lower tracking load and longer revisit intervals.
 Especially, the proposed learning-based approach benefits from utilizing the experience to reduce the tracking load peaks.
 Future research directions could include function approximation techniques that could enable applying higher dimensional state spaces more efficiently. 
@@ -3244,10 +3244,10 @@ The proposed immediate rewards are comprised of two components such that both tr
 Multiple RL agents with different configurations were simulated to identify the effective state space in terms of learning speed and performance.
 In addition, myopic and non-myopic agents were tested to determine if the myopic policy is sufficient for the RIS problem.
 The simulation results demonstrate that the learning speed was significantly decreased when the number of states was increased.
-Therefore, using only the mode probabilities as the states enabled fast learning, a low Probability to Lose a Track (PLT), and a low tracking load.
-Furthermore, the simulation results indicate that the myopic policies achieved a low tracking load with a desirable PLT, and non-myopic agents obtained a lower PLT, but the tracking load was considerably higher.
+Therefore, using only the mode probabilities as the states enabled fast learning, a low Track Loss Probability (TLP), and a low tracking load.
+Furthermore, the simulation results indicate that the myopic policies achieved a low tracking load with a desirable TLP, and non-myopic agents obtained a lower TLP, but the tracking load was considerably higher.
 
-The myopic RL agent using the mode probabilities as states was compared against the baseline algorithm in terms of the tracking load, the PLT, and the position prediction error.
+The myopic RL agent using the mode probabilities as states was compared against the baseline algorithm in terms of the tracking load, the TLP, and the position prediction error.
 It was observed that the proposed RL agent was better in maintaining the tracks with a low tracking load and longer revisit intervals. 
 Furthermore, the position prediction error was not significantly larger compared to the baseline algorithm.
 The RL agent achieved a reduction of the tracking load peaks, which is essential when operating in overload situations.
