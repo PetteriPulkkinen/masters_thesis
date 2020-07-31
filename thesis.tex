@@ -365,7 +365,7 @@ Vertailukohtana pidettyyn algoritmiin verrattuna vahvistusoppimiseen perustuva a
 %% Preface
 %%
 %% This section is optional. Remove it if you do not want a preface.
-\mysection{Preface}
+\mysection{Acknowledgements}
 
 I want to thank Professor Visa Koivunen and Doctor Tuomas Aittomäki for their support in writing the master's thesis and discussing the essential technical details.
 The financial support for this work was provided by Maanpuolustuksen Kannatussäätiö (Foundation under the Ministry of Defence) and SAAB Group. 
@@ -424,10 +424,9 @@ $\pi^*$ & optimal policy \\
 $\pi(a|s)$ & probability of taking action $a$ given state $s$ \\
 $\vintnoise$ & vector containing power of interfering signals observed at receivers \\
 $\thnoise$ & thermal noise power \\
-$\sigma_m$ & measurement noise variance \\ 
+$\sigma_m^2$ & measurement noise variance \\ 
 $\tau_d$ & dwell time \\
 $\phi$ & backscatter angle \\
-$\sigma_m^2$ & measurement noise variance \\
 $\omega$ & parameter controlling decay of the learning rate \\
 % -------
 % Fancy letters
@@ -555,9 +554,9 @@ MMSE & Minimum Mean Square Error \\
 MSE & Mean square error \\
 MTT & Multi-Target Tracking \\
 POMDP & Partially Observable Markov Decision Process \\
-TLP & Track Loss Probability \\
 PRF  &  Pulse Repetition Frequency \\
 PRT  & Pulse Repetition Time \\
+QoS & Quality of Service \\
 Q-RAM & Quality of service Resource Management Model \\
 RCS & Radar Cross Section \\
 RBE  & Recency Based Exploration \\
@@ -572,6 +571,7 @@ SNR & Signal-to-Noise Ratio \\
 % STS & Slow Time Scale \\
 STT & Single Target Tracking \\
 TBM & Time Budget Management \\
+TLP & Track Loss Probability \\
 TD & Temporal-Difference \\
 TX & Transmitter \\
 UCB & Upper Confidence Bound \\
@@ -1597,7 +1597,7 @@ For RL problems that involve neural networks, the models are usually trained wit
 \section{Radar Resource Management} \label{sec:existing_RRM}
 
 
-Modern radar technologies, such as electronically steerable antennas and MIMO radars, have enabled radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
+Modern radar technologies, such as electronically steerable antennas and MIMO systems, have enabled radars to simultaneously carry out multiple radar functions, including target tracking and search for undetected targets.
 Each radar function executes one or more tasks, and each radar task may involve multiple looks. 
 For example, a tracking task indicates tracking a specific target, and maintaining the track may require updating it with certain intervals.
 The look of radar is defined to be uninterruptible and has a finite duration in which radar beam is steered into one or more positions \cite{Moo2015}.
@@ -1660,7 +1660,7 @@ The following techniques for addressing RRM problems were presented in the liter
 
 \item[Rule-based approach.]
 
-Rule-based RRM include approaches in which local objective is optimized instead of optimizing the global objective \cite{Koch1999}.
+Rule-based RRM include approaches in which local objectives are optimized instead of optimizing the global objective \cite{Koch1999}.
 Using fixed parameters is a special case of a rule-based approach, but this could lead to allocating too little or too much radar resources for the radar tasks \cite{Hoffmann2014}.
 Significant research direction in rule-based approaches is developing adaptive RIS algorithms \cite{Cohen1986, Gardner1988, Munu1992, ChengTing2007, Baek2010, Watson1993, Charlish2015, Keuk1975, Shin1995, Benoudnine2006}. Those algorithms will be covered in more detail in Section \ref{sec:tbm_ri}.
 
@@ -1697,7 +1697,7 @@ Thus, the information-theoretic approach does not differentiate search and track
 \noindent
 Some RRM algorithms have characteristics from multiple technique classes. 
 For example, in \cite{Byrne2015, Byrne2016}, the objective function is similar to the Q-RAM approach but considers the long-term consequences as in the SDP approaches.
-Additionally, in \cite{Esfahani2012}, locally optimized QoS parameters are utilized in allocating a radar time budget to optimize global objectives using a heuristic algorithm.
+Additionally, in \cite{Esfahani2012}, locally optimized Quality of Service (QoS) parameters are utilized in allocating a radar time budget to optimize global objectives using a heuristic algorithm.
 
 \subsection{Distributed MIMO radar transmitter-receiver selection}\label{sec:TX_RX_selection_review}
 
@@ -2339,7 +2339,7 @@ The proposed RL formulation is assuming a Single Target Tracking (STT) scenario.
 Therefore, the formulation is not addressing the track association and implementation of the low-level scheduler.
 However, the RL approach is extendable to Multi-Target Tracking (MTT) scenarios by using a low-level scheduler, and by considering the probability of mixing tracks with providing relevant observations for the RL agent.
 In the STT scenario, it is possible to experiment if the learning-based approach can help to tackle problems caused by modeling errors that affect conventional non-learning-based algorithms.
-The performance of the RL approach is investigated in Monte Carlo simulations by evaluating the Track Loss Probability (TLP) and the tracking load.
+The performance of the RL approach is investigated in Monte Carlo simulations by evaluating the Track Loss Probability (TLP) \cite{Blair1998} and the tracking load.
 
 In the following sections, an RL approach is proposed for the RIS problem and evaluated using Monte Carlo simulations.
 Section \ref{sec:system_description} describes the considered radar systems.
@@ -2522,8 +2522,8 @@ The state is obtained by quantizing the continuous values into quantization inte
 \begin{equation}\label{eq:state_limits}
     \frac{\ghigh - \glow}{N_d - 2} n + \glow,
 \end{equation}
-where $N_d-2$ is number of the intervals, $n \in \{0, 1, ..., N_d-2\}$ is the index of the edge, and
-the values $\glow$ and $\ghigh$ define the lower and the upper limits for the interval edges.
+where $N_d-2$ is number of the intervals, $n \in \{0, 1, ..., N_d-2\}$ is the index of a boundary, and
+the values $\glow$ and $\ghigh$ define the lower and the upper limits for the interval boundaries.
 Two states are defined for the continuous values below $\glow$ and above $\ghigh$, such that $N_d$ discrete states are obtained in total.
 In some cases, the required Markov property can be approximately satisfied by using a subset of past actions and observations \cite{Mnih2013}, but for discrete states, the cardinality of the state space will grow exponentially.
 
@@ -2867,7 +2867,7 @@ Committing to a target policy corresponds to a situation where learning ends aft
     \end{subfigure}
     \caption{
         Target policy performance estimated from Monte Carlo simulations. 
-        The agent with ID=4 achieves fast learning speed, low mean Track Loss Probability (TLP), low mean tracking load.  
+        The agent with ID=4 achieves fast learning speed, low mean Track Loss Probability (TLP), and low mean tracking load.  
     }
     \label{fig:offline_performance}
 \end{figure}
@@ -3210,14 +3210,14 @@ Radar Resource Management (RRM) algorithms are required for allocating and sched
 Phased-array antenna technology, Multiple-Input Multiple-Output (MIMO) systems, and cognitive radars have increased the demand for intelligent RRM algorithms.
 The RRM can be approached by dividing the RRM problem into subproblems that consider specific fields of RRM.
 In this thesis, Reinforcement Learning (RL) methods were proposed for two specific RRM problems.
-RL enables the radar systems to learn in real-time from experience without using any model developed beforehand.
+RL enables the radar systems to learn in real-time from experience without using a problem model developed beforehand.
 In both RRM problems, RL methods were successfully applied to learn to act in the problems at hand. 
 Furthermore, with a sufficient amount of learning, performance advantages were identified compared to the baseline algorithms.
 
 In distributed MIMO radars, transmitter (TX) and receiver (RX) subsets are selected to reduce the power consumption and the data to be processed at the central processor as well as to prevent exposing the locations of the TXs for an adversary.
 In this thesis, a method based on the Multi-Armed Bandit (MAB) framework was developed to formulate the TX-RX selection problem as an RL problem.
 Furthermore, the problem was modeled as a combinatorial MAB problem, which was used to reduce the dimensions of the action space.
-A MAB algorithm was proposed to actively learn to select a subset of TXs and RXs that maximize the reward function.
+The proposed MAB algorithm actively learns to select a subset of TXs and RXs that maximize the reward function.
 
 Each arm in the MAB formulation was modeled as a single TX-RX pair such that the RL agent selects multiple arms at a time. 
 The exploration--exploitation trade-off ensured that all the different TX-RX pairs were probed for a sufficient number of times to minimize the regret. 
@@ -3233,10 +3233,10 @@ Adaptive Revisit Interval Selection (RIS) algorithms are used to decrease the ti
 In this thesis, the RIS problem was formulated as a Markov decision process (MDP) with unknown state transition probabilities and rewards, and the Q-learning algorithm with \egreedy exploration was used to solve the proposed RL problem.
 Two different action spaces, named as direct selection and delta selection, were identified for selecting the Revisit Interval (RI).
 In direct selection, the RI is selected directly from a set of different RIs. 
-In delta selection, the action is chosen from a set of values that either increase or decrease the RI.
+In delta selection, the action is chosen from a set of delta values that either increase or decrease the RI.
 Alternative state spaces were developed based on the innovation sequence, the mode probabilities of an IMM estimator, and the most recent revisit interval. 
 The innovation sequence contains information about how well the agent predicted the target position and thus can be used to control the revisit interval. 
-The mode probabilities can be used to select the revisit intervals since those contain information about target maneuverability.
+The mode probabilities are used as states because they contain information about target maneuverability.
 The most recent revisit intervals were augmented to the state presentations to attempt to approximate the MDP states more accurately.
 The rewards were proposed to quantify the cost of losing a track while emphasizing the agent to minimize the tracking load. 
 The proposed immediate rewards are comprised of two components such that both tracking load and losing tracks are penalized.
