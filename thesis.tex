@@ -1324,7 +1324,7 @@ In MDPs, it is assumed that the environment state $S_k \in \Ss$ can be observed 
 Therefore, the agent needs to find a policy $\pi(a | s)$, which gives the probability for taking action $a \in \As$ given the state $s \in \Ss$.
 The optimal policy is defined as follows
 \begin{equation}\label{eq:mdp_optimal_policy}
-    \pi^* = \arg\max_\pi\E{G_k | S_k=s}.
+    \pi^* = \arg\max_\pi\E{G_k | S_k=s, \pi}.
 \end{equation}
 which is the policy that achieves the greatest expected discounted sum of rewards, given any initial state $s \in \Ss$.
 By the definitions \eqref{eq:discounted_sum} and \eqref{eq:mdp_optimal_policy}, the optimal policy would need to consider all the future actions.
@@ -1334,14 +1334,14 @@ Typically, the myopic policies are suboptimal for $\lambda>0$.
 
 Since an optimal policy maximizes the discounted sum of expected future rewards, a reasonable way to evaluate policy $\pi$ is to calculate value of state $s \in \Ss$ using the following equation
 \begin{equation} \label{eq:value}
-    v_\pi(s) = \E{G_k | S_k=s},
+    v_\pi(s) = \E{G_k | S_k=s, \pi},
 \end{equation}
 where the function $v_\pi(s)$ is called value function \cite{Sutton2018}.
 The value function gives the expectation of the discounted rewards given the initial state $s$ and the policy $\pi$.
 Moreover, the optimal policy $\pi^*$ has always greater or equal value for any state $s \in \Ss$ compared to any other policy $\pi$.
 Similarly, another function that can measure the quality of any action $a \in \As$ given the state $s \in \Ss$ is defined as
 \begin{equation}\label{eq:action_value}
-    q_\pi(s, a) = \E{G_k | S_k=s, A_k=a},
+    q_\pi(s, a) = \E{G_k | S_k=s, A_k=a, \pi},
 \end{equation}
 and it is called an action-value function.
 It can be noted that the value function $v_\pi(s)$ and the action-value function $ q_\pi(s, a)$ are connected to each other through the equation  
@@ -1353,8 +1353,8 @@ in which the action-values are weighted by the probabilities of choosing the act
 Lastly, it is quite straightforward to prove that the value function \eqref{eq:value} can be expressed in a recursive form 
 \begin{align}
     v_\pi(s) 
-    &= \E{ \sum_{i=0}^{\infty} \lambda^i R_{k + i + 1} \bigg| S_k=s} \\
-    &= \E{R_{k + 1} + \lambda \sum_{i=0}^{\infty} \lambda^i R_{k + i + 2} \bigg| S_k=s} \\
+    &= \E{ \sum_{i=0}^{\infty} \lambda^i R_{k + i + 1} \bigg| S_k=s, \pi} \\
+    &= \E{R_{k + 1} + \lambda \sum_{i=0}^{\infty} \lambda^i R_{k + i + 2} \bigg| S_k=s, \pi} \\
     &= \sum_{a \in \As_s} \pi(a | s) \sum_{s' \in \Ss} \sum_{r \in \Rs_{ss'}^a} p(s', r | s, a) \left[ r + \lambda v_\pi(s') \right]\label{eq:bellman},
 \end{align}
 where the equation \eqref{eq:bellman} is called Bellman equation \cite{Sutton2018}.
@@ -2499,7 +2499,7 @@ Equation \eqref{eq:exp_reward} gives also the action-value in myopic case.
 The non-myopic action-value is more complicated since the MDP can transition to the terminal state if the target is lost.
 Therefore, the expected discounted sum of rewards is
 \begin{multline} \label{eq:exp_reward_nonmyopic}
-    \E{\sum_{i=0}^\infty \lambda^i R_{t+1} | S_t=s, A_t=a} = \E{R_{t+1} | S_t=s, A_t=a} \\ + (1-\ploss(s, \ri)) \lambda \sum_{s'\in \Ss} p(S_{k+1}=s'|S_{k}=s, A_{k}=a)  V(s')  
+    \E{\sum_{i=0}^\infty \lambda^i R_{t+1} | S_t=s, A_t=a, \pi} = \E{R_{t+1} | S_t=s, A_t=a} \\ + (1-\ploss(s, \ri)) \lambda \sum_{s'\in \Ss} p(S_{k+1}=s'|S_{k}=s, A_{k}=a)  V(s')  
 \end{multline}
 where $V(s')$ is the value, presented in equation \eqref{eq:value}, of state $s'$.
 The equation \eqref{eq:exp_reward_nonmyopic} indicates that the expected discounted sum of rewards can be composed of two parts, as also shown in equation \eqref{eq:bellman_action}.
@@ -2613,7 +2613,7 @@ Lastly, different RL agent configurations are presented in Section \ref{sec:RL_c
 
 \subsubsection{Benchmark trajectories} \label{sec:benchmark_trajectories}
 
-\begin{figure}
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/benchmark/trajectories.pdf}
     \caption{Six different target trajectories. The trajectories start from ``o'' and end to ``x''.}
@@ -2951,7 +2951,7 @@ The agent uses a myopic policy and the mode probabilities as states.
 % \end{figure}
 
 
-\begin{figure}
+\begin{figure}[!tb]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/benchmark/Simulations/plt_agent.pdf}
@@ -2979,7 +2979,7 @@ Figure \ref{fig:baseline_tlp} shows the TLP for each benchmark trajectory with d
 The figures show that maintaining the track of trajectory 6 is the most difficult for the baseline algorithm, while the trajectory 4 is the most challenging track for the RL algorithm.
 Each value of $\closs$ and $V_0$ were evaluated using $200$ Monte Carlo iterations per trajectory.
 
-\begin{figure}
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/benchmark/Simulations/rl_baseline_comparison.pdf}
     \caption{The mean tracking load as a function of mean Track Loss Probability (TLP) for the baseline algorithm and the RL agent (ID=4). The labels for the data points are the track sharpness parameter values and the cost of losing a track for the baseline algorithm and RL agent, respectively. The RL agent achieves a lower tracking load than the baseline algorithm with mean TLP values below 0.02.}
